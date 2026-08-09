@@ -1,0 +1,22 @@
+# Compilação e Binários do Maven
+/target/
+*.class
+*.jar
+*.war
+
+# IDE - Visual Studio Code (Configurações locais de máquina)
+.vscode/
+!.vscode/settings.json
+*.code-workspace
+
+# JDKs localizados por engano no projeto
+/oracleJdk-*/
+/jdk*/
+
+# Arquivos do Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Logs e arquivos temporários
+*.log
+*.tmp
