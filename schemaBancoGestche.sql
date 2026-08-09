@@ -26,6 +26,7 @@ CREATE TABLE usuario(
     cargoUsuario VARCHAR(100) NOT NULL,
     senhaHash VARCHAR(60) NOT NULL,
     respostaSeguranca VARCHAR(100) NOT NULL,
+    ativoUsuario BOOLEAN NOT NULL DEFAULT TRUE,
     fk_idEndereco INT,
 
     CONSTRAINT cpf_ck CHECK (cpfUsuario ~ '^[0-9]{11}$'),
@@ -50,10 +51,12 @@ CREATE TABLE socio(
     telefoneSocio VARCHAR(11),
     dataNascSocio DATE NOT NULL,
     emailSocio VARCHAR(100),
-    ativoSocio BOOLEAN,
+    ativoSocio BOOLEAN NOT NULL DEFAULT TRUE,
     fk_idEndereco INT,
+    fk_idUsuario INT,
 
-    CONSTRAINT fk_socio_endereco FOREIGN KEY(fk_idEndereco) REFERENCES endereco(pk_idEndereco) ON DELETE SET NULL
+    CONSTRAINT fk_socio_endereco FOREIGN KEY(fk_idEndereco) REFERENCES endereco(pk_idEndereco) ON DELETE SET NULL,
+    CONSTRAINT fk_socio_usuario FOREIGN KEY(fk_idUsuario) REFERENCES usuario(pk_idUsuario) ON DELETE SET NULL
 );
 
 CREATE TABLE dependente(
@@ -88,16 +91,54 @@ CREATE TABLE debito(
     valorDebito NUMERIC(10,2) NOT NULL,
     vencimentoDebito DATE NOT NULL,
     dtPgmtDebito DATE,
-    fk_idSocio INT NOT NULL,
+    fk_idSocio INT,
 
     CONSTRAINT valor_debito_ck CHECK (valorDebito > 0),
-    CONSTRAINT fk_debito_socio FOREIGN KEY(fk_idSocio) REFERENCES socio(pk_idSocio) ON DELETE CASCADE
+    CONSTRAINT fk_debito_socio FOREIGN KEY(fk_idSocio) REFERENCES socio(pk_idSocio) ON DELETE SET NULL
 );
 
 CREATE TABLE conta(
     pk_idConta SERIAL PRIMARY KEY,
     nomeConta VARCHAR(100) NOT NULL,
     corConta VARCHAR(7) NOT NULL,
-    
-)
+    iconeConta VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE categoria(
+    pk_idCategoria SERIAL PRIMARY KEY,
+    nomeCategoria VARCHAR(100) NOT NULL,
+    corCategoria VARCHAR(7) NOT NULL,
+    iconeCategoria VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE lembrete(
+    pk_idLembrete SERIAL PRIMARY KEY,
+    nomeLembrete VARCHAR(100) NOT NULL,
+    dataInicioLembrete DATE NOT NULL,
+    dataFimLembrete DATE NOT NULL,
+    periodicidadeLembrete VARCHAR(100) NOT NULL,
+    descricaoLembrete TEXT,
+    horarioLembrete TIME NOT NULL,
+    pagoLembrete BOOLEAN NOT NULL DEFAULT FALSE,
+    fk_idUsuario INT,
+
+    CONSTRAINT fk_lembrete_usuario FOREIGN KEY(fk_idUsuario) REFERENCES usuario(pk_idUsuario) ON DELETE SET NULL
+);
+
+CREATE TABLE movimentacao(
+    pk_idMovimentacao SERIAL PRIMARY KEY,
+    valorMovimentacao NUMERIC(10,2) NOT NULL,
+    dataMovimentacao DATE DEFAULT CURRENT_DATE,
+    comentarioMovimentacao TEXT,
+    tipoMovimentacao VARCHAR(100) NOT NULL,
+    fk_idUsuario INT,
+    fk_idCategoria INT,
+    fk_idConta INT,
+    fk_idLembrete INT,
+
+    CONSTRAINT fk_movimentacao_usuario FOREIGN KEY(fk_idUsuario) REFERENCES usuario(pk_idUsuario) ON DELETE SET NULL,
+    CONSTRAINT fk_movimentacao_categoria FOREIGN KEY(fk_idCategoria) REFERENCES categoria(pk_idCategoria) ON DELETE SET NULL,
+    CONSTRAINT fk_movimentacao_conta FOREIGN KEY(fk_idConta) REFERENCES conta(pk_idConta) ON DELETE SET NULL,
+    CONSTRAINT fk_movimentacao_lembrete FOREIGN KEY(fk_idLembrete) REFERENCES lembrete(pk_idLembrete) ON DELETE SET NULL
+);
 
