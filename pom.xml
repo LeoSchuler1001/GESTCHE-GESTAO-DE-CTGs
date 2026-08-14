@@ -4,7 +4,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Identificação do seu Projeto -->
     <groupId>br.com.gestche</groupId>
     <artifactId>gestche</artifactId>
     <version>1.0.0</version>
@@ -18,6 +17,7 @@
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
        <dependency>
             <groupId>org.postgresql</groupId>
@@ -26,5 +26,4 @@
         </dependency>
     </dependencies>
     
-
 </project>
