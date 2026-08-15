@@ -126,11 +126,4 @@ public class Usuario {
 
         return mensagem;
     }
-
-    public void cadastrarLog(String descricao) {
-        //instancia um objeto do log de auditoria
-        LogAuditoria logAuditoria = new LogAuditoria(descricao, this, this.nomeUsuario);
-
-        //salva no banco de dados
-    }
 }

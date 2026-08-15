@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import model.Endereco;
+import model.LogAuditoria;
 import model.Usuario;
 
 public class UsuarioDAO {
@@ -94,6 +95,16 @@ public class UsuarioDAO {
 
         //retorna null caso não haja nenhum usuario
         return null;
+    }
+
+    //cadastra um log de alteração crítica do usuário
+    public void cadastrarLogUsuario(String descricao, Usuario usuario) throws SQLException {
+        //instancia um objeto do log de auditoria
+        LogAuditoria logAuditoria = new LogAuditoria(descricao, usuario, usuario.getNomeUsuario());
+        LogAuditoriaDAO logAuditoriaDAO = new LogAuditoriaDAO(conexao);
+
+        //salva no banco de dados
+        logAuditoriaDAO.cadastrarLog(logAuditoria, usuario);
     }
 
     //método auxiliar, que vai montar o objeto usuário após a consulta sql
