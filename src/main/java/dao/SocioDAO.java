@@ -131,6 +131,21 @@ public class SocioDAO {
         return listaSocios;
     }
 
+    //lista todos os sócios - ativos ou inativos
+    public List<Socio> listarAtivosInativos() throws SQLException {
+        String sql = "SELECT * FROM socio ORDER BY nomeSocio ASC";
+
+        List<Socio> listaSociosAtivosInativos = new ArrayList<>();
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                listaSociosAtivosInativos.add(montarObjSocio(rs));
+            }
+        }
+        return listaSociosAtivosInativos;
+    }
+
     //método auxiliar, que vai montar o objeto usuário após a consulta sql
     private Socio montarObjSocio(ResultSet rs) throws SQLException {
         //cria o objeto
