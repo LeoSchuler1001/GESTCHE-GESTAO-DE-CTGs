@@ -10,6 +10,7 @@ public class Usuario {
     private String senhaHash;
     private String respostaSeguranca;
     private Endereco endereco;
+    private boolean ativoUsuario;
 
     //CONSTRUTORES
     //criar novos usuários - INSERT no banco de dados
@@ -21,6 +22,7 @@ public class Usuario {
         this.cargoUsuario = cargoUsuario;
         this.senhaHash = senhaHash;
         this.respostaSeguranca = respostaSeguranca;
+        this.ativoUsuario = true;
     }
 
     //alterar usuário - SELECT, UPDATE e DELETE no banco de dados
@@ -33,6 +35,7 @@ public class Usuario {
         this.cargoUsuario = cargoUsuario;
         this.senhaHash = senhaHash;
         this.respostaSeguranca = respostaSeguranca;
+        this.ativoUsuario = true;
     }
 
     //construtor vazio
@@ -94,6 +97,22 @@ public class Usuario {
 
     public void setRespostaSeguranca(String respostaSeguranca) {
         this.respostaSeguranca = respostaSeguranca;
+    }
+
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
+
+    public boolean isAtivoUsuario() {
+        return ativoUsuario;
+    }
+
+    public void setAtivoUsuario(boolean ativoUsuario) {
+        this.ativoUsuario = ativoUsuario;
     }
 
     //MÉTODOS
