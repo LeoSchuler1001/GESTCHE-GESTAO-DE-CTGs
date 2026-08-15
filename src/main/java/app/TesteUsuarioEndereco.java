@@ -43,7 +43,7 @@ public class TesteUsuarioEndereco {
             System.out.println("\n[2] Cadastrando o usuário e associando o endereço...");
 
             Usuario novoUsuario = new Usuario();
-            novoUsuario.setCpfUsuario("58746985236"); // 11 dígitos para o CHECK do banco
+            novoUsuario.setCpfUsuario("58496327951"); // 11 dígitos para o CHECK do banco
             novoUsuario.setNomeUsuario("Ana Paula Ferreira");
             novoUsuario.setTelefoneUsuario("51988887777"); // 11 dígitos
             novoUsuario.setCargoUsuario("Gerente Financeiro");
@@ -62,7 +62,7 @@ public class TesteUsuarioEndereco {
             // ==========================================
             System.out.println("\n[3] Buscando usuário pelo ID para validar dados e vínculo...");
 
-            Usuario usuarioConsultado = usuarioDAO.buscarPorId(novoUsuario.getIdUsuario());
+            Usuario usuarioConsultado = usuarioDAO.buscaUsuarioPorCpf(novoUsuario.getCpfUsuario());
 
             if (usuarioConsultado != null) {
                 System.out.println("\n=================================================");

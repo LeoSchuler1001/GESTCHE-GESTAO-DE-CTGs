@@ -70,13 +70,7 @@ public class UsuarioDAO {
 
     public Usuario buscarPorId(int id) throws SQLException {
         //cria o comando sql
-        String sql = """
-            SELECT usuario.*, endereco.*
-            FROM usuario
-            LEFT JOIN endereco 
-            ON endereco.pk_idEndereco = usuario.fk_idEndereco
-            WHERE usuario.pk_idUsuario = ?                    
-        """;
+        String sql = "SELECT * FROM usuario WHERE pk_idUsuario = ?";
         
         //verifica a conexão com o banco de dados
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
@@ -93,6 +87,30 @@ public class UsuarioDAO {
             }
         }
 
+        //retorna null caso não haja nenhum usuario
+        return null;
+    }
+
+    //busca um usuario passando o cpf
+    public Usuario buscaUsuarioPorCpf (String cpf) throws SQLException {
+        //cria o comando sql
+        String sql = "SELECT * FROM usuario WHERE cpfUsuario = ?";
+
+        //verifica a conexão com o banco de dados
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //atribui o idUsuario à consulta sql
+            stmt.setString(1, cpf);
+
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há algum usuário com esse cpf
+                if (rs.next()) {
+                    //retorna o objeto Usuario que foi encontrado
+                    return montarObjUsuario(rs);
+                }
+            }
+        }
+        
         //retorna null caso não haja nenhum usuario
         return null;
     }
