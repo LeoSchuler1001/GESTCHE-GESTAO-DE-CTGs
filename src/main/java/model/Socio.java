@@ -16,9 +16,11 @@ public class Socio {
     private Endereco endereco;
     private Usuario usuario;
     private List <Departamento> listaDepartamentos = new ArrayList<>();
+    private List <Dependente> listaDependentes = new ArrayList<>();
+    private List <Debito> listaDebitos = new ArrayList<>();
     
     //CONSTRUTORES
-    public Socio(int idSocio, String cpfSocio, String nomeSocio, String telefoneSocio, Date dataNascSocio, String emailSocio, boolean ativoSocio, Endereco endereco, Usuario usuario, List<Departamento> listaDepartamentos) {
+    public Socio(int idSocio, String cpfSocio, String nomeSocio, String telefoneSocio, Date dataNascSocio, String emailSocio, boolean ativoSocio, Endereco endereco, Usuario usuario, List<Departamento> listaDepartamentos, List<Dependente> listaDependentes) {
         this.idSocio = idSocio;
         this.cpfSocio = cpfSocio;
         this.nomeSocio = nomeSocio;
@@ -29,9 +31,10 @@ public class Socio {
         this.endereco = endereco;
         this.usuario = usuario;
         this.listaDepartamentos = listaDepartamentos;
+        this.listaDependentes = listaDependentes;
     }
 
-    public Socio(String cpfSocio, String nomeSocio, String telefoneSocio, Date dataNascSocio, String emailSocio, boolean ativoSocio, Endereco endereco, Usuario usuario, List<Departamento> listaDepartamentos) {
+    public Socio(String cpfSocio, String nomeSocio, String telefoneSocio, Date dataNascSocio, String emailSocio, boolean ativoSocio, Endereco endereco, Usuario usuario, List<Departamento> listaDepartamentos, List<Dependente> listaDependentes) {
         this.cpfSocio = cpfSocio;
         this.nomeSocio = nomeSocio;
         this.telefoneSocio = telefoneSocio;
@@ -41,6 +44,7 @@ public class Socio {
         this.endereco = endereco;
         this.usuario = usuario;
         this.listaDepartamentos = listaDepartamentos;
+        this.listaDependentes = listaDependentes;
     }
 
     public Socio() {
@@ -125,5 +129,21 @@ public class Socio {
 
     public void setListaDepartamentos(List<Departamento> listaDepartamentos) {
         this.listaDepartamentos = listaDepartamentos;
+    }
+
+    public List<Dependente> getListaDependentes() {
+        return listaDependentes;
+    }
+
+    public void setListaDependentes(List<Dependente> listaDependentes) {
+        this.listaDependentes = listaDependentes;
+    }
+
+    public List<Debito> getListaDebitos() {
+        return listaDebitos;
+    }
+
+    public void setListaDebitos(List<Debito> listaDebitos) {
+        this.listaDebitos = listaDebitos;
     }
 }
