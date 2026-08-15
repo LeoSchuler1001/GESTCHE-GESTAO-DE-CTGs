@@ -178,6 +178,16 @@ public class UsuarioDAO {
         }
     }
 
+    //desativa um usuario
+    public void desativarUsuario(int id) throws SQLException {
+        String sql = "UPDATE usuario SET ativoUsuario = FALSE WHERE pk_idUsuario = ?";
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        }
+    }
+
     //método auxiliar, que vai montar o objeto usuário após a consulta sql
     private Usuario montarObjUsuario(ResultSet rs) throws SQLException {
         //cria o objeto
