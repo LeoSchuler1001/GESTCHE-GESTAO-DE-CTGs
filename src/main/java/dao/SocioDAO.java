@@ -146,7 +146,44 @@ public class SocioDAO {
         return listaSociosAtivosInativos;
     }
 
-    //método auxiliar, que vai montar o objeto usuário após a consulta sql
+    //atualiza um sócio
+    public void atualizarSocio(Socio socio) throws SQLException {
+        String sql = "UPDATE socio SET cpfSocio = ?, nomeSocio = ?, telefoneSocio = ?, dataNascSocio = ?, emailSocio = ?, ativoSocio = ?, fk_idEndereco = ?, fk_idUsuario = ? WHERE pk_idSocio = ?";
+        
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setString(1, socio.getCpfSocio());
+            stmt.setString(2, socio.getNomeSocio());
+
+            //verifica se o socio tem telefone cadastrado
+            if (socio.getTelefoneSocio() != null && !socio.getTelefoneSocio().isBlank()) {
+                stmt.setString(3, socio.getTelefoneSocio());
+            } else {
+                stmt.setNull(3, Types.VARCHAR);
+            }
+
+            stmt.setDate(4, new java.sql.Date(socio.getDataNascSocio().getTime()));
+            stmt.setString(5, socio.getEmailSocio());
+            stmt.setBoolean(6, socio.isAtivoSocio());
+
+            // verifica se o socio tem endereço cadastrado
+            if (socio.getEndereco() != null) {
+                stmt.setInt(7, socio.getEndereco().getIdEndereco());
+            } else {
+                stmt.setNull(7, Types.INTEGER);
+            }
+
+            //verifica qual é a chave estrangeira do usuario que cadastrou
+            int idUsuario = socio.getUsuario().getIdUsuario();
+            stmt.setInt(8, idUsuario);
+
+            stmt.setInt(9, socio.getIdSocio());
+
+            //executa o comando sql
+            stmt.executeUpdate();
+        }
+    }
+
+    //método auxiliar, que vai montar o objeto sócio após a consulta sql
     private Socio montarObjSocio(ResultSet rs) throws SQLException {
         //cria o objeto
         Socio socio = new Socio();
