@@ -183,6 +183,17 @@ public class SocioDAO {
         }
     }
 
+    //desativa um socio
+    public void desativarSocio(int id) throws SQLException {
+        String sql = "UPDATE socio SET ativoSocio = FALSE WHERE pk_idSocio = ?";
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        }
+    }
+
+
     //método auxiliar, que vai montar o objeto sócio após a consulta sql
     private Socio montarObjSocio(ResultSet rs) throws SQLException {
         //cria o objeto
