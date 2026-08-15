@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.Endereco;
 import model.Socio;
@@ -114,7 +116,20 @@ public class SocioDAO {
         return null;
     }
 
+    //lista todos os sócios ativos
+    public List<Socio> listarTodosAtivos() throws SQLException {
+        String sql = "SELECT * FROM socio WHERE ativoSocio = TRUE ORDER BY nomeSocio ASC";
 
+        List<Socio> listaSocios = new ArrayList<>();
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                listaSocios.add(montarObjSocio(rs));
+            }
+        }
+        return listaSocios;
+    }
 
     //método auxiliar, que vai montar o objeto usuário após a consulta sql
     private Socio montarObjSocio(ResultSet rs) throws SQLException {
