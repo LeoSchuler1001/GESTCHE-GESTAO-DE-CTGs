@@ -109,7 +109,10 @@ public class Usuario {
         return mensagem;
     }
 
-    //redefinirSenha(String novaSenha, String respostaSeguranca)
+    public void cadastrarLog(String descricao) {
+        //instancia um objeto do log de auditoria
+        LogAuditoria logAuditoria = new LogAuditoria(descricao, this.idUsuario, this.nomeUsuario);
 
-    
+        //salva no banco de dados
+    }
 }

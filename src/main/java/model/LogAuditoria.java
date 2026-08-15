@@ -19,8 +19,8 @@ public class LogAuditoria {
         this.nomeUsuario = nomeUsuario;
     }
 
-    public LogAuditoria(LocalDateTime dataHoraLog, String descricaoLog, int idUsuario, String nomeUsuario) {
-        this.dataHoraLog = dataHoraLog;
+    public LogAuditoria(String descricaoLog, int idUsuario, String nomeUsuario) {
+        this.dataHoraLog = LocalDateTime.now();
         this.descricaoLog = descricaoLog;
         this.idUsuario = idUsuario;
         this.nomeUsuario = nomeUsuario;
