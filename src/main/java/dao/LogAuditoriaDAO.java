@@ -23,7 +23,7 @@ public class LogAuditoriaDAO {
     //MÉTODOS
     public void cadastrarLog(LogAuditoria logAuditoria, Usuario usuario) throws SQLException {
         //cria o comando sql
-        String sql = "INSERT INTO logAuditoria (dataHoraLog, descricaoLog, fk_idUsuario, nomeUsuario) VALUES (?, ?. ?, ?)";
+        String sql = "INSERT INTO logAuditoria (dataHoraLog, descricaoLog, fk_idUsuario, nomeUsuario) VALUES (?, ?, ?, ?)";
 
         //verifica a conexão com o banco de dados e atribui os valores ao comando sql
         try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
