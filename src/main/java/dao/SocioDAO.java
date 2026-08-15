@@ -90,7 +90,29 @@ public class SocioDAO {
         return null;
     }
 
+    //busca um socio passando o cpf
+    public Socio buscaSocioPorCPF (String cpf) throws SQLException {
+        //cria o comando sql
+        String sql = "SELECT * FROM socio WHERE cpfSocio = ?";
 
+        //verifica a conexão com o banco de dados
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //atribui o idSocio à consulta sql
+            stmt.setString(1, cpf);
+
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há algum sócio com esse cpf
+                if (rs.next()) {
+                    //retorna o objeto Usuario que foi encontrado
+                    return montarObjSocio(rs);
+                }
+            }
+        }
+        
+        //retorna null caso não haja nenhum usuario
+        return null;
+    }
 
 
 
