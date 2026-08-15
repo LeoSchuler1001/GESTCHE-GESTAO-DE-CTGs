@@ -66,6 +66,34 @@ public class SocioDAO {
         }
     }
 
+    //busca um sócio passando o deu id
+    public Socio buscarPorId(int id) throws SQLException {
+        //cria o comando sql
+        String sql = "SELECT * FROM socio WHERE pk_idSocio = ?";
+        
+        //verifica a conexão com o banco de dados
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //atribui o idUsuario à consulta sql
+            stmt.setInt(1, id);
+
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há algum socio com esse id
+                if (rs.next()) {
+                    //retorna o objeto socio que foi encontrado
+                    return montarObjSocio(rs);
+                }
+            }
+        }
+
+        //retorna null caso não haja nenhum usuario
+        return null;
+    }
+
+
+
+
+
     //método auxiliar, que vai montar o objeto usuário após a consulta sql
     private Socio montarObjSocio(ResultSet rs) throws SQLException {
         //cria o objeto
