@@ -9,7 +9,7 @@ public class Socio {
     private int idSocio;
     private String cpfSocio;
     private String nomeSocio;
-    private String telefoneUsuario;
+    private String telefoneSocio;
     private Date dataNascSocio;
     private String emailSocio;
     private boolean ativoSocio;
@@ -18,11 +18,11 @@ public class Socio {
     private List <Departamento> listaDepartamentos = new ArrayList<>();
     
     //CONSTRUTORES
-    public Socio(int idSocio, String cpfSocio, String nomeSocio, String telefoneUsuario, Date dataNascSocio, String emailSocio, boolean ativoSocio, Endereco endereco, Usuario usuario, List<Departamento> listaDepartamentos) {
+    public Socio(int idSocio, String cpfSocio, String nomeSocio, String telefoneSocio, Date dataNascSocio, String emailSocio, boolean ativoSocio, Endereco endereco, Usuario usuario, List<Departamento> listaDepartamentos) {
         this.idSocio = idSocio;
         this.cpfSocio = cpfSocio;
         this.nomeSocio = nomeSocio;
-        this.telefoneUsuario = telefoneUsuario;
+        this.telefoneSocio = telefoneSocio;
         this.dataNascSocio = dataNascSocio;
         this.emailSocio = emailSocio;
         this.ativoSocio = ativoSocio;
@@ -31,10 +31,10 @@ public class Socio {
         this.listaDepartamentos = listaDepartamentos;
     }
 
-    public Socio(String cpfSocio, String nomeSocio, String telefoneUsuario, Date dataNascSocio, String emailSocio, boolean ativoSocio, Endereco endereco, Usuario usuario, List<Departamento> listaDepartamentos) {
+    public Socio(String cpfSocio, String nomeSocio, String telefoneSocio, Date dataNascSocio, String emailSocio, boolean ativoSocio, Endereco endereco, Usuario usuario, List<Departamento> listaDepartamentos) {
         this.cpfSocio = cpfSocio;
         this.nomeSocio = nomeSocio;
-        this.telefoneUsuario = telefoneUsuario;
+        this.telefoneSocio = telefoneSocio;
         this.dataNascSocio = dataNascSocio;
         this.emailSocio = emailSocio;
         this.ativoSocio = ativoSocio;
@@ -71,12 +71,12 @@ public class Socio {
         this.nomeSocio = nomeSocio;
     }
 
-    public String getTelefoneUsuario() {
-        return telefoneUsuario;
+    public String getTelefoneSocio() {
+        return telefoneSocio;
     }
 
-    public void setTelefoneUsuario(String telefoneUsuario) {
-        this.telefoneUsuario = telefoneUsuario;
+    public void setTelefoneSocio(String telefoneUsuario) {
+        this.telefoneSocio = telefoneUsuario;
     }
 
     public Date getDataNascSocio() {
