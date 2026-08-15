@@ -21,6 +21,8 @@ public class SocioDAO {
     //CONSTRUTORES
     public SocioDAO(ConexaoBanco conexao) {
         this.conexao = conexao;
+        this.enderecoDAO = new EnderecoDAO(conexao);
+        this.usuarioDAO = new UsuarioDAO(conexao);
     }
 
     public SocioDAO() {
