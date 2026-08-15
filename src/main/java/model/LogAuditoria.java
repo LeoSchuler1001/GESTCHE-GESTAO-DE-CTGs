@@ -7,22 +7,22 @@ public class LogAuditoria {
     private int idLog;
     private LocalDateTime dataHoraLog;
     private String descricaoLog;
-    private int idUsuario;
+    private Usuario usuario;
     private String nomeUsuario;
 
     //CONSTRUTORES
-    public LogAuditoria(int idLog, LocalDateTime dataHoraLog, String descricaoLog, int idUsuario, String nomeUsuario) {
+    public LogAuditoria(int idLog, LocalDateTime dataHoraLog, String descricaoLog, Usuario usuario, String nomeUsuario) {
         this.idLog = idLog;
         this.dataHoraLog = dataHoraLog;
         this.descricaoLog = descricaoLog;
-        this.idUsuario = idUsuario;
+        this.usuario = usuario;
         this.nomeUsuario = nomeUsuario;
     }
 
-    public LogAuditoria(String descricaoLog, int idUsuario, String nomeUsuario) {
+    public LogAuditoria(String descricaoLog, Usuario usuario, String nomeUsuario) {
         this.dataHoraLog = LocalDateTime.now();
         this.descricaoLog = descricaoLog;
-        this.idUsuario = idUsuario;
+        this.usuario = usuario;
         this.nomeUsuario = nomeUsuario;
     }
 
@@ -54,12 +54,12 @@ public class LogAuditoria {
         this.descricaoLog = descricaoLog;
     }
 
-    public int getIdUsuario() {
-        return idUsuario;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public String getNomeUsuario() {

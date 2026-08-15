@@ -11,7 +11,6 @@ public class Usuario {
     private String respostaSeguranca;
     private Endereco endereco;
 
-
     //CONSTRUTORES
     //criar novos usuários - INSERT no banco de dados
     public Usuario(String cpfUsuario, String nomeUsuario, String telefoneUsuario, Endereco endereco, String cargoUsuario, String senhaHash, String respostaSeguranca) {
@@ -111,7 +110,7 @@ public class Usuario {
 
     public void cadastrarLog(String descricao) {
         //instancia um objeto do log de auditoria
-        LogAuditoria logAuditoria = new LogAuditoria(descricao, this.idUsuario, this.nomeUsuario);
+        LogAuditoria logAuditoria = new LogAuditoria(descricao, this, this.nomeUsuario);
 
         //salva no banco de dados
     }

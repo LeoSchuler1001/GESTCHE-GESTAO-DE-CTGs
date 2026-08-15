@@ -13,10 +13,10 @@ public class Lembrete {
     private String descricaoLembrete;
     private Time horarioLembrete;
     private boolean pagoLembrete;
+    private Usuario usuario;
 
     //CONSTRUTORES
-    public Lembrete(int idLembrete, String nomeLembrete, Date dataInicioLembrete, Date dataFimLembrete,
-            String periodicidadeLembrete, String descricaoLembrete, Time horarioLembrete, boolean pagoLembrete) {
+    public Lembrete(int idLembrete, String nomeLembrete, Date dataInicioLembrete, Date dataFimLembrete, String periodicidadeLembrete, String descricaoLembrete, Time horarioLembrete, boolean pagoLembrete, Usuario usuario) {
         this.idLembrete = idLembrete;
         this.nomeLembrete = nomeLembrete;
         this.dataInicioLembrete = dataInicioLembrete;
@@ -25,10 +25,10 @@ public class Lembrete {
         this.descricaoLembrete = descricaoLembrete;
         this.horarioLembrete = horarioLembrete;
         this.pagoLembrete = pagoLembrete;
+        this.usuario = usuario;
     }
 
-    public Lembrete(String nomeLembrete, Date dataInicioLembrete, Date dataFimLembrete, String periodicidadeLembrete,
-            String descricaoLembrete, Time horarioLembrete, boolean pagoLembrete) {
+    public Lembrete(String nomeLembrete, Date dataInicioLembrete, Date dataFimLembrete, String periodicidadeLembrete, String descricaoLembrete, Time horarioLembrete, boolean pagoLembrete, Usuario usuario) {
         this.nomeLembrete = nomeLembrete;
         this.dataInicioLembrete = dataInicioLembrete;
         this.dataFimLembrete = dataFimLembrete;
@@ -36,6 +36,7 @@ public class Lembrete {
         this.descricaoLembrete = descricaoLembrete;
         this.horarioLembrete = horarioLembrete;
         this.pagoLembrete = pagoLembrete;
+        this.usuario = usuario;
     }
     
     public Lembrete() {
@@ -104,5 +105,13 @@ public class Lembrete {
 
     public void setPagoLembrete(boolean pagoLembrete) {
         this.pagoLembrete = pagoLembrete;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }

@@ -46,7 +46,6 @@ public class Movimentacao {
         return idMovimentacao;
     }
 
-
     public void setIdMovimentacao(int idMovimentacao) {
         this.idMovimentacao = idMovimentacao;
     }
@@ -81,5 +80,37 @@ public class Movimentacao {
 
     public void setTipoMovimentacao(String tipoMovimentacao) {
         this.tipoMovimentacao = tipoMovimentacao;
+    }
+
+    public Conta getConta() {
+        return conta;
+    }
+
+    public void setConta(Conta conta) {
+        this.conta = conta;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Lembrete getLembrete() {
+        return lembrete;
+    }
+
+    public void setLembrete(Lembrete lembrete) {
+        this.lembrete = lembrete;
     }
 }
