@@ -9,8 +9,6 @@ import model.Socio;
 import model.Usuario;
 
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class MainTesteCompletoSocio {
@@ -59,7 +57,7 @@ public class MainTesteCompletoSocio {
             // -------------------------------------------------------------------
             System.out.println("\n[TESTE 1] Invocando cadastrarSocio()...");
             
-            String cpfTeste = "32165498700"; // 11 dígitos numéricos válidos
+            String cpfTeste = "85476985212"; // 11 dígitos numéricos válidos
             
             Socio novoSocio = new Socio();
             novoSocio.setCpfSocio(cpfTeste);
@@ -67,8 +65,6 @@ public class MainTesteCompletoSocio {
             novoSocio.setTelefoneSocio("51981112233");
             
             // Formatando data de nascimento para java.util.Date
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date dataNasc = sdf.parse("1995-04-22");
             novoSocio.setDataNascSocio(java.sql.Date.valueOf("1995-04-22"));
             
             novoSocio.setEmailSocio("mateus.silveira@email.com");
