@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Dependente;
-import model.Endereco;
 import model.Socio;
-import model.Usuario;
 
 public class DependenteDAO {
     //ATRIBUTOS
@@ -170,7 +168,7 @@ public class DependenteDAO {
         dependente.setIdDependente(rs.getInt("pk_idDependente"));
         dependente.setNomeDependente(rs.getString("nomeDependente"));
         dependente.setCpfDependente(rs.getString("cpfDependente"));
-        dependente.setDataNascDependente(rs.getDate("dataNascSocio"));
+        dependente.setDataNascDependente(rs.getDate("dataNascDependente"));
 
         //verifica qual a chave estrangeira do sócio
         int idSocio = rs.getInt("fk_idSocio");
@@ -180,14 +178,4 @@ public class DependenteDAO {
         //retorna o usuario
         return dependente;
     }
-
-
-
-
-
-
-
-
-
-
 }
