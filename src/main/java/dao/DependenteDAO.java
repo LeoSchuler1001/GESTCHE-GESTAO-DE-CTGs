@@ -151,6 +151,16 @@ public class DependenteDAO {
         }
     }
 
+    //exclui um dependente
+    public void excluirDependente(Dependente dependente) throws SQLException {
+        String sql = "DELETE FROM dependente WHERE pk_idDependente = ?";
+
+        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, dependente.getIdDependente());
+            stmt.executeUpdate();
+        }
+    }
+
     //método auxiliar, que vai montar o objeto dependente após a consulta sql
     private Dependente montarObjDependente(ResultSet rs) throws SQLException {
         //cria o objeto
