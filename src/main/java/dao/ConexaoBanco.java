@@ -12,7 +12,7 @@ public class ConexaoBanco {
 
     //MÉTODOS
     //cria a conexão com o banco de dados
-    public static Connection getConexao() {
+    public Connection getConexao() {
         try {
             Class.forName("org.postgresql.Driver"); 
             return DriverManager.getConnection(URL, USER, PASSWORD);

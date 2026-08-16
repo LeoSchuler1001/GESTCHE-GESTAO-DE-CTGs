@@ -40,7 +40,7 @@ public class MainTesteCompletoDependente {
             // -------------------------------------------------------------------
             System.out.println("\n[TESTE 1] Invocando cadastrarDependente()...");
             
-            String cpfDependente = "98765432100"; // Informe um CPF válido de 11 dígitos
+            String cpfDependente = "87459874265"; // Informe um CPF válido de 11 dígitos
 
             Dependente novoDependente = new Dependente();
             novoDependente.setNomeDependente("Lucas Silveira");
