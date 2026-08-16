@@ -72,7 +72,29 @@ public class DependenteDAO {
         return listaDependentes;
     }
 
-    
+    //busca um dependente passando o seu id
+    public Dependente buscarPorId(int id) throws SQLException {
+        //cria o comando sql
+        String sql = "SELECT * FROM dependente WHERE pk_idDependente = ?";
+        
+        //verifica a conexão com o banco de dados
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //atribui o idUsuario à consulta sql
+            stmt.setInt(1, id);
+
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há algum dependente com esse id
+                if (rs.next()) {
+                    //retorna o objeto Dependente que foi encontrado
+                    return montarObjDependente(rs);
+                }
+            }
+        }
+
+        //retorna null caso não haja nenhum dependente
+        return null;
+    }
 
     //método auxiliar, que vai montar o objeto dependente após a consulta sql
     private Dependente montarObjDependente(ResultSet rs) throws SQLException {
