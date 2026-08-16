@@ -4,8 +4,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.Departamento;
+import model.Dependente;
+import model.Socio;
 
 public class DepartamentoDAO {
     //ATRIBUTOS
@@ -43,11 +47,45 @@ public class DepartamentoDAO {
         }
     }
 
+    //busca um departamento passando o seu id
+    public Departamento buscarPorId(int id) throws SQLException {
+        //cria o comando sql
+        String sql = "SELECT * FROM departamento WHERE pk_idDepartamento = ?";
+        
+        //verifica a conexão com o banco de dados
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //atribui o idUsuario à consulta sql
+            stmt.setInt(1, id);
+
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há algum dependente com esse id
+                if (rs.next()) {
+                    //retorna o objeto departamento que foi encontrado
+                    return montarObjDepartamento(rs);
+                }
+            }
+        }
+
+        //retorna null caso não haja nenhum departamento
+        return null;
+    }
 
 
 
+    //método auxiliar, que vai montar o objeto departamento após a consulta sql
+    private Departamento montarObjDepartamento(ResultSet rs) throws SQLException {
+        //cria o objeto
+        Departamento departamento = new Departamento();
 
+        //atribui os valores
+        departamento.setIdDepartamento(rs.getInt("pk_idDepartamento"));
+        departamento.setNomeDepartamento(rs.getString("nomeDepartamento"));
+        departamento.setDescricaoDepartamento(rs.getString("descricaoDepartamento"));
 
+        //retorna o usuario
+        return departamento;
+    }
 
 
     
