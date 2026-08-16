@@ -26,6 +26,18 @@ public class Socio_DepartamentoDAO {
     public Socio_DepartamentoDAO() {
     }
 
+    //MÉTODOS
+    // Vincula um sócio a um departamento
+    public void vincularSocioDepartamento(int idSocio, int idDepartamento) throws SQLException {
+        String sql = "INSERT INTO socio_departamento (fk_idSocio, fk_idDepartamento) VALUES (?, ?)";
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, idSocio);
+            stmt.setInt(2, idDepartamento);
+            stmt.executeUpdate();
+        }
+    }
+
     //busca todos os sócios de um departamento pelo seu id
     public List<Socio> buscarSociosDepartamento(int id) throws SQLException {
         //cria o comando sql
