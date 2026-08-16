@@ -120,7 +120,20 @@ public class DependenteDAO {
         return null;
     }
 
+    //lista todos os dependentes ativos
+    public List<Dependente> listarTodosAtivos() throws SQLException {
+        String sql = "SELECT dependente.* FROM dependente, socio WHERE socio.pk_idSocio = dependente.fk_idSocio AND socio.ativoSocio = TRUE ORDER BY dependente.nomeDependente ASC";
 
+        List<Dependente> listaDependentesAtivos = new ArrayList<>();
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                listaDependentesAtivos.add(montarObjDependente(rs));
+            }
+        }
+        return listaDependentesAtivos;
+    }
 
     //método auxiliar, que vai montar o objeto dependente após a consulta sql
     private Dependente montarObjDependente(ResultSet rs) throws SQLException {
