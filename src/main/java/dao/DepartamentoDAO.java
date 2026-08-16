@@ -86,6 +86,20 @@ public class DepartamentoDAO {
         return listaDepartamentos;
     }
 
+    //atualiza um departamento
+    public void atualirDepartamento(Departamento departamento) throws SQLException {
+        String sql = "UPDATE departamento SET nomeDepartamento = ?, descricaoDepartamento = ? WHERE pk_idDependente = ?";
+        
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setString(1, departamento.getNomeDepartamento());
+            stmt.setString(2, departamento.getDescricaoDepartamento());
+            stmt.setInt(3, departamento.getIdDepartamento());
+            
+            //executa o comando sql
+            stmt.executeUpdate();
+        }
+    }
+
     //método auxiliar, que vai montar o objeto departamento após a consulta sql
     private Departamento montarObjDepartamento(ResultSet rs) throws SQLException {
         //cria o objeto
