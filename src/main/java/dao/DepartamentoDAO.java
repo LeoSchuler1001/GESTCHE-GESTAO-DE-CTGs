@@ -8,18 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Departamento;
-import model.Dependente;
-import model.Socio;
 
 public class DepartamentoDAO {
     //ATRIBUTOS
     private ConexaoBanco conexao;
-    private SocioDAO socioDAO;
     
     //CONSTRUTORES
-    public DepartamentoDAO(ConexaoBanco conexao, SocioDAO socioDAO) {
+    public DepartamentoDAO(ConexaoBanco conexao) {
         this.conexao = conexao;
-        this.socioDAO = socioDAO;
     }
 
     public DepartamentoDAO() {
@@ -87,8 +83,8 @@ public class DepartamentoDAO {
     }
 
     //atualiza um departamento
-    public void atualirDepartamento(Departamento departamento) throws SQLException {
-        String sql = "UPDATE departamento SET nomeDepartamento = ?, descricaoDepartamento = ? WHERE pk_idDependente = ?";
+    public void atualizarDepartamento(Departamento departamento) throws SQLException {
+        String sql = "UPDATE departamento SET nomeDepartamento = ?, descricaoDepartamento = ? WHERE pk_idDepartamento = ?";
         
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
             stmt.setString(1, departamento.getNomeDepartamento());
@@ -110,8 +106,6 @@ public class DepartamentoDAO {
         }
     }
 
-
-
     //método auxiliar, que vai montar o objeto departamento após a consulta sql
     private Departamento montarObjDepartamento(ResultSet rs) throws SQLException {
         //cria o objeto
@@ -125,7 +119,4 @@ public class DepartamentoDAO {
         //retorna o usuario
         return departamento;
     }
-
-
-    
 }
