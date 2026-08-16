@@ -71,7 +71,20 @@ public class DepartamentoDAO {
         return null;
     }
 
+    //lista todos os departamentos
+    public List<Departamento> listarTodos() throws SQLException {
+        String sql = "SELECT * FROM departamento ORDER BY nomeDepartamento ASC";
 
+        List<Departamento> listaDepartamentos = new ArrayList<>();
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                listaDepartamentos.add(montarObjDepartamento(rs));
+            }
+        }
+        return listaDepartamentos;
+    }
 
     //método auxiliar, que vai montar o objeto departamento após a consulta sql
     private Departamento montarObjDepartamento(ResultSet rs) throws SQLException {
