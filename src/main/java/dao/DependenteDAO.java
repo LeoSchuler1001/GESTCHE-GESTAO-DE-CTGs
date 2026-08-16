@@ -135,6 +135,22 @@ public class DependenteDAO {
         return listaDependentesAtivos;
     }
 
+    //atualiza um dependente
+    public void atualizarDependente(Dependente dependente) throws SQLException {
+        String sql = "UPDATE dependente SET nomeDependente = ?, cpfDependente = ?, dataNascDependente = ?, fk_idSocio = ? WHERE pk_idDependente = ?";
+        
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setString(1, dependente.getNomeDependente());
+            stmt.setString(2, dependente.getCpfDependente());
+            stmt.setDate(3, new java.sql.Date(dependente.getDataNascDependente().getTime()));
+            stmt.setInt(4, dependente.getSocio().getIdSocio());
+            stmt.setInt(5, dependente.getIdDependente());
+
+            //executa o comando sql
+            stmt.executeUpdate();
+        }
+    }
+
     //método auxiliar, que vai montar o objeto dependente após a consulta sql
     private Dependente montarObjDependente(ResultSet rs) throws SQLException {
         //cria o objeto
