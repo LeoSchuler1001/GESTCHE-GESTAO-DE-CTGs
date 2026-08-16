@@ -231,19 +231,4 @@ public class SocioDAO {
         //retorna o usuario
         return socio;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -4,8 +4,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.Dependente;
+import model.Endereco;
+import model.Socio;
+import model.Usuario;
 
 public class DependenteDAO {
     //ATRIBUTOS
@@ -13,15 +18,16 @@ public class DependenteDAO {
     private SocioDAO socioDAO;
     
     //CONSTRUTORES
-    public DependenteDAO(ConexaoBanco conexao, SocioDAO socioDAO) {
+    public DependenteDAO(ConexaoBanco conexao) {
         this.conexao = conexao;
-        this.socioDAO = socioDAO;
+        this.socioDAO = new SocioDAO(conexao);
     }
 
     public DependenteDAO() {
     }
 
     //MÉTODOS
+    //cadastrar um novo dependente
     public void cadastrarDependente(Dependente dependente) throws SQLException {
         //cria o comando sql
         String sql = "INSERT INTO dependente (nomeDependente, cpfDependente, dataNascDependente, fk_idSocio) VALUES (?, ?, ?, ?)";
@@ -43,4 +49,58 @@ public class DependenteDAO {
             }
         }
     }
+
+    //busca todos os dependentes de um socio, passando o id dele 
+    public List<Dependente> buscarPorIdSocio(int id) throws SQLException {
+        //cria o comando sql
+        String sql = "SELECT * FROM dependente WHERE fk_idSocio = ?";
+        
+        List<Dependente> listaDependentes = new ArrayList<>();
+
+        //verifica a conexão com o banco de dados
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //atribui o idUsuario à consulta sql
+            stmt.setInt(1, id);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()) {
+                listaDependentes.add(montarObjDependente(rs));
+            }
+        }
+        
+        return listaDependentes;
+    }
+
+    
+
+    //método auxiliar, que vai montar o objeto dependente após a consulta sql
+    private Dependente montarObjDependente(ResultSet rs) throws SQLException {
+        //cria o objeto
+        Dependente dependente = new Dependente();
+
+        //atribui os valores
+        dependente.setIdDependente(rs.getInt("pk_idDependente"));
+        dependente.setNomeDependente(rs.getString("nomeDependente"));
+        dependente.setCpfDependente(rs.getString("cpfDependente"));
+        dependente.setDataNascDependente(rs.getDate("dataNascSocio"));
+
+        //verifica qual a chave estrangeira do sócio
+        int idSocio = rs.getInt("fk_idSocio");
+        Socio socio = socioDAO.buscarPorId(idSocio);
+        dependente.setSocio(socio);
+
+        //retorna o usuario
+        return dependente;
+    }
+
+
+
+
+
+
+
+
+
+
 }
