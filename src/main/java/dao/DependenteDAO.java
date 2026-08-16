@@ -96,6 +96,32 @@ public class DependenteDAO {
         return null;
     }
 
+    //busca um dependente passando o cpf
+    public Dependente buscaDependentePorCpf (String cpf) throws SQLException {
+        //cria o comando sql
+        String sql = "SELECT * FROM dependente WHERE cpfDependente = ?";
+
+        //verifica a conexão com o banco de dados
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //atribui o idUsuario à consulta sql
+            stmt.setString(1, cpf);
+
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há algum dependente com esse cpf
+                if (rs.next()) {
+                    //retorna o objeto Usuario que foi encontrado
+                    return montarObjDependente(rs);
+                }
+            }
+        }
+        
+        //retorna null caso não haja nenhum dependente
+        return null;
+    }
+
+
+
     //método auxiliar, que vai montar o objeto dependente após a consulta sql
     private Dependente montarObjDependente(ResultSet rs) throws SQLException {
         //cria o objeto
