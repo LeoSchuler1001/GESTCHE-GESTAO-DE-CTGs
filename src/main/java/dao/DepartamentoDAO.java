@@ -100,6 +100,18 @@ public class DepartamentoDAO {
         }
     }
 
+    //exclui um departamento
+    public void excluirDepartamento(Departamento departamento) throws SQLException {
+        String sql = "DELETE FROM departamento WHERE pk_idDepartamento = ?";
+
+        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, departamento.getIdDepartamento());
+            stmt.executeUpdate();
+        }
+    }
+
+
+
     //método auxiliar, que vai montar o objeto departamento após a consulta sql
     private Departamento montarObjDepartamento(ResultSet rs) throws SQLException {
         //cria o objeto
