@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Debito;
-import model.Departamento;
 import model.Socio;
 
 public class DebitoDAO {
@@ -35,7 +34,14 @@ public class DebitoDAO {
             stmt.setString(1, debito.getTipoDebito());
             stmt.setDouble(2, debito.getValorDebito());
             stmt.setDate(3, new java.sql.Date(debito.getVencimentoDebito().getTime()));
-            stmt.setDate(4, new java.sql.Date(debito.getDtPgmtDebito().getTime()));
+
+            //verifica se o débito já foi pago ou não
+            if (debito.getDtPgmtDebito() != null) {
+                stmt.setDate(4, new java.sql.Date(debito.getDtPgmtDebito().getTime()));
+            } else {
+                stmt.setNull(4, java.sql.Types.DATE);
+            }
+
             stmt.setInt(5, debito.getSocio().getIdSocio());
 
             //executa o comando sql no banco de dados
@@ -76,14 +82,19 @@ public class DebitoDAO {
 
     //lista todos os debitos em aberto de um sócio
     public List<Debito> listarDebitosAbertosSocio(int id) throws SQLException {
-        String sql = "SELECT DEBITO.* FROM debito, socio WHERE debito.fk_idSocio = socio.pk_idSocio AND debito.dtPgmtDebito IS NULL";
+        String sql = "SELECT DEBITO.* FROM debito, socio WHERE debito.fk_idSocio = socio.pk_idSocio AND debito.dtPgmtDebito IS NULL AND socio.pk_idSocio = ?";
 
         List<Debito> listaDebitos = new ArrayList<>();
 
-        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                listaDebitos.add(montarObjDebito(rs));
+        
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    listaDebitos.add(montarObjDebito(rs));
+                }
             }
         }
         return listaDebitos;
@@ -91,7 +102,7 @@ public class DebitoDAO {
 
     //atualiza um debito
     public void atualizarDebito(Debito debito) throws SQLException {
-        String sql = "UPDATE debito SET tipoDebito = ?, valorDebito = ?, vencimentoDebito = ?, dtPgmtDebito = ?, fk_idSocio = ?,  WHERE pk_idDebito = ?";
+        String sql = "UPDATE debito SET tipoDebito = ?, valorDebito = ?, vencimentoDebito = ?, dtPgmtDebito = ?, fk_idSocio = ?  WHERE pk_idDebito = ?";
         
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
             stmt.setString(1, debito.getTipoDebito());
