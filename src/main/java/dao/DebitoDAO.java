@@ -106,6 +106,16 @@ public class DebitoDAO {
         }
     }
 
+    //exclui um debito
+    public void excluirDebito(Debito debito) throws SQLException {
+        String sql = "DELETE FROM debito WHERE pk_idDebito = ?";
+
+        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, debito.getIdDebito());
+            stmt.executeUpdate();
+        }
+    }
+
     //método auxiliar, que vai montar o objeto departamento após a consulta sql
     private Debito montarObjDebito(ResultSet rs) throws SQLException {
         //cria o objeto
