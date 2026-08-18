@@ -50,7 +50,7 @@ public class DepartamentoDAO {
         
         //verifica a conexão com o banco de dados
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
-            //atribui o idUsuario à consulta sql
+            //atribui o idDepardamento à consulta sql
             stmt.setInt(1, id);
 
             //cria um ResultSet para armazenar as informações buscadas
