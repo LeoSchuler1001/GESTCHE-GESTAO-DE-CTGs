@@ -89,6 +89,23 @@ public class DebitoDAO {
         return listaDebitos;
     }
 
+    //atualiza um debito
+    public void atualizarDebito(Debito debito) throws SQLException {
+        String sql = "UPDATE debito SET tipoDebito = ?, valorDebito = ?, vencimentoDebito = ?, dtPgmtDebito = ?, fk_idSocio = ?,  WHERE pk_idDebito = ?";
+        
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setString(1, debito.getTipoDebito());
+            stmt.setDouble(2, debito.getValorDebito());
+            stmt.setDate(3, debito.getVencimentoDebito());
+            stmt.setDate(4, debito.getDtPgmtDebito());
+            stmt.setInt(5, debito.getSocio().getIdSocio());
+            stmt.setInt(6, debito.getIdDebito());
+            
+            //executa o comando sql
+            stmt.executeUpdate();
+        }
+    }
+
     //método auxiliar, que vai montar o objeto departamento após a consulta sql
     private Debito montarObjDebito(ResultSet rs) throws SQLException {
         //cria o objeto
