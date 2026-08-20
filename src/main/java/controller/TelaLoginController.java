@@ -45,6 +45,7 @@ public class TelaLoginController {
         if(usuarioLogin != null) {
             //atribui o usuario ao atributo estatico usuario logado
             App.usuarioLogado = usuarioLogin; 
+            emitirAlerta("Usuario encontrado e logado!!", AlertType.INFORMATION);
         } else {
             //emite alerta de senha ou login errados
             emitirAlerta("Usuário e/ou senha inválidos!", AlertType.ERROR);

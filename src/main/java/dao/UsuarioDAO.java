@@ -24,12 +24,13 @@ public class UsuarioDAO {
     }
 
     public UsuarioDAO() {
+        this.conexao = new ConexaoBanco();
     }
 
     //MÉTODOS
     //autentica um usuario 
     public Usuario autenticarUsuario(String cpf, String senhaHash) throws SQLException{
-        String sql = "SELEC * FROM usuario WHERE cpfUsuario = ? AND senhaHash = ?";
+        String sql = "SELECT * FROM usuario WHERE cpfUsuario = ? AND senhaHash = ?";
 
         try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             //atribui nome e cpf
