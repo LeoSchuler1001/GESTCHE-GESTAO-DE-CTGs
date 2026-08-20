@@ -1,5 +1,9 @@
 package controller;
 
+import java.sql.SQLException;
+
+import app.App;
+import dao.UsuarioDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -23,7 +27,7 @@ public class TelaLoginController {
 
     //BOTÕES
     @FXML
-    void fazerLoginAction(ActionEvent event) {
+    void fazerLoginAction(ActionEvent event) throws SQLException {
         //verifica se os campos foram preenchidos
         if(validaFormulario() == false) {
             return;
@@ -33,6 +37,18 @@ public class TelaLoginController {
         String cpfDigitado = cpfUsuarioLogin.getText();
         String senhaHash = Criptografia.gerarHash(senhaUsuarioLogin.getText()); //já armazena o hash da senha
 
+        //autentica o usuario
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        Usuario usuarioLogin = usuarioDAO.autenticarUsuario(cpfDigitado, senhaHash);
+
+        //verifica se ele achou algum usuario
+        if(usuarioLogin != null) {
+            //atribui o usuario ao atributo estatico usuario logado
+            App.usuarioLogado = usuarioLogin; 
+        } else {
+            //emite alerta de senha ou login errados
+            emitirAlerta("Usuário e/ou senha inválidos!", AlertType.ERROR);
+        }
     }
 
     //FUNÇÕES
