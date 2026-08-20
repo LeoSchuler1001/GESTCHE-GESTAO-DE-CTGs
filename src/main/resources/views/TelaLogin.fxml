@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TelaLoginController">
    <children>
       <VBox alignment="CENTER" prefHeight="600.0" prefWidth="400.0" spacing="20.0" style="-fx-background-color: #F4F6F6;" HBox.hgrow="ALWAYS">
          <padding>
@@ -20,7 +20,7 @@
          <children>
             <ImageView fitHeight="184.0" fitWidth="327.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../docs/img/LOGO%20DO%20PROJETO.png" />
+                  <Image url="@../img/LOGO%20DO%20PROJETO.png" />
                </image>
                <VBox.margin>
                   <Insets bottom="-30.0" />
@@ -41,7 +41,7 @@
             </Label>
          </children>
       </VBox>
-      <VBox alignment="CENTER" prefHeight="600.0" prefWidth="400.0" spacing="15.0" style="-fx-background-color: #5D8A66;" HBox.hgrow="ALWAYS">
+      <VBox alignment="CENTER" focusTraversable="true" prefHeight="600.0" prefWidth="400.0" spacing="15.0" style="-fx-background-color: #5D8A66;" HBox.hgrow="ALWAYS">
          <padding>
             <Insets bottom="40.0" left="60.0" right="60.0" top="40.0" />
          </padding>
@@ -54,13 +54,13 @@
                   <Insets bottom="15.0" />
                </VBox.margin>
             </Label>
-            <TextField alignment="CENTER" promptText="CPF do usuário" style="-fx-background-radius: 6; -fx-background-color: white;">
+            <TextField fx:id="cpfUsuarioLogin" alignment="CENTER" prefHeight="30.0" prefWidth="300.0" promptText="CPF do usuário" style="-fx-background-radius: 6; -fx-background-color: white;">
                <font>
                   <Font size="10.0" />
                </font>
             </TextField>
-            <PasswordField alignment="CENTER" prefHeight="30.0" prefWidth="300.0" promptText="Senha" style="-fx-background-radius: 6; -fx-background-color: white;" />
-            <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" style="-fx-background-radius: 6; -fx-background-color: #4A7055; -fx-text-fill: #FFFFFF;" text="Fazer Login">
+            <PasswordField fx:id="senhaUsuarioLogin" alignment="CENTER" prefHeight="30.0" prefWidth="300.0" promptText="Senha" style="-fx-background-radius: 6; -fx-background-color: white;" />
+            <Button fx:id="botaoLogin" mnemonicParsing="false" onAction="#fazerLoginAction" prefHeight="30.0" prefWidth="90.0" style="-fx-background-radius: 6; -fx-background-color: #4A7055; -fx-text-fill: #FFFFFF;" text="Fazer Login">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
