@@ -30,7 +30,9 @@ public class TelaLoginController {
 
         //instancia o objeto usuario
         Usuario usuario = new Usuario();
-        
+        usuario.setCpfUsuario(cpfUsuarioLogin.getText());
+        usuario.getSenhaHash()
+
     }
 
     //FUNÇÕES
