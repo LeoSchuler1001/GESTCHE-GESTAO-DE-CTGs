@@ -27,6 +27,28 @@ public class UsuarioDAO {
     }
 
     //MÉTODOS
+    //autentica um usuario 
+    public Usuario autenticarUsuario(String cpf, String senhaHash) throws SQLException{
+        String sql = "SELEC * FROM usuario WHERE cpfUsuario = ? AND senhaHash = ?";
+
+        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            //atribui nome e cpf
+            stmt.setString(1, cpf);
+            stmt.setString(2, senhaHash);
+
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há algum usuário com esses dados
+                if (rs.next()) {
+                    //retorna o objeto Usuario que foi encontrado
+                    return montarObjUsuario(rs);
+                }
+            }
+        }
+
+        return null;
+    }
+
     //cadastra um novo usuario no banco de dados
     public void cadastrarUsuario(Usuario usuario) throws SQLException {
         //cria o comando sql

@@ -8,6 +8,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import model.Usuario;
+import util.Criptografia;
 
 public class TelaLoginController {
     //ATRIBUTOS
@@ -28,10 +29,9 @@ public class TelaLoginController {
             return;
         }
 
-        //instancia o objeto usuario
-        Usuario usuario = new Usuario();
-        usuario.setCpfUsuario(cpfUsuarioLogin.getText());
-        usuario.getSenhaHash()
+        //pega a senha e login que o usuario digitou
+        String cpfDigitado = cpfUsuarioLogin.getText();
+        String senhaHash = Criptografia.gerarHash(senhaUsuarioLogin.getText()); //já armazena o hash da senha
 
     }
 

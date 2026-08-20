@@ -24,7 +24,7 @@ CREATE TABLE usuario(
     nomeUsuario VARCHAR(100) NOT NULL,
     telefoneUsuario VARCHAR(11),
     cargoUsuario VARCHAR(100) NOT NULL,
-    senhaHash VARCHAR(60) NOT NULL,
+    senhaHash VARCHAR(64) NOT NULL,
     respostaSeguranca VARCHAR(100) NOT NULL,
     ativoUsuario BOOLEAN NOT NULL DEFAULT TRUE,
     fk_idEndereco INT,
