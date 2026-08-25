@@ -82,7 +82,7 @@ public class SocioDAO {
 
     //conta a quantidade de sócios inadimplentes
     public int contarSociosInadimplentes() throws SQLException {
-        String sql = "SELECT COUNT(DISTINCT fk_idSocio) FROM debito WHERE dtPgmtDebito IS NULL AND vencimentoDebito < CURRENT_DATE";
+        String sql = "SELECT COUNT(DISTINCT d.fk_idSocio) FROM debito d JOIN socio s ON d.fk_idSocio = s.pk_idSocio WHERE d.dtPgmtDebito IS NULL AND d.vencimentoDebito < CURRENT_DATE AND s.ativoSocio = TRUE";
 
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
             //cria um ResultSet para armazenar as informações buscadas
@@ -189,21 +189,6 @@ public class SocioDAO {
     //lista todos os sócios ativos
     public List<Socio> listarTodosAtivos() throws SQLException {
         String sql = "SELECT * FROM socio WHERE ativoSocio = TRUE ORDER BY nomeSocio ASC";
-
-        List<Socio> listaSocios = new ArrayList<>();
-
-        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                listaSocios.add(montarObjSocio(rs));
-            }
-        }
-        return listaSocios;
-    }
-
-    //lista todos os sócios sem pendências
-    public List<Socio> listarSociosEmDia() throws SQLException {
-        String sql = "SELECT * FROM socio, debito WHERE ativoSocio = TRUE AND ";
 
         List<Socio> listaSocios = new ArrayList<>();
 

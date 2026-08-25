@@ -1,7 +1,6 @@
 package controller;
 
 import java.sql.SQLException;
-import java.util.ResourceBundle;
 
 import dao.ConexaoBanco;
 import dao.SocioDAO;
