@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TelaLoginController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="800.0" minWidth="1200.0" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TelaLoginController">
    <children>
       <VBox alignment="CENTER" prefHeight="600.0" prefWidth="400.0" spacing="20.0" style="-fx-background-color: D9D9D9;" HBox.hgrow="ALWAYS">
          <padding>

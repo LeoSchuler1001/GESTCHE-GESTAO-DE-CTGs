@@ -29,6 +29,74 @@ public class SocioDAO {
     }
 
     //MÉTODOS
+    //conta a quantidade de sócios
+    public int contarSocios() throws SQLException {
+        String sql = "SELECT count(cpfSocio) FROM socio";
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há informações
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            } 
+        }
+
+        return 0;
+    }
+
+    //conta a quantidade de sócios ativos
+    public int contarSociosAtivos() throws SQLException {
+        String sql = "SELECT count(cpfSocio) FROM socio WHERE ativoSocio = true";
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há informações
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            } 
+        }
+
+        return 0;
+    }
+
+    //conta a quantidade de sócios inativos
+    public int contarSociosInativos() throws SQLException {
+        String sql = "SELECT count(cpfSocio) FROM socio WHERE ativoSocio = false";
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há informações
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            } 
+        }
+
+        return 0;
+    }
+
+    //conta a quantidade de sócios inadimplentes
+    public int contarSociosInadimplentes() throws SQLException {
+        String sql = "SELECT COUNT(DISTINCT fk_idSocio) FROM debito WHERE dtPgmtDebito IS NULL AND vencimentoDebito < CURRENT_DATE";
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há informações
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            } 
+        }
+
+        return 0;
+    }
+
     //cadastra um novo sócio no banco de dados
     public void cadastrarSocio(Socio socio) throws SQLException {
         String sql = "INSERT INTO socio (cpfSocio, nomeSocio, telefoneSocio, dataNascSocio, emailSocio, ativoSocio, fk_idEndereco, fk_idUsuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -70,7 +138,7 @@ public class SocioDAO {
         }
     }
 
-    //busca um sócio passando o deu id
+    //busca um sócio passando o seu id
     public Socio buscarPorId(int id) throws SQLException {
         //cria o comando sql
         String sql = "SELECT * FROM socio WHERE pk_idSocio = ?";
@@ -121,6 +189,21 @@ public class SocioDAO {
     //lista todos os sócios ativos
     public List<Socio> listarTodosAtivos() throws SQLException {
         String sql = "SELECT * FROM socio WHERE ativoSocio = TRUE ORDER BY nomeSocio ASC";
+
+        List<Socio> listaSocios = new ArrayList<>();
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                listaSocios.add(montarObjSocio(rs));
+            }
+        }
+        return listaSocios;
+    }
+
+    //lista todos os sócios sem pendências
+    public List<Socio> listarSociosEmDia() throws SQLException {
+        String sql = "SELECT * FROM socio, debito WHERE ativoSocio = TRUE AND ";
 
         List<Socio> listaSocios = new ArrayList<>();
 

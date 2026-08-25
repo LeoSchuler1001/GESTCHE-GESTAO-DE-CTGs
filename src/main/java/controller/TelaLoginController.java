@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import app.App;
@@ -27,7 +28,7 @@ public class TelaLoginController {
 
     //BOTÕES
     @FXML
-    void fazerLoginAction(ActionEvent event) throws SQLException {
+    void fazerLoginAction(ActionEvent event) throws SQLException, IOException {
         //verifica se os campos foram preenchidos
         if(validaFormulario() == false) {
             return;
@@ -44,8 +45,12 @@ public class TelaLoginController {
         //verifica se ele achou algum usuario
         if(usuarioLogin != null) {
             //atribui o usuario ao atributo estatico usuario logado
-            App.usuarioLogado = usuarioLogin; 
-            emitirAlerta("Usuario encontrado e logado!!", AlertType.INFORMATION);
+            App.usuarioLogado = usuarioLogin;
+
+            //verifica o cargo do usuário
+            if(App.usuarioLogado.getCargoUsuario().equals("Secretário")) {
+                App.trocarTela("TelaInicialSecretario");
+            }
         } else {
             //emite alerta de senha ou login errados
             emitirAlerta("Usuário e/ou senha inválidos!", AlertType.ERROR);
