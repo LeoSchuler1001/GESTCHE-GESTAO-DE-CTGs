@@ -243,6 +243,7 @@ public class SocioDAO {
                         WHERE 
                             debito.fk_idSocio = socio.pk_idSocio 
                             AND debito.dtPgmtDebito IS NULL
+                            AND debito.vencimentoDebito < CURRENT_DATE
                     )
                 ORDER BY socio.nomeSocio
         """;
