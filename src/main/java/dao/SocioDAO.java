@@ -206,13 +206,15 @@ public class SocioDAO {
         String sql = """
                 SELECT socio.*
                 FROM socio
-                WHERE NOT EXISTS (
-                    SELECT 1 
-                    FROM debito 
-                    WHERE debito.fk_idSocio = socio.pk_idSocio 
-                    AND debito.dtPgmtDebito IS NULL 
-                    AND debito.vencimentoDebito < CURRENT_DATE
-                )
+                WHERE 
+                    ativoSocio = true
+                    and NOT EXISTS (
+                        SELECT 1 
+                        FROM debito 
+                        WHERE debito.fk_idSocio = socio.pk_idSocio 
+                        AND debito.dtPgmtDebito IS NULL 
+                        AND debito.vencimentoDebito < CURRENT_DATE
+                    )
                 ORDER BY socio.nomeSocio
         """;
 
@@ -224,7 +226,36 @@ public class SocioDAO {
                 listaSocios.add(montarObjSocio(rs));
             }
         }
-        
+
+        return listaSocios;
+    }
+
+    //lista todos os sócios com pendências
+    public List<Socio> listarSociosPendentes() throws SQLException {
+        String sql = """
+                SELECT socio.*
+                FROM socio
+                WHERE 
+                    socio.ativoSocio = TRUE
+                    AND EXISTS (
+                        SELECT 1 
+                        FROM debito 
+                        WHERE 
+                            debito.fk_idSocio = socio.pk_idSocio 
+                            AND debito.dtPgmtDebito IS NULL
+                    )
+                ORDER BY socio.nomeSocio
+        """;
+
+        List<Socio> listaSocios = new ArrayList<>();
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                listaSocios.add(montarObjSocio(rs));
+            }
+        }
+
         return listaSocios;
     }
 
