@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import app.App;
 import dao.ConexaoBanco;
+import dao.LembreteDAO;
 import dao.SocioDAO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -19,6 +20,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import model.Lembrete;
 import model.Socio;
 
 public class TelaInSecretarioController {
@@ -68,6 +70,12 @@ public class TelaInSecretarioController {
     @FXML
     private TableView<Socio> tabelaSociosInadimplentes;
 
+    @FXML
+    private TableView<Lembrete> tabelaLembretes;
+
+    @FXML
+    private TableColumn<Lembrete, String> lembretes;
+
     //BOTÕES
     @FXML
     void sairAction(ActionEvent event) throws IOException {
@@ -80,10 +88,37 @@ public class TelaInSecretarioController {
         }
     }
 
+    @FXML
+    void sociosDependenAction(ActionEvent event) {
+        
+    }
+
+    @FXML
+    void graficosRelatoriosAction(ActionEvent event) {
+        
+    }
+
+    @FXML
+    void departamentosAction(ActionEvent event) {
+        
+    }
+
+    @FXML
+    void lembretesAction(ActionEvent event) {
+        
+    }
+
+    @FXML
+    void configuracoesAction(ActionEvent event) {
+        
+    }
+
+
     //FUNÇÕES
     public void initialize() throws SQLException {
         ConexaoBanco conexao = new ConexaoBanco();
         SocioDAO socioDAO = new SocioDAO(conexao);
+        LembreteDAO lembreteDAO = new LembreteDAO(conexao);
 
         //preenchimento dos mostradores 
         campoTotalSocios.setText(String.valueOf(socioDAO.contarSocios()));
@@ -91,8 +126,8 @@ public class TelaInSecretarioController {
         campoSociosInadimplentes.setText(String.valueOf(socioDAO.contarSociosInadimplentes()));
         campoSociosInativos.setText(String.valueOf(socioDAO.contarSociosInativos()));
 
-        //preenchimento das tabelas de sócios
-        //configura as colunas das tabelas para receber os nomes dos sócios
+        //preenchimento das tabelas
+        //configura as colunas das tabelas para receber os nomes dos sócios e lembretes
         this.sociosEmDia.setCellValueFactory(cellData -> 
             new SimpleStringProperty(cellData.getValue().getNomeSocio())
         );
@@ -101,16 +136,22 @@ public class TelaInSecretarioController {
             new SimpleStringProperty(cellData.getValue().getNomeSocio())
         );
 
+        this.lembretes.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getNomeLembrete())
+        );
+
         //busca os dados no banco
         List<Socio> listaSociosEmDia = socioDAO.listarSociosEmDia();
         List<Socio> listaSociosInadimplentes = socioDAO.listarSociosPendentes();
+        List<Lembrete> listaLembretes = lembreteDAO.listarLembretesHoje();
 
         //atribui os valores da lista nas tabelas
         tabelaSociosEmdia.setItems(FXCollections.observableArrayList(listaSociosEmDia));
         tabelaSociosInadimplentes.setItems(FXCollections.observableArrayList(listaSociosInadimplentes));
+        tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretes));
     }
 
-   private boolean emitirAlerta(String mensagem, AlertType tipoAlerta) {
+    private boolean emitirAlerta(String mensagem, AlertType tipoAlerta) {
         Alert alerta = new Alert(tipoAlerta);
         alerta.setTitle("Confirmação");
         alerta.setHeaderText(null);
