@@ -47,6 +47,9 @@ public class TelaInSecretarioController {
     @FXML
     private Hyperlink linkSociosDepend;
 
+    @FXML
+    private Hyperlink linkSair;
+
     //FUNÇÕES
     public void initialize() throws SQLException {
         ConexaoBanco conexao = new ConexaoBanco();
