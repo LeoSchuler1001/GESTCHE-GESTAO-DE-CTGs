@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="800.0" minWidth="1200.0" style="-fx-background-color: #D9D9D9;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+   <left>
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="220.0" style="-fx-background-color: #5D8A66;" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/LOGO%20DO%20PROJETO.png" />
+               </image>
+            </ImageView>
+            <GridPane prefHeight="277.0" prefWidth="220.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="103.60000610351562" minWidth="10.0" prefWidth="29.600024414062503" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="192.79998168945315" minWidth="10.0" prefWidth="191.19997558593752" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints maxHeight="225.59998779296876" minHeight="10.0" prefHeight="49.000000762939464" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="152.19999923706055" minHeight="10.0" prefHeight="49.000012207031254" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="116.19998779296876" minHeight="10.0" prefHeight="46.19999389648437" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="91.80000000000001" minHeight="10.0" prefHeight="44.400000000000006" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="72.40001220703124" minHeight="10.0" prefHeight="49.99999389648437" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="58.00000610351563" minHeight="10.0" prefHeight="46.00000610351563" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/iconeInicio.png" />
+                     </image>
+                     <GridPane.margin>
+                        <Insets left="5.0" />
+                     </GridPane.margin>
+                  </ImageView>
+                  <Hyperlink fx:id="linkInicio" onAction="#inicioAction" styleClass="linkMenuLateral" stylesheets="@style.css" text="Início" GridPane.columnIndex="1">
+                     <font>
+                        <Font name="Gadugi" size="18.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets left="-2.0" />
+                     </GridPane.margin>
+                  </Hyperlink>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
+                     <image>
+                        <Image url="@../img/iconeSocios.png" />
+                     </image>
+                     <GridPane.margin>
+                        <Insets left="5.0" />
+                     </GridPane.margin>
+                  </ImageView>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets left="5.0" />
+                     </GridPane.margin>
+                     <image>
+                        <Image url="@../img/iconeRelatorios.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets left="5.0" />
+                     </GridPane.margin>
+                     <image>
+                        <Image url="@../img/iconeDepartamentos.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="4">
+                     <GridPane.margin>
+                        <Insets left="5.0" />
+                     </GridPane.margin>
+                     <image>
+                        <Image url="@../img/iconeLembretes.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="5">
+                     <GridPane.margin>
+                        <Insets left="5.0" />
+                     </GridPane.margin>
+                     <image>
+                        <Image url="@../img/iconeConfiguracoes.png" />
+                     </image>
+                  </ImageView>
+                  <Hyperlink fx:id="linkGraficosRelatorios" onAction="#graficosRelatoriosAction" styleClass="linkMenuLateral" text="Gráficos e Relatórios" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <font>
+                        <Font name="Gadugi" size="18.0" />
+                     </font>
+                  </Hyperlink>
+                  <Hyperlink fx:id="linkDepartamentos" onAction="#departamentosAction" styleClass="linkMenuLateral" text="Departamentos" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Hyperlink>
+                  <Hyperlink fx:id="linkConfiguracoes" onAction="#configuracoesAction" styleClass="linkMenuLateral" text="Configurações" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                     <font>
+                        <Font name="Gadugi" size="18.0" />
+                     </font>
+                  </Hyperlink>
+                  <Hyperlink fx:id="linkSociosDependentes" onAction="#sociosDependentesAction" styleClass="linkMenuLateral" text="Sócios e Dependentes" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <font>
+                        <Font name="Gadugi" size="18.0" />
+                     </font>
+                  </Hyperlink>
+                  <Label mouseTransparent="true" styleClass="linkMenuLateral" text="Lembretes" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                     <font>
+                        <Font name="Gadugi Bold" size="18.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets left="5.0" />
+                     </GridPane.margin>
+                  </Label>
+               </children>
+            </GridPane>
+            <VBox alignment="BOTTOM_CENTER" prefHeight="409.0" prefWidth="220.0">
+               <children>
+                  <Pane prefHeight="354.0" prefWidth="220.0">
+                     <children>
+                        <TableView fx:id="tabelaLembretes" layoutX="10.0" layoutY="12.0" prefHeight="320.0" prefWidth="200.0">
+                          <columns>
+                            <TableColumn fx:id="lembretes" prefWidth="196.79995441436768" text="LEMBRETES" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </Pane>
+                  <HBox prefHeight="57.0" prefWidth="220.0">
+                     <children>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <HBox.margin>
+                              <Insets left="10.0" top="4.0" />
+                           </HBox.margin>
+                           <image>
+                              <Image url="@../img/iconeSair.png" />
+                           </image>
+                        </ImageView>
+                        <Hyperlink styleClass="linkMenuLateral" text="Sair">
+                           <font>
+                              <Font name="Gadugi" size="14.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </Hyperlink>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </left>
+</BorderPane>
