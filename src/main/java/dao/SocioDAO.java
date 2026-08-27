@@ -347,7 +347,14 @@ public class SocioDAO {
             Endereco endereco = enderecoDAO.buscarPorId(idEndereco);
 
             //atribui o endereço encontrado ao endereço do usuario
-            socio.setEnder
+            socio.setEndereco(endereco);
+        }
+
+        //verifica qual é a chave estrangeira do usuário que cadastrou
+        int idUsuario = rs.getInt("fk_idUsuario");
+        Usuario usuario = usuarioDAO.buscarPorId(idUsuario);
+        socio.setUsuario(usuario);
+
         //retorna o usuario
         return socio;
     }
