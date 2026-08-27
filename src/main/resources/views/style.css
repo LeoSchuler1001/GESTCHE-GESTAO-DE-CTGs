@@ -52,3 +52,14 @@
     -fx-font-family: "Gadugi";
     -fx-font-size: 16px;
 }
+
+.botoes {
+    -fx-background-radius: 6;
+    -fx-background-color:  #4A7055;
+    -fx-text-fill:  #FFFFFF;
+}
+
+.campoPreenchimento {
+    -fx-background-radius: 6;
+    -fx-background-color: white;
+}

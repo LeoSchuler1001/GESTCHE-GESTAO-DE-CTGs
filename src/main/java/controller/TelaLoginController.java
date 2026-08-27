@@ -26,6 +26,9 @@ public class TelaLoginController {
     @FXML
     private PasswordField senhaUsuarioLogin;
 
+    @FXML
+    private Button botaoRecupararSenha;
+
     //BOTÕES
     @FXML
     void fazerLoginAction(ActionEvent event) throws SQLException, IOException {
@@ -55,6 +58,11 @@ public class TelaLoginController {
             //emite alerta de senha ou login errados
             emitirAlerta("Usuário e/ou senha inválidos!", AlertType.ERROR);
         }
+    }
+
+    @FXML
+    void recuperarSenhaAction(ActionEvent event) {
+        
     }
 
     //FUNÇÕES

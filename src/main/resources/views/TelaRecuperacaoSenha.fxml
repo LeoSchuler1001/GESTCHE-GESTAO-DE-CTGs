@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<HBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="800.0" minWidth="1200.0" prefHeight="800.0" prefWidth="1200.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="CENTER" focusTraversable="true" minHeight="800.0" minWidth="600.0" style="-fx-background-color: D9D9D9;" HBox.hgrow="ALWAYS">
+         <children>
+            <ImageView fitHeight="184.0" fitWidth="327.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/LOGO%20DO%20PROJETO.png" />
+               </image>
+               <VBox.margin>
+                  <Insets bottom="-12.0" />
+               </VBox.margin>
+            </ImageView>
+            <Label text="A tecnologia a serviço da tradição" textFill="#5d8a66">
+               <font>
+                  <Font name="Segoe UI" size="20.0" />
+               </font>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Label>
+            <Label text="Criado por Leonardo Schuler">
+               <font>
+                  <Font size="11.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="55.0" />
+               </VBox.margin>
+            </Label>
+         </children>
+         <HBox.margin>
+            <Insets />
+         </HBox.margin>
+      </VBox>
+      <VBox alignment="CENTER" minHeight="800.0" minWidth="600.0" style="-fx-background-color: #5D8A66;" HBox.hgrow="ALWAYS">
+         <children>
+            <Label text="Recuperação de senha" textFill="WHITE">
+               <font>
+                  <Font name="Segoe UI" size="40.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="50.0" />
+               </VBox.margin>
+            </Label>
+            <PasswordField fx:id="campoNovaSenha" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="450.0" promptText="Nova Senha" styleClass="campoPreenchimento" />
+            <PasswordField fx:id="campoConfirmacaoSenha" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="450.0" promptText="Confirme a Nova Senha" styleClass="campoPreenchimento">
+               <VBox.margin>
+                  <Insets top="40.0" />
+               </VBox.margin>
+            </PasswordField>
+            <TextField fx:id="campoRespostaSeguranca" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="450.0" promptText="Resposta de Segurança" styleClass="campoPreenchimento">
+               <VBox.margin>
+                  <Insets top="40.0" />
+               </VBox.margin>
+            </TextField>
+            <Button fx:id="botaoRedefinir" mnemonicParsing="false" onAction="#redefirnirAction" prefHeight="30.0" prefWidth="90.0" styleClass="botoes" text="Redefinir">
+               <VBox.margin>
+                  <Insets top="40.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+   </children>
+</HBox>
