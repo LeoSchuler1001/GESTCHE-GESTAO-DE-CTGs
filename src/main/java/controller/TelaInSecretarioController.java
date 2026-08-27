@@ -89,28 +89,28 @@ public class TelaInSecretarioController {
     }
 
     @FXML
-    void sociosDependenAction(ActionEvent event) {
-        
+    void sociosDependenAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaSociosDependentes");
     }
 
     @FXML
-    void graficosRelatoriosAction(ActionEvent event) {
-        
+    void graficosRelatoriosAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaGraficosRelatorios");
     }
 
     @FXML
-    void departamentosAction(ActionEvent event) {
-        
+    void departamentosAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaDepartamentos");
     }
 
     @FXML
-    void lembretesAction(ActionEvent event) {
-        
+    void lembretesAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaLembretes");
     }
 
     @FXML
-    void configuracoesAction(ActionEvent event) {
-        
+    void configuracoesAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaConfiguracoes");
     }
 
 
