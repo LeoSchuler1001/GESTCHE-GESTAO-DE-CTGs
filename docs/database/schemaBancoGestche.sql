@@ -142,3 +142,7 @@ CREATE TABLE movimentacao(
     CONSTRAINT fk_movimentacao_lembrete FOREIGN KEY(fk_idLembrete) REFERENCES lembrete(pk_idLembrete) ON DELETE SET NULL
 );
 
+CREATE INDEX idx_socio_ativo ON socio(ativoSocio);
+
+CREATE INDEX idx_debito_socio_venc ON debito(fk_idSocio, dtPgmtDebito, vencimentoDebito);
+

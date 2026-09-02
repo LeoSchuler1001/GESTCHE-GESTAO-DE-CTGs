@@ -210,7 +210,7 @@ public class UsuarioDAO {
             stmt.executeUpdate();
         }
     }
-
+    
     //método auxiliar, que vai montar o objeto usuário após a consulta sql
     private Usuario montarObjUsuario(ResultSet rs) throws SQLException {
         //cria o objeto

@@ -11,8 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<HBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="800.0" minWidth="1200.0" prefHeight="800.0" prefWidth="1200.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+<HBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="800.0" minWidth="1200.0" prefHeight="800.0" prefWidth="1200.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TelaRecuperacaoSenhaController">
    <children>
       <VBox alignment="CENTER" focusTraversable="true" minHeight="800.0" minWidth="600.0" style="-fx-background-color: D9D9D9;" HBox.hgrow="ALWAYS">
          <children>
@@ -55,7 +54,11 @@
                   <Insets bottom="50.0" />
                </VBox.margin>
             </Label>
-            <PasswordField fx:id="campoNovaSenha" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="450.0" promptText="Nova Senha" styleClass="campoPreenchimento" />
+            <TextField fx:id="campoCpfUsuario" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="450.0" promptText="Cpf do Usuário" styleClass="campoPreenchimento" />
+            <PasswordField fx:id="campoNovaSenha" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="450.0" promptText="Nova Senha" styleClass="campoPreenchimento">
+               <VBox.margin>
+                  <Insets top="40.0" />
+               </VBox.margin></PasswordField>
             <PasswordField fx:id="campoConfirmacaoSenha" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="450.0" promptText="Confirme a Nova Senha" styleClass="campoPreenchimento">
                <VBox.margin>
                   <Insets top="40.0" />

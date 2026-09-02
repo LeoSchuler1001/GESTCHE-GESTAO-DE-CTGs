@@ -61,8 +61,8 @@ public class TelaLoginController {
     }
 
     @FXML
-    void recuperarSenhaAction(ActionEvent event) {
-        
+    void recuperarSenhaAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaRecuperacaoSenha");
     }
 
     //FUNÇÕES
