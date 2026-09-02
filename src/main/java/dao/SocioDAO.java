@@ -202,9 +202,9 @@ public class SocioDAO {
     }
 
     //lista todos os sócios em dia
-    public List<Socio> listarSociosEmDia() throws SQLException {
+    public List<String> listarSociosEmDia() throws SQLException {
         String sql = """
-                SELECT socio.*
+                SELECT socio.nomeSocio
                 FROM socio
                 WHERE 
                     ativoSocio = true
@@ -218,20 +218,20 @@ public class SocioDAO {
                 ORDER BY socio.nomeSocio
         """;
 
-        List<Socio> listaSocios = new ArrayList<>();
+        List<String> listaNomeSocios = new ArrayList<>();
 
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql);
             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                listaSocios.add(montarObjSocio(rs));
+                listaNomeSocios.add(rs.getString("nomeSocio"));
             }
         }
 
-        return listaSocios;
+        return listaNomeSocios;
     }
 
     //lista todos os sócios com pendências
-    public List<Socio> listarSociosPendentes() throws SQLException {
+    public List<String> listarSociosPendentes() throws SQLException {
         String sql = """
                 SELECT socio.*
                 FROM socio
@@ -248,16 +248,16 @@ public class SocioDAO {
                 ORDER BY socio.nomeSocio
         """;
 
-        List<Socio> listaSocios = new ArrayList<>();
+        List<String> listaNomeSocios = new ArrayList<>();
 
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql);
             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                listaSocios.add(montarObjSocio(rs));
+                listaNomeSocios.add(rs.getString("nomeSocio"));
             }
         }
 
-        return listaSocios;
+        return listaNomeSocios;
     }
 
     //lista todos os sócios - ativos ou inativos
