@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import model.Endereco;
 import model.LogAuditoria;
 import model.Usuario;
+import util.Criptografia;
 
 public class UsuarioDAO {
     //ATRIBUTOS
@@ -25,28 +26,40 @@ public class UsuarioDAO {
 
     public UsuarioDAO() {
         this.conexao = new ConexaoBanco();
+        this.enderecoDAO = new EnderecoDAO(this.conexao);
     }
 
     //MÉTODOS
     //autentica um usuario 
-    public Usuario autenticarUsuario(String cpf, String senhaHash) throws SQLException{
-        String sql = "SELECT * FROM usuario WHERE cpfUsuario = ? AND senhaHash = ?";
+    public Usuario autenticarUsuario(String cpf, String senhaDigitada) throws SQLException {
+        //comando sql para buscar o usuário pelo cpf
+        String sql = "SELECT * FROM usuario WHERE cpfUsuario = ?";
 
-        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            //atribui nome e cpf
-            stmt.setString(1, cpf);
-            stmt.setString(2, senhaHash);
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setString(1, cpf.replaceAll("[^0-9]", "").trim());
 
-            //cria um ResultSet para armazenar as informações buscadas
             try (ResultSet rs = stmt.executeQuery()) {
-                //verifica se há algum usuário com esses dados
                 if (rs.next()) {
-                    //retorna o objeto Usuario que foi encontrado
-                    return montarObjUsuario(rs);
+                    String hashBanco = rs.getString("senhaHash");
+
+                    if (hashBanco != null) {
+                        //remove os espaçoes em branco
+                        hashBanco = hashBanco.trim();
+
+                        try {
+                            if (Criptografia.verificar(senhaDigitada, hashBanco)) {
+                                return montarObjUsuario(rs);
+                            }
+                        } catch (IllegalArgumentException e) {
+                            System.err.println("Erro BCrypt: " + e.getMessage());
+                            return null;
+                        }
+                    }
                 }
             }
         }
 
+        // Se o CPF não existir ou a senha estiver incorreta
         return null;
     }
 

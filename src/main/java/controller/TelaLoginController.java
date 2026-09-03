@@ -13,7 +13,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import model.Usuario;
-import util.Criptografia;
 
 public class TelaLoginController {
     //ATRIBUTOS
@@ -39,11 +38,11 @@ public class TelaLoginController {
 
         //pega a senha e login que o usuario digitou
         String cpfDigitado = cpfUsuarioLogin.getText();
-        String senhaHash = Criptografia.gerarHash(senhaUsuarioLogin.getText()); //já armazena o hash da senha
+        String senhaDigitada = senhaUsuarioLogin.getText();
 
         //autentica o usuario
         UsuarioDAO usuarioDAO = new UsuarioDAO();
-        Usuario usuarioLogin = usuarioDAO.autenticarUsuario(cpfDigitado, senhaHash);
+        Usuario usuarioLogin = usuarioDAO.autenticarUsuario(cpfDigitado, senhaDigitada);
 
         //verifica se ele achou algum usuario
         if(usuarioLogin != null) {
