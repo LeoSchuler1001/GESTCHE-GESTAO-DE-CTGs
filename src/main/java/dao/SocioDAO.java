@@ -6,11 +6,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import model.Endereco;
 import model.Socio;
 import model.Usuario;
+import model.dto.SocioResumoDTO;
 
 public class SocioDAO {
     //ATRIBUTOS
@@ -322,6 +324,62 @@ public class SocioDAO {
         }
     }
 
+    //cria uma lista com o resumo dos sócios
+    public List<SocioResumoDTO> listarResumoSocios() throws SQLException {
+        String sql = """
+            SELECT 
+                s.nomeSocio AS "nomeSocio",
+                CASE 
+                    WHEN COUNT(d.pk_idDebito) FILTER (WHERE d.dtPgmtDebito IS NULL AND d.vencimentoDebito < CURRENT_DATE) > 0 
+                    THEN FALSE 
+                    ELSE TRUE 
+                END AS "situacaoAdimplente",
+                ARRAY_REMOVE(ARRAY_AGG(DISTINCT dep.nomeDependente), NULL) AS "dependentes",
+                ARRAY_REMOVE(ARRAY_AGG(DISTINCT depa.nomeDepartamento), NULL) AS "departamentos"
+            FROM socio s
+            LEFT JOIN debito d ON s.pk_idSocio = d.fk_idSocio
+            LEFT JOIN dependente dep ON s.pk_idSocio = dep.fk_idSocio
+            LEFT JOIN socio_departamento sd ON s.pk_idSocio = sd.fk_idSocio
+            LEFT JOIN departamento depa ON sd.fk_idDepartamento = depa.pk_idDepartamento
+            GROUP BY s.pk_idSocio, s.nomeSocio
+            ORDER BY s.nomeSocio ASC
+        """;
+
+        List<SocioResumoDTO> listaResumo = new ArrayList<>();
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                SocioResumoDTO dto = new SocioResumoDTO();
+                
+                dto.setNomeSocio(rs.getString("nomeSocio"));
+                dto.setSituacaoAdimplente(rs.getBoolean("situacaoAdimplente"));
+
+                // Converte o ARRAY de dependentes do Postgres para List<String>
+                java.sql.Array arrayDep = rs.getArray("dependentes");
+                if (arrayDep != null) {
+                    String[] deps = (String[]) arrayDep.getArray();
+                    dto.setDependentes(Arrays.asList(deps));
+                } else {
+                    dto.setDependentes(new ArrayList<>());
+                }
+
+                // Converte o ARRAY de departamentos do Postgres para List<String>
+                java.sql.Array arrayDepa = rs.getArray("departamentos");
+                if (arrayDepa != null) {
+                    String[] depas = (String[]) arrayDepa.getArray();
+                    dto.setDepartamentos(Arrays.asList(depas));
+                } else {
+                    dto.setDepartamentos(new ArrayList<>());
+                }
+
+                listaResumo.add(dto);
+            }
+        }
+
+        return listaResumo;
+    }
 
     //método auxiliar, que vai montar o objeto sócio após a consulta sql
     private Socio montarObjSocio(ResultSet rs) throws SQLException {

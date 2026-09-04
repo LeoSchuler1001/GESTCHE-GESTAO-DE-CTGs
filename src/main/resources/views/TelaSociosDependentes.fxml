@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -146,7 +147,7 @@
                               <Image url="@../img/iconeSair.png" />
                            </image>
                         </ImageView>
-                        <Hyperlink styleClass="linkMenuLateral" text="Sair">
+                        <Hyperlink fx:id="linkSair" onAction="#sairAction" styleClass="linkMenuLateral" text="Sair">
                            <font>
                               <Font name="Gadugi" size="14.0" />
                            </font>
@@ -161,4 +162,60 @@
          </children>
       </VBox>
    </left>
+   <center>
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="TOP_CENTER">
+         <children>
+            <TableView fx:id="tabelaResumoSocios" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="900.0">
+              <columns>
+                <TableColumn fx:id="colunaNomeSocio" prefWidth="300.0" text="NOME" />
+                  <TableColumn fx:id="colunaSituacao" prefWidth="100.0" text="SITUAÇÃO" />
+                  <TableColumn fx:id="colunaDependentes" prefWidth="300.0" text="DEPENDENTES" />
+                  <TableColumn fx:id="colunaDepartamento" prefWidth="200.0" text="DEPARTAMENTO" />
+              </columns>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </TableView>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="botaoVerDados" mnemonicParsing="false" onAction="#verDadosAction" styleClass="botoes" text="VER DADOS">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="botaoAlterarDados" mnemonicParsing="false" onAction="#alterarDadosAction" styleClass="botoes" text="ALTERAR DADOS">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="botaoCadastrarDebito" mnemonicParsing="false" onAction="#cadastrarDebitoAction" styleClass="botoes" text="CADASTRAR DÉBITO">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="botaoCadastrarSocio" mnemonicParsing="false" onAction="#cadastrarSocioAction" styleClass="botoes" text="CADASTRAR SÓCIO">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="botaoCadastrarDependente" mnemonicParsing="false" onAction="#cadastrarDependenteSocio" styleClass="botoes" text="CADASTRAR DEPENDENTE">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="botaoInativarSocio" mnemonicParsing="false" onAction="#inativarSocioAction" styleClass="botoes" text="INATIVAR SÓCIO">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="botaoExcluirSocio" mnemonicParsing="false" onAction="#excluirSocioAction" styleClass="botoes" text="EXCLUIR SÓCIO">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
 </BorderPane>
