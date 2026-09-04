@@ -36,6 +36,7 @@ public class UsuarioDAO {
         String sql = "SELECT * FROM usuario WHERE cpfUsuario = ?";
 
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //preenche o comando sql sem espaços no cpf
             stmt.setString(1, cpf.replaceAll("[^0-9]", "").trim());
 
             try (ResultSet rs = stmt.executeQuery()) {

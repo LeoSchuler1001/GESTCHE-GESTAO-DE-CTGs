@@ -44,7 +44,7 @@ public class TelaRecuperacaoSenhaController {
             //verifica se foi encontrado um usuário
             if(usuario != null) {
                 //verifica se a resposta de segurança está correta
-                if(usuario.getRespostaSeguranca().equals(campoRespostaSeguranca.getText())) {
+                if(Criptografia.verificar(campoRespostaSeguranca.getText(), usuario.getRespostaSeguranca().trim())) {
                     //atualiza a senha
                     usuario.setSenhaHash(Criptografia.gerarHash(campoNovaSenha.getText()));
                     usuarioDAO.atualizarUsuario(usuario);
