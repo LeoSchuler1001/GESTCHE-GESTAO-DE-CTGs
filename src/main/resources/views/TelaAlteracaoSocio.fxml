@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<VBox fx:id="painelFundo" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #D9D9D9;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AlterarSocioController">
+   <children>
+      <Label text="ALTERAR SÓCIO" textFill="#3c4641">
+         <font>
+            <Font name="Gadugi" size="30.0" />
+         </font>
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+      </Label>
+      <GridPane prefHeight="174.0" prefWidth="580.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="292.79998779296875" minWidth="10.0" prefWidth="96.2" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="489.1999633789062" minWidth="10.0" prefWidth="463.40000000000003" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label styleClass="textos" text="Nome:" />
+            <Label styleClass="textos" text="CPF:" GridPane.rowIndex="1" />
+            <Label styleClass="textos" text="Telefone:" GridPane.rowIndex="2" />
+            <Label prefHeight="26.0" prefWidth="134.0" styleClass="textos" text="Nascimento:" GridPane.rowIndex="3" />
+            <Label styleClass="textos" text="Email:" GridPane.rowIndex="4" />
+            <TextField fx:id="campoNomeSocio" styleClass="campoPreenchimento" GridPane.columnIndex="1" />
+            <TextField fx:id="campoCpfSocio" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="campoTelefoneSocio" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="campoEmailSocio" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <DatePicker fx:id="campoNascimentoSocio" prefHeight="26.0" prefWidth="472.0" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+         </children>
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" />
+         </VBox.margin>
+      </GridPane>
+      <GridPane prefHeight="78.0" prefWidth="600.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="294.39996337890625" minWidth="10.0" prefWidth="142.4" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="492.800048828125" minWidth="10.0" prefWidth="458.4" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+         <children>
+            <Label styleClass="textos" text="Departamentos:">
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </Label>
+            <ListView fx:id="campoDepartamentosSocio" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+               <GridPane.margin>
+                  <Insets right="20.0" />
+               </GridPane.margin>
+            </ListView>
+         </children>
+      </GridPane>
+      <GridPane alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="10.0" prefWidth="400.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="194.4000244140625" minWidth="0.0" prefWidth="110.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="143.5999755859375" minWidth="10.0" prefWidth="90.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <ComboBox fx:id="listaDeDepartamentos" prefHeight="26.0" prefWidth="398.0" promptText="Adicionar ou remover departamentos" styleClass="campoPreenchimento">
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </ComboBox>
+            <Button fx:id="botaoAdicionarDepartamento" mnemonicParsing="false" onAction="#adicionarDepartamentoAction" style="-fx-background-radius: 100;" styleClass="botoes" text="+" GridPane.columnIndex="1" />
+            <Button fx:id="botaoExcluirDepartamento" mnemonicParsing="false" onAction="#excluirDepartamentoAction" prefHeight="26.0" prefWidth="25.0" style="-fx-background-radius: 80;" styleClass="botoes" text="-" GridPane.columnIndex="2" />
+         </children>
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+      </GridPane>
+      <GridPane>
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="293.60003662109375" minWidth="10.0" prefWidth="74.79996337890626" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="498.39996337890625" minWidth="4.999981689453108" prefWidth="209.80003662109374" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="498.39996337890625" minWidth="8.199963378906261" prefWidth="8.199963378906261" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="498.39996337890625" minWidth="10.0" prefWidth="66.19996337890626" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="498.39996337890625" minWidth="10.0" prefWidth="211.00003662109373" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" top="20.0" />
+         </VBox.margin>
+         <children>
+            <Label styleClass="textos" text="Endereço:" />
+            <Label styleClass="textos" text="Rua:" GridPane.rowIndex="1" />
+            <Label styleClass="textos" text="Cidade:" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+            <Label styleClass="textos" text="CEP:" GridPane.rowIndex="3" />
+            <Label styleClass="textos" text="Estado:" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+            <Label styleClass="textos" text="Número:" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <Label styleClass="textos" text="Bairro:" GridPane.rowIndex="2" />
+            <ComboBox fx:id="campoEstadoSocio" prefHeight="26.0" prefWidth="213.0" styleClass="campoPreenchimento" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+            <TextField fx:id="campoRuaSocio" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="campoBairroSocio" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="campoCepSocio" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="campoNumeroSocio" styleClass="campoPreenchimento" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+            <TextField fx:id="campoCidadeSocio" styleClass="campoPreenchimento" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+         </children>
+      </GridPane>
+      <Button fx:id="botaoAlterarSocio" mnemonicParsing="false" onAction="#alterarAction" styleClass="botoes" text="ALTERAR">
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+      </Button>
+   </children>
+</VBox>

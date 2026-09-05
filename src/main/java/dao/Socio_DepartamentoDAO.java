@@ -27,6 +27,24 @@ public class Socio_DepartamentoDAO {
     }
 
     //MÉTODOS
+    //busca todos os departamentos vinculados a um sócio passando o seu id
+    public List<String> buscarDepartamentosSocio(int idSocio) throws SQLException {
+        String sql = "SELECT departamento.nomeDepartamento FROM departamento, socio_departamento WHERE departamento.pk_idDepartamento = socio_departamento.fk_idDepartamento AND socio_departamento.fk_idSocio = ?";
+
+        List<String> listaDepartamentosSocio = new ArrayList<>();
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, idSocio);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()) {
+                listaDepartamentosSocio.add(rs.getString("nomeDepartamento"));
+            }
+        }
+
+        return listaDepartamentosSocio;
+    }
+
     // Vincula um sócio a um departamento
     public void vincularSocioDepartamento(int idSocio, int idDepartamento) throws SQLException {
         String sql = "INSERT INTO socio_departamento (fk_idSocio, fk_idDepartamento) VALUES (?, ?)";

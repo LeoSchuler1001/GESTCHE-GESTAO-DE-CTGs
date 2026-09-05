@@ -5,6 +5,7 @@ import java.util.List;
 public class SocioResumoDTO {
     //ATRIBUTOS
     private String nomeSocio;
+    private int idSocio;
     private boolean situacaoAdimplente;
     private List<String> dependentes;
     private List<String> departamentos;
@@ -12,16 +13,20 @@ public class SocioResumoDTO {
     //CONSTRUTORES
     public SocioResumoDTO() {}
 
-    public SocioResumoDTO(String nomeSocio, boolean situacaoAdimplente, List<String> dependentes, List<String> departamentos) {
+    public SocioResumoDTO(String nomeSocio, boolean situacaoAdimplente, List<String> dependentes, List<String> departamentos, int idSocio) {
         this.nomeSocio = nomeSocio;
         this.situacaoAdimplente = situacaoAdimplente;
         this.dependentes = dependentes;
         this.departamentos = departamentos;
+        this.idSocio = idSocio;
     }
 
     // GETERS E SETERS
     public String getNomeSocio() { return nomeSocio; }
     public void setNomeSocio(String nomeSocio) { this.nomeSocio = nomeSocio; }
+
+    public int getIdSocio() { return idSocio;}
+    public void setIdSocio(int idSocio) { this.idSocio = idSocio; }
 
     public boolean isSituacaoAdimplente() { return situacaoAdimplente; }
     public void setSituacaoAdimplente(boolean situacaoAdimplente) { this.situacaoAdimplente = situacaoAdimplente; }

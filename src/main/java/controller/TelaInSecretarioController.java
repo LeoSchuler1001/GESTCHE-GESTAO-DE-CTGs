@@ -215,9 +215,9 @@ public class TelaInSecretarioController {
 
     // Método auxiliar para criar instâncias padronizadas do ProgressIndicator
     private ProgressIndicator criarIndicator() {
-        ProgressIndicator pi = new ProgressIndicator();
-        pi.setMaxSize(40, 40);
-        return pi;
+        ProgressIndicator indicador = new ProgressIndicator();
+        indicador.setMaxSize(40, 40);
+        return indicador;
     }
 
     //método auxiliar para emitir alertas

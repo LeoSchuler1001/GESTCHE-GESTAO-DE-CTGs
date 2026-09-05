@@ -63,3 +63,9 @@
     -fx-background-radius: 6;
     -fx-background-color: white;
 }
+
+.textos {
+    -fx-text-fill: #3c4641;
+    -fx-font-family: "Gadugi";
+    -fx-font-size: 16px;
+}

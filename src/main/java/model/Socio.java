@@ -76,7 +76,11 @@ public class Socio {
     }
 
     public String getTelefoneSocio() {
-        return telefoneSocio;
+        if(telefoneSocio != null) {
+            return telefoneSocio;
+        } else {
+            return "Telefone não cadastrado!";
+        }
     }
 
     public void setTelefoneSocio(String telefoneUsuario) {

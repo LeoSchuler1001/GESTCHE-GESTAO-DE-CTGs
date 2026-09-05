@@ -327,7 +327,8 @@ public class SocioDAO {
     //cria uma lista com o resumo dos sócios
     public List<SocioResumoDTO> listarResumoSocios() throws SQLException {
         String sql = """
-            SELECT 
+            SELECT
+                s.pk_idSocio AS "idSocio", 
                 s.nomeSocio AS "nomeSocio",
                 CASE 
                     WHEN COUNT(d.pk_idDebito) FILTER (WHERE d.dtPgmtDebito IS NULL AND d.vencimentoDebito < CURRENT_DATE) > 0 
@@ -353,6 +354,7 @@ public class SocioDAO {
             while (rs.next()) {
                 SocioResumoDTO dto = new SocioResumoDTO();
                 
+                dto.setIdSocio(rs.getInt("idSocio"));
                 dto.setNomeSocio(rs.getString("nomeSocio"));
                 dto.setSituacaoAdimplente(rs.getBoolean("situacaoAdimplente"));
 

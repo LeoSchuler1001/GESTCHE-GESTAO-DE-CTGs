@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,9 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import model.Lembrete;
@@ -24,6 +28,8 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class TelaSociosDependentesController {
     //ATRIBUTOS
@@ -89,8 +95,43 @@ public class TelaSociosDependentesController {
 
     //BOTÕES
     @FXML
-    void alterarDadosAction(ActionEvent event) {
+    void alterarDadosAction(ActionEvent event) throws IOException, SQLException {
+        //verifica qual foi o sócio selecionado
+        SocioResumoDTO socioSelecionado = tabelaResumoSocios.getSelectionModel().getSelectedItem();
 
+        //verifica se um sócio foi selecionado
+        if (socioSelecionado != null) {
+            //pega o id so sócio selecionado
+            int idSocioSelecionado = socioSelecionado.getIdSocio();
+
+            //abre a tela de alteração de sócio
+            //carregamento do fxml
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaAlteracaoSocio.fxml"));
+            Parent root = fxmlLoader.load();
+
+            //obtem o controller da tela de alteração
+            AlterarSocioController controller = fxmlLoader.getController();
+            controller.setIdSocioSelecionado(idSocioSelecionado);
+
+            //cria e exibe a tela de alteração
+            Stage telaAlteracao = new Stage();
+            telaAlteracao.setTitle("Alterar Sócio");
+            telaAlteracao.setScene(new Scene(root));
+
+            //proibe que o usuario possa alterar o tamanho da tela
+            telaAlteracao.setResizable(false);
+
+            //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+            telaAlteracao.initModality(Modality.WINDOW_MODAL);
+            telaAlteracao.initOwner(tabelaResumoSocios.getScene().getWindow());
+
+            //abre a tela e aguarda o usuário fechar
+            telaAlteracao.showAndWait();
+
+        } else {
+            emitirAlerta("Selecione um Sócio!", AlertType.ERROR);
+            return;
+        }
     }
 
     @FXML
@@ -242,8 +283,8 @@ public class TelaSociosDependentesController {
 
     // Método auxiliar para criar instâncias padronizadas do ProgressIndicator
     private ProgressIndicator criarIndicator() {
-        ProgressIndicator pi = new ProgressIndicator();
-        pi.setMaxSize(40, 40);
-        return pi;
+        ProgressIndicator indicador = new ProgressIndicator();
+        indicador.setMaxSize(40, 40);
+        return indicador;
     }
 }
