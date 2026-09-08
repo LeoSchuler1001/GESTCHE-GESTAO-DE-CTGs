@@ -56,6 +56,16 @@ public class Socio_DepartamentoDAO {
         }
     }
 
+    public void desvincularSocioDepartamento(int idSocio, int idDepartamento) throws SQLException {
+        String sql = "DELETE FROM socio_departamento WHERE fk_idSocio = ? AND fk_idDepartamento = ?";
+
+        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, idSocio);
+            stmt.setInt(2, idDepartamento);
+            stmt.executeUpdate();
+        }
+    }
+
     //busca todos os sócios de um departamento pelo seu id
     public List<Socio> buscarSociosDepartamento(int id) throws SQLException {
         //cria o comando sql

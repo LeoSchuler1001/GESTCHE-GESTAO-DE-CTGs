@@ -15,6 +15,23 @@ public class EnderecoDAO {
     }
 
     //MÉTODOS
+    public void alterarEndereco(Endereco endereco) throws SQLException {
+        String sql = "UPDATE endereco SET rua = ?, numero = ?, cep = ?, bairro = ?, cidade = ?, estado = ? WHERE pk_idEndereco = ?";
+        
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setString(1, endereco.getRua());
+            stmt.setInt(2, endereco.getNumero());
+            stmt.setString(3, endereco.getCep());
+            stmt.setString(4, endereco.getBairro());
+            stmt.setString(5, endereco.getCidade());
+            stmt.setString(6, endereco.getEstado());
+            stmt.setInt(7, endereco.getIdEndereco());
+
+            //executa o comando sql
+            stmt.executeUpdate();
+        }
+    }
+
     public void cadastrarEndereco(Endereco endereco) throws SQLException {
         //cria o comando sql
         String sql = "INSERT INTO endereco (rua, numero, cep, bairro, cidade, estado) VALUES (?, ?, ?, ?, ?, ?)";

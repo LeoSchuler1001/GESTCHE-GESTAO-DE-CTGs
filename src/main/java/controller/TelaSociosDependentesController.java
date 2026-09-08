@@ -128,6 +128,9 @@ public class TelaSociosDependentesController {
             //abre a tela e aguarda o usuário fechar
             telaAlteracao.showAndWait();
 
+            //atualiza a tabela depois da alteração
+            carregarDadosSegundoPlano();
+
         } else {
             emitirAlerta("Selecione um Sócio!", AlertType.ERROR);
             return;
@@ -217,7 +220,7 @@ public class TelaSociosDependentesController {
         );
 
         this.colunaDepartamento.setCellValueFactory(cellData -> 
-            new SimpleStringProperty(cellData.getValue().getDependentesFormatado())
+            new SimpleStringProperty(cellData.getValue().getDepartamentosFormatado())
         );
 
         this.lembretes.setCellValueFactory(cellData -> 
