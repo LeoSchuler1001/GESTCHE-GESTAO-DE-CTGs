@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="painelFundo" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="600.0" style="-fx-background-color: #D9D9D9;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DetalheDependenteController">
+   <children>
+      <ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="600.0" vbarPolicy="NEVER">
+         <content>
+            <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="600.0">
+               <children>
+                  <Label text="DADOS DO DEPENDENTE" textFill="#3c4641">
+                     <font>
+                        <Font name="Gadugi" size="30.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <GridPane prefHeight="174.0" prefWidth="580.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="292.79998779296875" minWidth="10.0" prefWidth="96.2" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="489.1999633789062" minWidth="10.0" prefWidth="463.40000000000003" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label styleClass="textos" text="Nome:" />
+                        <Label styleClass="textos" text="CPF:" GridPane.rowIndex="1" />
+                        <Label prefHeight="26.0" prefWidth="134.0" styleClass="textos" text="Nascimento:" GridPane.rowIndex="2" />
+                        <TextField fx:id="campoNomeDependente" styleClass="campoPreenchimento" GridPane.columnIndex="1" />
+                        <TextField fx:id="campoCpfDependente" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <DatePicker fx:id="campoNascimentoDependente" prefHeight="26.0" prefWidth="464.0" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                     </children>
+                     <VBox.margin>
+                        <Insets left="20.0" right="20.0" top="20.0" />
+                     </VBox.margin>
+                  </GridPane>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="botaoFechar" mnemonicParsing="false" onAction="#fecharAction" styleClass="botoes" text="FECHAR" />
+                        <Button fx:id="botaoAlterar" mnemonicParsing="false" onAction="#alterarAction" styleClass="botoes" text="ALTERAR">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</VBox>

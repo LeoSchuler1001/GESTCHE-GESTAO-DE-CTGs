@@ -80,6 +80,30 @@ public class DebitoDAO {
         return null;
     }
 
+    //busca um débito passando o seu id
+    public Debito buscarPorTipo(String tipo) throws SQLException {
+        //cria o comando sql
+        String sql = "SELECT * FROM debito WHERE tipoDebito = ?";
+        
+        //verifica a conexão com o banco de dados
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //atribui o idDebito à consulta sql
+            stmt.setString(1, tipo);
+
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há algum debito com esse id
+                if (rs.next()) {
+                    //retorna o objeto debito que foi encontrado
+                    return montarObjDebito(rs);
+                }
+            }
+        }
+
+        //retorna null caso não haja nenhum departamento
+        return null;
+    }
+
     //lista todos os debitos em aberto de um sócio
     public List<Debito> listarDebitosAbertosSocio(int id) throws SQLException {
         String sql = "SELECT DEBITO.* FROM debito, socio WHERE debito.fk_idSocio = socio.pk_idSocio AND debito.dtPgmtDebito IS NULL AND socio.pk_idSocio = ?";

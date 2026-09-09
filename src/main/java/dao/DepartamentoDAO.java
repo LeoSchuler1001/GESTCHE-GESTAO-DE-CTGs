@@ -43,6 +43,30 @@ public class DepartamentoDAO {
         }
     }
 
+    //busca um departamento pelo nome
+    public Departamento buscarPorNome(String nome) throws SQLException {
+        //cria o comando sql
+        String sql = "SELECT * FROM departamento WHERE nomeDepartamento = ?";
+        
+        //verifica a conexão com o banco de dados
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //atribui o idDepardamento à consulta sql
+            stmt.setString(1, nome);
+
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há algum dependente com esse id
+                if (rs.next()) {
+                    //retorna o objeto departamento que foi encontrado
+                    return montarObjDepartamento(rs);
+                }
+            }
+        }
+
+        //retorna null caso não haja nenhum departamento
+        return null;
+    }
+
     //busca um departamento passando o seu id
     public Departamento buscarPorId(int id) throws SQLException {
         //cria o comando sql

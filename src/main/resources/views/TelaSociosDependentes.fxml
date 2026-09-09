@@ -210,7 +210,7 @@
                   </Button>
                   <Button fx:id="botaoExcluirSocio" mnemonicParsing="false" onAction="#excluirSocioAction" styleClass="botoes" text="EXCLUIR SÓCIO">
                      <HBox.margin>
-                        <Insets right="20.0" />
+                        <Insets />
                      </HBox.margin>
                   </Button>
                </children>

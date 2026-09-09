@@ -163,8 +163,42 @@ public class TelaSociosDependentesController {
     }
 
     @FXML
-    void verDadosAction(ActionEvent event) {
+    void verDadosAction(ActionEvent event) throws IOException, SQLException {
+        //verifica qual foi o sócio selecionado
+        SocioResumoDTO socioSelecionado = tabelaResumoSocios.getSelectionModel().getSelectedItem();
 
+        //verifica se um sócio foi selecionado
+        if (socioSelecionado != null) {
+            //pega o id so sócio selecionado
+            int idSocioSelecionado = socioSelecionado.getIdSocio();
+
+            //abre a tela de exibição dos dados do sócio
+            //carregamento do fxml
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaVerDados.fxml"));
+            Parent root = fxmlLoader.load();
+
+            //obtem o controller da tela de alteração
+            VerDadosSocioController controller = fxmlLoader.getController();
+            controller.carregarDadosEmSegundoPlano(idSocioSelecionado);
+
+            //cria e exibe a tela de alteração
+            Stage telaExibicao = new Stage();
+            telaExibicao.setTitle("Dados do Sócio");
+            telaExibicao.setScene(new Scene(root));
+
+            //proibe que o usuario possa alterar o tamanho da tela
+            telaExibicao.setResizable(false);
+
+            //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+            telaExibicao.initModality(Modality.WINDOW_MODAL);
+            telaExibicao.initOwner(tabelaResumoSocios.getScene().getWindow());
+
+            //abre a tela e aguarda o usuário fechar
+            telaExibicao.showAndWait();
+        } else {
+            emitirAlerta("Selecione um Sócio!", AlertType.ERROR);
+            return;
+        }
     }
 
     @FXML

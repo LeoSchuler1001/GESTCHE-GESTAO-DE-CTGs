@@ -70,6 +70,48 @@ public class DependenteDAO {
         return listaDependentes;
     }
 
+    //busca todos os departamentos vinculados a um sócio passando o seu id
+    public List<String> buscarDependentesSocio(int idSocio) throws SQLException {
+        String sql = "SELECT dependente.nomeDependente FROM dependente, socio WHERE dependente.fk_idSocio = socio.pk_idSocio AND socio.pk_idSocio = ?";
+
+        List<String> listaDependentesSocio = new ArrayList<>();
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, idSocio);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()) {
+                listaDependentesSocio.add(rs.getString("nomeDependente"));
+            }
+        }
+
+        return listaDependentesSocio;
+    }
+
+    //busca um dependente passando o seu nome
+    public Dependente buscarPorNome(String nome) throws SQLException {
+        //cria o comando sql
+        String sql = "SELECT * FROM dependente WHERE nomeDependente = ?";
+        
+        //verifica a conexão com o banco de dados
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //atribui o idUsuario à consulta sql
+            stmt.setString(1, nome);
+
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há algum dependente com esse id
+                if (rs.next()) {
+                    //retorna o objeto Dependente que foi encontrado
+                    return montarObjDependente(rs);
+                }
+            }
+        }
+
+        //retorna null caso não haja nenhum dependente
+        return null;
+    }
+
     //busca um dependente passando o seu id
     public Dependente buscarPorId(int id) throws SQLException {
         //cria o comando sql
