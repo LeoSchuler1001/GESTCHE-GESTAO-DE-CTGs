@@ -167,7 +167,7 @@ public class VerDadosSocioController {
 
             //obtem o controller da tela de alteração
             DetalheDepartamentoController controller = fxmlLoader.getController();
-            controller.setDepartamentoSelecionado(departamentoSelecionado);
+            controller.carregarDadosEmSegundoPlano(departamentoSelecionado);
             
             //cria e exibe a tela de alteração
             Stage telaExibicao = new Stage();
