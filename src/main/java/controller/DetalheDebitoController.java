@@ -137,21 +137,11 @@ public class DetalheDebitoController {
     //preenche os dados nos labels
     private void buscarDadosDebito() throws SQLException {
         //preenche os campos com os dados do departamento
-        campoNomeDependente.setText(dependenteSelecionado.getNomeDependente());
-        campoCpfDependente.setText(dependenteSelecionado.getCpfDependente());
+        campoTipoDebito.setText(debitoSelecionado.getTipoDebito());
+        campoValorDebito.setText("R$ " + debitoSelecionado.getValorDebito());
 
         //preenche o campo da data de nascimento do socio
-        LocalDate localDate = ((java.sql.Date) dependenteSelecionado.getDataNascDependente()).toLocalDate();        
-        campoNascimentoDependente.setValue(localDate);
-
-
-
-
-
-
-
-
-
-
-
+        LocalDate localDate = ((java.sql.Date) debitoSelecionado.getVencimentoDebito()).toLocalDate();        
+        campoVencimentoDebito.setValue(localDate);
+    }
 }
