@@ -26,6 +26,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
@@ -129,7 +130,7 @@ public class VerDadosSocioController {
 
             //obtem o controller da tela de alteração
             DetalheDebitoController controller = fxmlLoader.getController();
-            controller.setDebitoSelecionado(debitoSelecionado);
+            controller.carregarDadosEmSegundoPlano(debitoSelecionado);
             
             //cria e exibe a tela de alteração
             Stage telaExibicao = new Stage();
@@ -147,7 +148,7 @@ public class VerDadosSocioController {
             telaExibicao.showAndWait();
 
             //recarrega as informações
-            carregarDadosEmSegundoPlano(idSocioSelecionado);
+            buscarDadosSocio();
         } else {
             emitirAlerta("Selecione um Debito!", AlertType.ERROR);
             return;
@@ -203,7 +204,7 @@ public class VerDadosSocioController {
 
             //obtem o controller da tela de alteração
             DetalheDependenteController controller = fxmlLoader.getController();
-            controller.setDependenteSelecionado(dependenteSelecionado);
+            controller.carregarDadosEmSegundoPlano(dependenteSelecionado);
             
             //cria e exibe a tela de alteração
             Stage telaExibicao = new Stage();
@@ -221,7 +222,7 @@ public class VerDadosSocioController {
             telaExibicao.showAndWait();
 
             //recarrega as informações
-            carregarDadosEmSegundoPlano(idSocioSelecionado);
+            buscarDadosSocio();
         } else {
             emitirAlerta("Selecione um Dependente!", AlertType.ERROR);
             return;
@@ -282,6 +283,11 @@ public class VerDadosSocioController {
             }
         };
 
+        //atualiza os dados caso a busca tenha ocorrido bem
+        task.setOnSucceeded(e -> {
+            atualizarComponentesTela();
+        });
+
         //mostra um aviso caso os dados não possam ser carregados
         task.setOnFailed(e -> {
             Throwable ex = task.getException();
@@ -301,6 +307,10 @@ public class VerDadosSocioController {
         listaDependentesSocio = dependenteDAO.buscarDependentesSocio(idSocioSelecionado);
         listaDebitosSocio = debitoDAO.listarDebitosAbertosSocio(idSocioSelecionado);
         
+    }
+
+    //atualiza os componentes visuais da tela após serem carregadas as informações
+    private void atualizarComponentesTela() {
         //cria uma lista somente com o nome dos débitos
         List<String> listaNomeDebitos = new ArrayList<>();
 
@@ -336,6 +346,19 @@ public class VerDadosSocioController {
         campoCepSocio.setText(enderecoSocioSelecionado.getCep());
         campoCidadeSocio.setText(enderecoSocioSelecionado.getCidade());
         campoEstadoSocio.setText(enderecoSocioSelecionado.getEstado());
+
+
+        if (listaDepartamentosSocio == null || listaDepartamentosSocio.isEmpty()) {
+            campoDepartamentosSocio.setPlaceholder(new Label("Nenhum departamento vinculado."));
+        }
+
+        if (listaDependentesSocio == null || listaDependentesSocio.isEmpty()) {
+            campoDependentesSocio.setPlaceholder(new Label("Nenhum dependente cadastrado."));
+        }
+
+        if (listaNomeDebitos.isEmpty()) {
+            campoDebitosSocio.setPlaceholder(new Label("Nenhum débito em aberto."));
+        }
     }
 
     //método auxiliar para emitir alertas

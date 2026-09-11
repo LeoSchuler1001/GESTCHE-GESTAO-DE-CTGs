@@ -57,6 +57,11 @@
                               <Insets left="20.0" />
                            </HBox.margin>
                         </Button>
+                        <Button fx:id="excluirDependente" mnemonicParsing="false" onAction="#excluirDependenteAction" styleClass="botoes" text="EXCLUIR">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                        </Button>
                      </children>
                   </HBox>
                </children>
