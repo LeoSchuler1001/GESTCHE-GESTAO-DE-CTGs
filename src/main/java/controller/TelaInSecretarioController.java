@@ -184,6 +184,17 @@ public class TelaInSecretarioController {
                     tabelaSociosEmdia.setItems(FXCollections.observableArrayList(listaEmDia));
                     tabelaSociosInadimplentes.setItems(FXCollections.observableArrayList(listaPendentes));
                     tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretes));
+
+                    // Define mensagens amigáveis caso as listas venham vazias
+                    if (listaEmDia.isEmpty()) {
+                        tabelaSociosEmdia.setPlaceholder(new Label("Nenhum sócio em dia."));
+                    }
+                    if (listaPendentes.isEmpty()) {
+                        tabelaSociosInadimplentes.setPlaceholder(new Label("Nenhum sócio inadimplente."));
+                    }
+                    if (listaLembretes.isEmpty()) {
+                        tabelaLembretes.setPlaceholder(new Label("Nenhum lembrete para hoje."));
+                    }
                 });
 
                 return null;

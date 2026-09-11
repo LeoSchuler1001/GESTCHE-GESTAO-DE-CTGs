@@ -130,7 +130,7 @@ public class VerDadosSocioController {
 
             //obtem o controller da tela de alteração
             DetalheDebitoController controller = fxmlLoader.getController();
-            controller.carregarDadosEmSegundoPlano(debitoSelecionado);
+            controller.carregarDadosEmSegundoPlano(debitoSelecionado, socioSelecionado);
             
             //cria e exibe a tela de alteração
             Stage telaExibicao = new Stage();
@@ -148,7 +148,7 @@ public class VerDadosSocioController {
             telaExibicao.showAndWait();
 
             //recarrega as informações
-            buscarDadosSocio();
+            carregarDadosEmSegundoPlano(idSocioSelecionado);
         } else {
             emitirAlerta("Selecione um Debito!", AlertType.ERROR);
             return;
@@ -222,7 +222,7 @@ public class VerDadosSocioController {
             telaExibicao.showAndWait();
 
             //recarrega as informações
-            buscarDadosSocio();
+            carregarDadosEmSegundoPlano(idSocioSelecionado);
         } else {
             emitirAlerta("Selecione um Dependente!", AlertType.ERROR);
             return;
@@ -269,6 +269,11 @@ public class VerDadosSocioController {
     //define qual é o sócio que foi selecionado
     public void carregarDadosEmSegundoPlano(int idSocio) throws SQLException {
         this.idSocioSelecionado = idSocio;
+
+        //limpa as listas e coloca os placeholders
+        campoDebitosSocio.getItems().clear();
+        campoDependentesSocio.getItems().clear();
+        campoDepartamentosSocio.getItems().clear();
 
         // Define Placeholders com o indicador de carregamento
         campoDebitosSocio.setPlaceholder(criarIndicator());

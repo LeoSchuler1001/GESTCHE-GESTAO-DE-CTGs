@@ -195,6 +195,9 @@ public class TelaSociosDependentesController {
 
             //abre a tela e aguarda o usuário fechar
             telaExibicao.showAndWait();
+
+            //atualiza a tabela depois da alteração
+            carregarDadosSegundoPlano();
         } else {
             emitirAlerta("Selecione um Sócio!", AlertType.ERROR);
             return;
@@ -267,6 +270,8 @@ public class TelaSociosDependentesController {
 
     //carrega os dados em segundo plano
     private void carregarDadosSegundoPlano() {
+        tabelaResumoSocios.getItems().clear();
+
         //coloca os ícones de carregamento nas tabelas enquanto os dados não são carregados
         tabelaResumoSocios.setPlaceholder(criarIndicator());
         tabelaLembretes.setPlaceholder(criarIndicator());

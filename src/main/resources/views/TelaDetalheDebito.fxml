@@ -38,7 +38,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label styleClass="textos" text="Tipo:" />
+                        <Label styleClass="textos" text="Identificação:" />
                         <Label styleClass="textos" text="Valor:" GridPane.rowIndex="1" />
                         <Label prefHeight="26.0" prefWidth="134.0" styleClass="textos" text="Vencimento: " GridPane.rowIndex="2" />
                         <TextField fx:id="campoTipoDebito" styleClass="campoPreenchimento" GridPane.columnIndex="1" />
@@ -58,6 +58,11 @@
                            </HBox.margin>
                         </Button>
                         <Button mnemonicParsing="false" onAction="#registrarPagamentoAction" styleClass="botoes" text="REGISTRAR PAGAMENTO">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="botaoExcluirDebito" mnemonicParsing="false" onAction="#excluirDebitoAction" styleClass="botoes" text="EXCLUIR">
                            <HBox.margin>
                               <Insets left="20.0" />
                            </HBox.margin>
