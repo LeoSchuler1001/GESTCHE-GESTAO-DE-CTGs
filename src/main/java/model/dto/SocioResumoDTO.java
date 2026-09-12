@@ -6,6 +6,7 @@ public class SocioResumoDTO {
     //ATRIBUTOS
     private String nomeSocio;
     private int idSocio;
+    private boolean ativoSocio;
     private boolean situacaoAdimplente;
     private List<String> dependentes;
     private List<String> departamentos;
@@ -13,8 +14,9 @@ public class SocioResumoDTO {
     //CONSTRUTORES
     public SocioResumoDTO() {}
 
-    public SocioResumoDTO(String nomeSocio, boolean situacaoAdimplente, List<String> dependentes, List<String> departamentos, int idSocio) {
+    public SocioResumoDTO(String nomeSocio, boolean ativoSocio, boolean situacaoAdimplente, List<String> dependentes, List<String> departamentos, int idSocio) {
         this.nomeSocio = nomeSocio;
+        this.ativoSocio = ativoSocio;
         this.situacaoAdimplente = situacaoAdimplente;
         this.dependentes = dependentes;
         this.departamentos = departamentos;
@@ -27,6 +29,9 @@ public class SocioResumoDTO {
 
     public int getIdSocio() { return idSocio;}
     public void setIdSocio(int idSocio) { this.idSocio = idSocio; }
+
+    public boolean isAtivoSocio() { return ativoSocio; }
+    public void setAtivoSocio(boolean ativoSocio) { this.ativoSocio = ativoSocio; }
 
     public boolean isSituacaoAdimplente() { return situacaoAdimplente; }
     public void setSituacaoAdimplente(boolean situacaoAdimplente) { this.situacaoAdimplente = situacaoAdimplente; }
@@ -50,6 +55,9 @@ public class SocioResumoDTO {
 
     //formata a situação do sócio como uma string
     public String getSituacaoTexto() {
+        if (!ativoSocio) {
+            return "Inativo";
+        }
         return situacaoAdimplente ? "Regular" : "Inadimplente";
     }
 }

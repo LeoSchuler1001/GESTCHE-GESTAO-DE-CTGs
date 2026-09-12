@@ -330,6 +330,7 @@ public class SocioDAO {
             SELECT
                 s.pk_idSocio AS "idSocio", 
                 s.nomeSocio AS "nomeSocio",
+                s.ativoSocio AS "ativoSocio",
                 CASE 
                     WHEN COUNT(d.pk_idDebito) FILTER (WHERE d.dtPgmtDebito IS NULL AND d.vencimentoDebito < CURRENT_DATE) > 0 
                     THEN FALSE 
@@ -342,8 +343,14 @@ public class SocioDAO {
             LEFT JOIN dependente dep ON s.pk_idSocio = dep.fk_idSocio
             LEFT JOIN socio_departamento sd ON s.pk_idSocio = sd.fk_idSocio
             LEFT JOIN departamento depa ON sd.fk_idDepartamento = depa.pk_idDepartamento
-            GROUP BY s.pk_idSocio, s.nomeSocio
-            ORDER BY s.nomeSocio ASC
+            GROUP BY s.pk_idSocio, s.nomeSocio, s.ativoSocio
+            ORDER BY 
+                CASE 
+                    WHEN s.ativoSocio = FALSE THEN 3
+                    WHEN COUNT(d.pk_idDebito) FILTER (WHERE d.dtPgmtDebito IS NULL AND d.vencimentoDebito < CURRENT_DATE) > 0 THEN 2
+                    ELSE 1
+                END ASC,
+                s.nomeSocio ASC
         """;
 
         List<SocioResumoDTO> listaResumo = new ArrayList<>();
@@ -356,6 +363,7 @@ public class SocioDAO {
                 
                 dto.setIdSocio(rs.getInt("idSocio"));
                 dto.setNomeSocio(rs.getString("nomeSocio"));
+                dto.setAtivoSocio(rs.getBoolean("ativoSocio"));
                 dto.setSituacaoAdimplente(rs.getBoolean("situacaoAdimplente"));
 
                 // Converte o ARRAY de dependentes do Postgres para List<String>

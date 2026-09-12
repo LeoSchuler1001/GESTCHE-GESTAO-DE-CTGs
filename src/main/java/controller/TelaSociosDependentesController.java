@@ -33,6 +33,9 @@ import javafx.stage.Stage;
 
 public class TelaSociosDependentesController {
     //ATRIBUTOS
+    ConexaoBanco conexaoBanco = new ConexaoBanco();
+    SocioDAO socioDAO = new SocioDAO(conexaoBanco);
+
     @FXML
     private Button botaoAlterarDados;
 
@@ -187,8 +190,29 @@ public class TelaSociosDependentesController {
     }
 
     @FXML
-    void inativarSocioAction(ActionEvent event) {
+    void inativarSocioAction(ActionEvent event) throws SQLException {
+        //verifica qual foi o sócio selecionado
+        SocioResumoDTO socioSelecionado = tabelaResumoSocios.getSelectionModel().getSelectedItem();
 
+
+        //verifica se um sócio foi selecionado
+        if (socioSelecionado != null) {
+            //faz a confirmação com o usuário
+            boolean confirmaExclusao = emitirAlertaConfirmacao("Deseja prosseguir com a inativação?", AlertType.CONFIRMATION);
+            if(confirmaExclusao) {
+                //pega o id so sócio selecionado
+                int idSocioSelecionado = socioSelecionado.getIdSocio();
+
+                //inativa o socio
+                socioDAO.desativarSocio(idSocioSelecionado);
+                
+                //atualiza a tabela depois da alteração
+                carregarDadosSegundoPlano();
+            }
+        } else {
+            emitirAlerta("Selecione um Sócio!", AlertType.ERROR);
+            return;
+        }
     }
 
     @FXML
@@ -357,5 +381,17 @@ public class TelaSociosDependentesController {
         ProgressIndicator indicador = new ProgressIndicator();
         indicador.setMaxSize(40, 40);
         return indicador;
+    }
+
+    private boolean emitirAlertaConfirmacao(String mensagem, AlertType tipoAlerta) {
+        Alert alerta = new Alert(tipoAlerta);
+        alerta.setTitle("Confirmação");
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensagem);
+
+        Optional<ButtonType> resultado = alerta.showAndWait();
+
+        // Verifica se o usuário clicou no botão OK
+        return resultado.isPresent() && resultado.get() == ButtonType.OK;
     }
 }
