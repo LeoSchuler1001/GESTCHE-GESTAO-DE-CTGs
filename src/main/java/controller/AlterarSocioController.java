@@ -166,8 +166,11 @@ public class AlterarSocioController {
 
     @FXML
     void alterarAction(ActionEvent event) throws SQLException {
+        if(!verificaFormulario()) { return ;}
+
         //altera as informações no objeto sócio
-        socioSelecionado.setCpfSocio(campoCpfSocio.getText());
+        String cpfLimpo = campoCpfSocio.getText().replaceAll("[^0-9]", "");
+        socioSelecionado.setCpfSocio(cpfLimpo);
         socioSelecionado.setNomeSocio(campoNomeSocio.getText());
         socioSelecionado.setEmailSocio(campoEmailSocio.getText());
         socioSelecionado.setDataNascSocio(Date.valueOf(campoNascimentoSocio.getValue()));
@@ -175,6 +178,8 @@ public class AlterarSocioController {
         //verifica se o telefone esta preenchido
         if(!campoTelefoneSocio.getText().isEmpty()) {  
             socioSelecionado.setTelefoneSocio(campoTelefoneSocio.getText());
+        } else {
+            socioSelecionado.setTelefoneSocio("");
         }
 
         //altera od dados do endereço
@@ -183,7 +188,8 @@ public class AlterarSocioController {
         enderecoSocioSelecionado.setBairro(campoBairroSocio.getText());
         enderecoSocioSelecionado.setCidade(campoCidadeSocio.getText());
         enderecoSocioSelecionado.setEstado(campoEstadoSocio.getValue().name());
-        enderecoSocioSelecionado.setCep(campoCepSocio.getText());
+        String cepLimpo = campoCepSocio.getText().replaceAll("[^0-9]", "");
+        enderecoSocioSelecionado.setCep(cepLimpo);
 
         emitirAlerta("Sócio alterado com sucesso", AlertType.INFORMATION);
 
@@ -225,6 +231,9 @@ public class AlterarSocioController {
 
         //preenche a lista de estados
         campoEstadoSocio.getItems().setAll(EstadosBrasil.values());
+
+        //impede do usuario digitar no campo da data
+        campoNascimentoSocio.setEditable(false);
     }
 
     //define qual é o sócio que foi selecionado
@@ -283,5 +292,70 @@ public class AlterarSocioController {
 
         // Verifica se o usuário clicou no botão OK
         return resultado.isPresent() && resultado.get() == ButtonType.OK;
+    }
+
+    public boolean verificaFormulario() {
+        //verifica campos de texto
+        if (campoNomeSocio.getText() == null || campoNomeSocio.getText().trim().isEmpty() ||
+            campoCpfSocio.getText() == null || campoCpfSocio.getText().trim().isEmpty() ||
+            campoEmailSocio.getText() == null || campoEmailSocio.getText().trim().isEmpty() ||
+            campoRuaSocio.getText() == null || campoRuaSocio.getText().trim().isEmpty() ||
+            campoNumeroSocio.getText() == null || campoNumeroSocio.getText().trim().isEmpty() ||
+            campoBairroSocio.getText() == null || campoBairroSocio.getText().trim().isEmpty() ||
+            campoCidadeSocio.getText() == null || campoCidadeSocio.getText().trim().isEmpty() ||
+            campoCepSocio.getText() == null || campoCepSocio.getText().trim().isEmpty()) {
+            
+            emitirAlerta("Preencha todos os campos!", AlertType.ERROR);
+            return false;
+        }
+
+        //verifica se o cpf está correto
+        String cpfLimpo = campoCpfSocio.getText().replaceAll("[^0-9]", "");
+        if (cpfLimpo.length() != 11) {
+            emitirAlerta("O CPF deve conter exatamente 11 dígitos!", AlertType.ERROR);
+            return false;
+        }
+
+        //verifica se o cep está correto
+        String cepLimpo = campoCepSocio.getText().replaceAll("[^0-9]", "");
+        if (cepLimpo.length() != 8) {
+            emitirAlerta("O CEP deve conter exatamente 8 dígitos!", AlertType.ERROR);
+            return false;
+        }
+
+        //verificação do telefone
+        String telefoneTexto = campoTelefoneSocio.getText();
+        if (telefoneTexto != null && !telefoneTexto.trim().isEmpty() && !telefoneTexto.equals("Telefone não cadastrado!")) {
+            String telefoneLimpo = telefoneTexto.replaceAll("[^0-9]", "");
+            if (telefoneLimpo.length() < 10 || telefoneLimpo.length() > 11) {
+                emitirAlerta("O telefone deve conter 10 ou 11 dígitos (com DDD)!", AlertType.ERROR);
+                return false;
+            }
+        }
+
+        //valida o preenchimento da data de nascimento
+        LocalDate dataNascimento = campoNascimentoSocio.getValue();
+        if (dataNascimento == null) {
+            emitirAlerta("Selecione a data de nascimento!", AlertType.ERROR);
+            return false;
+        }
+        
+        //valida a data de nascimento
+        LocalDate hoje = LocalDate.now();
+        if (dataNascimento.isAfter(hoje)) {
+            emitirAlerta("A data de nascimento é inválida!", AlertType.ERROR);
+            return false;
+        }
+        if (dataNascimento.isBefore(hoje.minusYears(120))) {
+            emitirAlerta("A data de nascimento é inválida!", AlertType.ERROR);
+            return false;
+        }
+
+        //verifica o estado
+        if (campoEstadoSocio.getValue() == null) {
+            emitirAlerta("Selecione o estado!", AlertType.ERROR);
+            return false;
+        }
+        return true;
     }
 }

@@ -79,7 +79,7 @@ public class Socio {
         if(telefoneSocio != null) {
             return telefoneSocio;
         } else {
-            return "Telefone não cadastrado!";
+            return "";
         }
     }
 

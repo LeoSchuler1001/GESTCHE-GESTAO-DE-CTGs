@@ -59,13 +59,16 @@ public class DetalheDependenteController {
     //BOTÕES
     @FXML
     void alterarAction(ActionEvent event) throws SQLException {
+        if(!verificaFormulario()) { return; }
+        
         //faz a confirmação com o usuário
         boolean confirmaAlteracao = emitirAlertaConfirmacao("Deseja realmente alterar?", AlertType.CONFIRMATION);
 
         if(confirmaAlteracao) {
             //altera as informações no objeto dependente
             dependenteSelecionado.setNomeDependente(campoNomeDependente.getText());
-            dependenteSelecionado.setCpfDependente(campoCpfDependente.getText());
+            String cpfLimpo = campoCpfDependente.getText().replaceAll("[^0-9]", "");
+            dependenteSelecionado.setCpfDependente(cpfLimpo);
             dependenteSelecionado.setDataNascDependente(Date.valueOf(campoNascimentoDependente.getValue()));
             
             dependenteDAO.atualizarDependente(dependenteSelecionado);
@@ -126,6 +129,9 @@ public class DetalheDependenteController {
                 }
             }
         });
+
+        //impede do usuario digitar no campo da data
+        campoNascimentoDependente.setEditable(false);
     }
 
     //diz qual que foi o dependente selecionado
@@ -184,5 +190,50 @@ public class DetalheDependenteController {
         //preenche o campo da data de nascimento do socio
         LocalDate localDate = ((java.sql.Date) dependenteSelecionado.getDataNascDependente()).toLocalDate();        
         campoNascimentoDependente.setValue(localDate);
+    }
+
+    public boolean verificaFormulario() {
+        //verifica os campos de textos
+        if (campoNomeDependente.getText() == null || campoNomeDependente.getText().trim().isEmpty() ||
+            campoCpfDependente.getText() == null || campoCpfDependente.getText().trim().isEmpty()) {
+            
+            emitirAlertaSimples("Preencha todos os campos obrigatórios!");
+            return false;
+        }
+
+        //valida o tamanho do cpf
+        String cpfLimpo = campoCpfDependente.getText().replaceAll("[^0-9]", "");
+        if (cpfLimpo.length() != 11) {
+            emitirAlertaSimples("O CPF deve conter exatamente 11 dígitos!");
+            return false;
+        }
+
+        //valida se a data de nascimento está preenchida
+        LocalDate dataNascimento = campoNascimentoDependente.getValue();
+        if (dataNascimento == null) {
+            emitirAlertaSimples("Selecione a data de nascimento!");
+            return false;
+        }
+        
+        //valida se a data faz sentido
+        LocalDate hoje = LocalDate.now();
+        if (dataNascimento.isAfter(hoje)) {
+            emitirAlertaSimples("A data de nascimento é inválida!");
+            return false;
+        }
+        if (dataNascimento.isBefore(hoje.minusYears(120))) {
+            emitirAlertaSimples("A data de nascimento é inválida!");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void emitirAlertaSimples(String mensagem) {
+        Alert alerta = new Alert(AlertType.ERROR);
+        alerta.setTitle("Aviso");
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensagem);
+        alerta.showAndWait();
     }
 }

@@ -138,8 +138,45 @@ public class TelaSociosDependentesController {
     }
 
     @FXML
-    void cadastrarDebitoAction(ActionEvent event) {
+    void cadastrarDebitoAction(ActionEvent event) throws IOException {
+        //verifica qual foi o sócio selecionado
+        SocioResumoDTO socioSelecionado = tabelaResumoSocios.getSelectionModel().getSelectedItem();
 
+        //verifica se um sócio foi selecionado
+        if (socioSelecionado != null) {
+            //pega o id so sócio selecionado
+            int idSocioSelecionado = socioSelecionado.getIdSocio();
+
+            //abre a tela de exibição dos dados do sócio
+            //carregamento do fxml
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaCadastrarDebito.fxml"));
+            Parent root = fxmlLoader.load();
+
+            //obtem o controller da tela de alteração
+            CadastrarDebitoController controller = fxmlLoader.getController();
+            controller.setIdSocioSelecionado(idSocioSelecionado);
+
+            //cria e exibe a tela de alteração
+            Stage telaExibicao = new Stage();
+            telaExibicao.setTitle("Cadastrar Débito");
+            telaExibicao.setScene(new Scene(root));
+
+            //proibe que o usuario possa alterar o tamanho da tela
+            telaExibicao.setResizable(false);
+
+            //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+            telaExibicao.initModality(Modality.WINDOW_MODAL);
+            telaExibicao.initOwner(tabelaResumoSocios.getScene().getWindow());
+
+            //abre a tela e aguarda o usuário fechar
+            telaExibicao.showAndWait();
+
+            //atualiza a tabela depois da alteração
+            carregarDadosSegundoPlano();
+        } else {
+            emitirAlerta("Selecione um Sócio!", AlertType.ERROR);
+            return;
+        }
     }
 
     @FXML

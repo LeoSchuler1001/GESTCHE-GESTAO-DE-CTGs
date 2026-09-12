@@ -19,6 +19,9 @@ import util.Criptografia;
 public class TelaRecuperacaoSenhaController {
     //ATRIBUTOS
     @FXML
+    private Button botaoVoltar;
+
+    @FXML
     private Button botaoRedefinir;
 
     @FXML
@@ -34,6 +37,11 @@ public class TelaRecuperacaoSenhaController {
     private TextField campoRespostaSeguranca;
 
     //BOTÕES
+    @FXML
+    void voltarAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaLogin");
+    }
+    
     @FXML
     void redefirnirAction(ActionEvent event) throws SQLException, IOException {
         if(validaFormulario()) {
