@@ -60,7 +60,7 @@ public class DetalheDependenteController {
     @FXML
     void alterarAction(ActionEvent event) throws SQLException {
         if(!verificaFormulario()) { return; }
-        
+
         //faz a confirmação com o usuário
         boolean confirmaAlteracao = emitirAlertaConfirmacao("Deseja realmente alterar?", AlertType.CONFIRMATION);
 
@@ -73,7 +73,7 @@ public class DetalheDependenteController {
             
             dependenteDAO.atualizarDependente(dependenteSelecionado);
 
-            emitirAlerta("Sócio alterado com sucesso", AlertType.INFORMATION);
+            emitirAlerta("Dependente alterado com sucesso", AlertType.INFORMATION);
             
             Stage stage = (Stage) painelFundo.getScene().getWindow();
             stage.close();
