@@ -130,6 +130,12 @@ public class TelaInSecretarioController {
     //FUNÇÕES
     //inicializa a tela
     public void initialize() throws SQLException {
+        //faz com que o usuario não possa clicar nas tabelas
+        tabelaSociosEmdia.setMouseTransparent(true);
+        tabelaSociosEmdia.setFocusTraversable(false);
+        tabelaSociosInadimplentes.setMouseTransparent(true);
+        tabelaSociosInadimplentes.setFocusTraversable(false);
+
         //configura as colunas das tabelas para receber os nomes dos sócios e lembretes
         this.sociosEmDia.setCellValueFactory(cellData -> 
             new SimpleStringProperty(cellData.getValue())

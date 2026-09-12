@@ -3,6 +3,7 @@ package controller;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -13,7 +14,6 @@ import dao.EnderecoDAO;
 import dao.SocioDAO;
 import dao.Socio_DepartamentoDAO;
 import dao.DepartamentoDAO;
-import enums.Departamentos;
 import enums.EstadosBrasil;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -26,10 +26,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import model.Departamento;
 import model.Endereco;
 import model.Socio;
 
@@ -38,6 +41,7 @@ public class AlterarSocioController {
     private int idSocioSelecionado;
     private final DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     List<String> listaDepartamentosSocio;
+    List<Departamento> listaTodosDepartamentos;
     Endereco enderecoSocioSelecionado;
     Socio socioSelecionado;
 
@@ -58,7 +62,7 @@ public class AlterarSocioController {
     private ListView<String> campoDepartamentosSocio;
 
     @FXML
-    private ComboBox<Departamentos> listaDeDepartamentos;
+    private ComboBox<String> listaDeDepartamentos;
 
     @FXML
     private Button botaoAlterarSocio;
@@ -103,7 +107,7 @@ public class AlterarSocioController {
     @FXML
     void adicionarDepartamentoAction(ActionEvent event) throws SQLException {
         //recupera o valor da string selecionada
-        Departamentos departamentoSelecionado = listaDeDepartamentos.getValue();
+        String departamentoSelecionado = listaDeDepartamentos.getValue();
 
         //verifica se o usuário selecionou alguma opção
         if(departamentoSelecionado == null) {
@@ -112,26 +116,26 @@ public class AlterarSocioController {
         }
 
         //verifica se ela já está na lista de departamentos do usuário
-        if(listaDepartamentosSocio.contains(departamentoSelecionado.name())) {
+        if(listaDepartamentosSocio.contains(departamentoSelecionado)) {
             emitirAlerta("Este sócio já pertence a este departamento!", AlertType.ERROR);
             return;
         }
 
         //adiciona o departamento selecionado à lista de departamentos daquele sócio
-        listaDepartamentosSocio.add(departamentoSelecionado.name());
+        listaDepartamentosSocio.add(departamentoSelecionado);
 
         //preenche a lista de departamentos daquele sócio
         campoDepartamentosSocio.setItems(FXCollections.observableArrayList(listaDepartamentosSocio));
 
         //cria o registro no banco de dados
-        int idDepartamento = departamentoDAO.buscarIdDepartamento(departamentoSelecionado.name());
+        int idDepartamento = departamentoDAO.buscarIdDepartamento(departamentoSelecionado);
         socio_DepartamentoDAO.vincularSocioDepartamento(idSocioSelecionado, idDepartamento);
     }
 
     @FXML
     void excluirDepartamentoAction(ActionEvent event) throws SQLException {
         //recupera o departamento selecionado
-        Departamentos departamentoSelecionado = listaDeDepartamentos.getValue();
+        String departamentoSelecionado = listaDeDepartamentos.getValue();
 
         //verifica se o usuário selecionou alguma opção
         if(departamentoSelecionado == null) {
@@ -140,7 +144,7 @@ public class AlterarSocioController {
         }
 
         //verifica se ela já está na lista de departamentos do usuário
-        if(!listaDepartamentosSocio.contains(departamentoSelecionado.name())) {
+        if(!listaDepartamentosSocio.contains(departamentoSelecionado)) {
             emitirAlerta("Este sócio não pertence a este departamento!", AlertType.ERROR);
             return;
         }
@@ -150,13 +154,13 @@ public class AlterarSocioController {
 
         if (confirmaExclusao) {
             //remove o departamento da lista de departamentos do sócio
-            listaDepartamentosSocio.remove(departamentoSelecionado.name());
+            listaDepartamentosSocio.remove(departamentoSelecionado);
     
             //preenche a lista de departamentos daquele sócio
             campoDepartamentosSocio.setItems(FXCollections.observableArrayList(listaDepartamentosSocio));
     
             //exclui o registro no banco de dados
-            int idDepartamento = departamentoDAO.buscarIdDepartamento(departamentoSelecionado.name());
+            int idDepartamento = departamentoDAO.buscarIdDepartamento(departamentoSelecionado);
             socio_DepartamentoDAO.desvincularSocioDepartamento(idSocioSelecionado, idDepartamento);
         } else {
             System.out.println("Ação cancelada pelo usuário.");
@@ -202,12 +206,27 @@ public class AlterarSocioController {
 
     //FUNÇÕES
     //configura os elementos da tela
-    public void initialize() {
+    public void initialize() throws SQLException {
         //tira o foco dos campos, para o cursos não ficar em nenhum deles
         Platform.runLater(() -> painelFundo.requestFocus());
 
-        //faz com que o usuário não possa mexerno campo de departamentos
-        campoDepartamentosSocio.setMouseTransparent(true);
+        //configura o campo de departamentos para não receber cliques, apenas o scroll
+        campoDepartamentosSocio.setCellFactory(listView -> {
+            ListCell<String> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item);
+                }
+            };
+            
+            //bloqueia os cliques, mas não a rolagem
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> event.consume());
+            cell.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> event.consume());
+            
+            return cell;
+        });
+        campoDepartamentosSocio.setMouseTransparent(false);
         campoDepartamentosSocio.setFocusTraversable(false);
 
         //configura para que a data do seletor de datas fique em português
@@ -227,7 +246,12 @@ public class AlterarSocioController {
         });
 
         //preenche o comboBox dos departamentos
-        listaDeDepartamentos.getItems().setAll(Departamentos.values());
+        listaTodosDepartamentos = departamentoDAO.listarTodos();
+        List<String> nomeDepartamentos = new ArrayList<>();
+        for (Departamento departamento : listaTodosDepartamentos) {
+            nomeDepartamentos.add(departamento.getNomeDepartamento());
+        }
+        listaDeDepartamentos.getItems().setAll(nomeDepartamentos);
 
         //preenche a lista de estados
         campoEstadoSocio.getItems().setAll(EstadosBrasil.values());

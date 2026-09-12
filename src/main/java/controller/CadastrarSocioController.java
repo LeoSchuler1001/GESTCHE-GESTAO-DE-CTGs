@@ -14,7 +14,6 @@ import dao.DepartamentoDAO;
 import dao.EnderecoDAO;
 import dao.SocioDAO;
 import dao.Socio_DepartamentoDAO;
-import enums.Departamentos;
 import enums.EstadosBrasil;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -25,11 +24,14 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import model.Departamento;
 import model.Endereco;
 import model.Socio;
 
@@ -37,6 +39,8 @@ public class CadastrarSocioController {
     //ATRIBUTOS
     private final DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     List<String> listaDepartamentosSocio = new ArrayList<>();
+    List<Departamento> listaTodosDepartamentos;
+
 
     //conexões com o banco de dados
     ConexaoBanco conexaoBanco = new ConexaoBanco();
@@ -88,7 +92,7 @@ public class CadastrarSocioController {
     private TextField campoTelefoneSocio;
 
     @FXML
-    private ComboBox<Departamentos> listaDeDepartamentos;
+    private ComboBox<String> listaDeDepartamentos;
 
     @FXML
     private VBox painelFundo;
@@ -97,7 +101,7 @@ public class CadastrarSocioController {
     @FXML
     void adicionarDepartamentoAction(ActionEvent event) {
         //recupera o valor da string selecionada
-        Departamentos departamentoSelecionado = listaDeDepartamentos.getValue();
+        String departamentoSelecionado = listaDeDepartamentos.getValue();
 
         //verifica se o usuário selecionou alguma opção
         if(departamentoSelecionado == null) {
@@ -106,13 +110,13 @@ public class CadastrarSocioController {
         }
 
         //verifica se ela já está na lista de departamentos do usuário
-        if(listaDepartamentosSocio.contains(departamentoSelecionado.name())) {
+        if(listaDepartamentosSocio.contains(departamentoSelecionado)) {
             emitirAlerta("Este sócio já pertence a este departamento!", AlertType.ERROR);
             return;
         }
 
         //adiciona o departamento selecionado à lista de departamentos daquele sócio
-        listaDepartamentosSocio.add(departamentoSelecionado.name());
+        listaDepartamentosSocio.add(departamentoSelecionado);
 
         //preenche a lista de departamentos daquele sócio
         campoDepartamentosSocio.setItems(FXCollections.observableArrayList(listaDepartamentosSocio));
@@ -175,12 +179,27 @@ public class CadastrarSocioController {
 
     //MÉTODOS
     //configura os elementos da tela
-    public void initialize() {
+    public void initialize() throws SQLException {
         //tira o foco dos campos, para o cursos não ficar em nenhum deles
         Platform.runLater(() -> painelFundo.requestFocus());
 
-        //faz com que o usuário não possa mexerno campo de departamentos
-        campoDepartamentosSocio.setMouseTransparent(true);
+        //configura o campo de departamentos para não receber cliques, apenas o scroll
+        campoDepartamentosSocio.setCellFactory(listView -> {
+            ListCell<String> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item);
+                }
+            };
+            
+            //bloqueia os cliques, mas não a rolagem
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> event.consume());
+            cell.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> event.consume());
+            
+            return cell;
+        });
+        campoDepartamentosSocio.setMouseTransparent(false);
         campoDepartamentosSocio.setFocusTraversable(false);
 
         //configura para que a data do seletor de datas fique em português
@@ -199,8 +218,13 @@ public class CadastrarSocioController {
             }
         });
 
-        //preenche o comboBox dos departamentos
-        listaDeDepartamentos.getItems().setAll(Departamentos.values());
+         //preenche o comboBox dos departamentos
+        listaTodosDepartamentos = departamentoDAO.listarTodos();
+        List<String> nomeDepartamentos = new ArrayList<>();
+        for (Departamento departamento : listaTodosDepartamentos) {
+            nomeDepartamentos.add(departamento.getNomeDepartamento());
+        }
+        listaDeDepartamentos.getItems().setAll(nomeDepartamentos);
 
         //preenche a lista de estados
         campoEstadoSocio.getItems().setAll(EstadosBrasil.values());
