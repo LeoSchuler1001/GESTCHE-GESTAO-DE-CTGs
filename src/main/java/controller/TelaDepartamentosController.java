@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,10 @@ import model.Lembrete;
 
 public class TelaDepartamentosController {
     //ATRIBUTOS
+    //conexão com o banco de dados
+    ConexaoBanco conexaoBanco = new ConexaoBanco();
+    DepartamentoDAO departamentoDAO = new DepartamentoDAO(conexaoBanco);
+
     @FXML
     private Button botaoAlterar;
 
@@ -114,13 +119,51 @@ public class TelaDepartamentosController {
     }
 
     @FXML
-    void criarDepartamentoAction(ActionEvent event) {
+    void criarDepartamentoAction(ActionEvent event) throws IOException {
+        //abre a tela de cadastro de departamento
+        //carregamento do fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaCadastrarDepartamento.fxml"));
+        Parent root = fxmlLoader.load();
 
+        //cria e exibe a tela de alteração
+        Stage telaAlteracao = new Stage();
+        telaAlteracao.setTitle("Cadastrar Departamento");
+        telaAlteracao.setScene(new Scene(root));
+
+        //proibe que o usuario possa alterar o tamanho da tela
+        telaAlteracao.setResizable(false);
+
+        //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+        telaAlteracao.initModality(Modality.WINDOW_MODAL);
+        telaAlteracao.initOwner(tabelaDepartamento.getScene().getWindow());
+
+        //abre a tela e aguarda o usuário fechar
+        telaAlteracao.showAndWait();
+
+        //atualiza a tabela depois da alteração
+        carregarDadosSegundoPlano();
     }
 
     @FXML
-    void excluirDepartamentoAction(ActionEvent event) {
+    void excluirDepartamentoAction(ActionEvent event) throws SQLException {
+        //verifica qual foi o departamento selecionado
+        Departamento departamentoSelecionado = tabelaDepartamento.getSelectionModel().getSelectedItem();
 
+        //verifica se um departamento foi selecionado
+        if(departamentoSelecionado != null) {
+            Boolean confirmaExclusao = emitirAlertaConfirmacao("Deseja prosseguir com a exclusão?", AlertType.CONFIRMATION);
+
+            if(confirmaExclusao) {
+                departamentoDAO.excluirDepartamento(departamentoSelecionado);
+    
+                //atualiza a tabela depois da alteração
+                carregarDadosSegundoPlano();
+
+                emitirAlerta("Usuário excluído!", AlertType.INFORMATION);
+            }
+        } else {
+            emitirAlerta("Selecione um departamento!", AlertType.ERROR);
+        }
     }
 
     @FXML
@@ -239,5 +282,17 @@ public class TelaDepartamentosController {
         ProgressIndicator indicador = new ProgressIndicator();
         indicador.setMaxSize(40, 40);
         return indicador;
+    }
+
+    private boolean emitirAlertaConfirmacao(String mensagem, AlertType tipoAlerta) {
+        Alert alerta = new Alert(tipoAlerta);
+        alerta.setTitle("Confirmação");
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensagem);
+
+        Optional<ButtonType> resultado = alerta.showAndWait();
+
+        // Verifica se o usuário clicou no botão OK
+        return resultado.isPresent() && resultado.get() == ButtonType.OK;
     }
 }
