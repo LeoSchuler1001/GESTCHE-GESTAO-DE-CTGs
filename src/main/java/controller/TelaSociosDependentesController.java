@@ -46,9 +46,6 @@ public class TelaSociosDependentesController {
     private Button botaoCadastrarSocio;
 
     @FXML
-    private Button botaoExcluirSocio;
-
-    @FXML
     private Button botaoInativarSocio;
 
     @FXML
@@ -186,11 +183,6 @@ public class TelaSociosDependentesController {
 
     @FXML
     void cadastrarSocioAction(ActionEvent event) {
-
-    }
-
-    @FXML
-    void excluirSocioAction(ActionEvent event) {
 
     }
 

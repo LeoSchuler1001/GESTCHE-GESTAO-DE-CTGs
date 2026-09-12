@@ -205,11 +205,6 @@
                   </Button>
                   <Button fx:id="botaoInativarSocio" mnemonicParsing="false" onAction="#inativarSocioAction" styleClass="botoes" text="INATIVAR SÓCIO">
                      <HBox.margin>
-                        <Insets right="20.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="botaoExcluirSocio" mnemonicParsing="false" onAction="#excluirSocioAction" styleClass="botoes" text="EXCLUIR SÓCIO">
-                     <HBox.margin>
                         <Insets />
                      </HBox.margin>
                   </Button>
