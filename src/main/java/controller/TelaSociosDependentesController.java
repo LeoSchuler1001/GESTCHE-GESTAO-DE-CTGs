@@ -188,8 +188,29 @@ public class TelaSociosDependentesController {
     }
 
     @FXML
-    void cadastrarSocioAction(ActionEvent event) {
+    void cadastrarSocioAction(ActionEvent event) throws IOException {
+        //abre a tela de cadastro de sócios
+        //carregamento do fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaCadastrarSocio.fxml"));
+        Parent root = fxmlLoader.load();
 
+        //cria e exibe a tela de alteração
+        Stage telaExibicao = new Stage();
+        telaExibicao.setTitle("Cadastrar Sócio");
+        telaExibicao.setScene(new Scene(root));
+
+        //proibe que o usuario possa alterar o tamanho da tela
+        telaExibicao.setResizable(false);
+
+        //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+        telaExibicao.initModality(Modality.WINDOW_MODAL);
+        telaExibicao.initOwner(tabelaResumoSocios.getScene().getWindow());
+
+        //abre a tela e aguarda o usuário fechar
+        telaExibicao.showAndWait();
+
+        //atualiza a tabela depois do cadastro
+        carregarDadosSegundoPlano();
     }
 
     @FXML
@@ -268,7 +289,7 @@ public class TelaSociosDependentesController {
 
             //abre a tela de exibição dos dados do sócio
             //carregamento do fxml
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaVerDados.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaVerDadosSocio.fxml"));
             Parent root = fxmlLoader.load();
 
             //obtem o controller da tela de alteração

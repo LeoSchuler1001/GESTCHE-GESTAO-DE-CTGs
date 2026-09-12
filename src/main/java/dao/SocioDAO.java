@@ -116,7 +116,7 @@ public class SocioDAO {
 
             stmt.setDate(4, new java.sql.Date(socio.getDataNascSocio().getTime()));
             stmt.setString(5, socio.getEmailSocio());
-            stmt.setBoolean(6, socio.isAtivoSocio());
+            stmt.setBoolean(6, true);
             
             //atribui o endereço se estiver preenchido
             if (socio.getEndereco() != null) {

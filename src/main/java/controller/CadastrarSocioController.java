@@ -1,45 +1,42 @@
 package controller;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
-import java.sql.Date;
 
+import app.App;
 import dao.ConexaoBanco;
+import dao.DepartamentoDAO;
 import dao.EnderecoDAO;
 import dao.SocioDAO;
 import dao.Socio_DepartamentoDAO;
-import dao.DepartamentoDAO;
 import enums.Departamentos;
 import enums.EstadosBrasil;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.util.StringConverter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import model.Endereco;
 import model.Socio;
 
-public class AlterarSocioController {
+public class CadastrarSocioController {
     //ATRIBUTOS
-    private int idSocioSelecionado;
     private final DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    List<String> listaDepartamentosSocio;
-    Endereco enderecoSocioSelecionado;
-    Socio socioSelecionado;
+    List<String> listaDepartamentosSocio = new ArrayList<>();
 
     //conexões com o banco de dados
     ConexaoBanco conexaoBanco = new ConexaoBanco();
@@ -52,16 +49,7 @@ public class AlterarSocioController {
     private Button botaoAdicionarDepartamento;
 
     @FXML
-    private Button botaoExcluirDepartamento;
-
-    @FXML
-    private ListView<String> campoDepartamentosSocio;
-
-    @FXML
-    private ComboBox<Departamentos> listaDeDepartamentos;
-
-    @FXML
-    private Button botaoAlterarSocio;
+    private Button botaoSalvarSocio;
 
     @FXML
     private TextField campoBairroSocio;
@@ -74,6 +62,9 @@ public class AlterarSocioController {
 
     @FXML
     private TextField campoCpfSocio;
+
+    @FXML
+    private ListView<String> campoDepartamentosSocio;
 
     @FXML
     private TextField campoEmailSocio;
@@ -97,11 +88,14 @@ public class AlterarSocioController {
     private TextField campoTelefoneSocio;
 
     @FXML
+    private ComboBox<Departamentos> listaDeDepartamentos;
+
+    @FXML
     private VBox painelFundo;
 
     //BOTÕES
     @FXML
-    void adicionarDepartamentoAction(ActionEvent event) throws SQLException {
+    void adicionarDepartamentoAction(ActionEvent event) {
         //recupera o valor da string selecionada
         Departamentos departamentoSelecionado = listaDeDepartamentos.getValue();
 
@@ -122,85 +116,64 @@ public class AlterarSocioController {
 
         //preenche a lista de departamentos daquele sócio
         campoDepartamentosSocio.setItems(FXCollections.observableArrayList(listaDepartamentosSocio));
-
-        //cria o registro no banco de dados
-        int idDepartamento = departamentoDAO.buscarIdDepartamento(departamentoSelecionado.name());
-        socio_DepartamentoDAO.vincularSocioDepartamento(idSocioSelecionado, idDepartamento);
     }
 
     @FXML
-    void excluirDepartamentoAction(ActionEvent event) throws SQLException {
-        //recupera o departamento selecionado
-        Departamentos departamentoSelecionado = listaDeDepartamentos.getValue();
-
-        //verifica se o usuário selecionou alguma opção
-        if(departamentoSelecionado == null) {
-            emitirAlerta("Selecione uma opção!", AlertType.ERROR);
-            return;
-        }
-
-        //verifica se ela já está na lista de departamentos do usuário
-        if(!listaDepartamentosSocio.contains(departamentoSelecionado.name())) {
-            emitirAlerta("Este sócio não pertence a este departamento!", AlertType.ERROR);
-            return;
-        }
-
-        //faz a confirmação com o usuário
-        boolean confirmaExclusao = emitirAlertaConfirmacao("Deseja realmente excluir?", AlertType.CONFIRMATION);
-
-        if (confirmaExclusao) {
-            //remove o departamento da lista de departamentos do sócio
-            listaDepartamentosSocio.remove(departamentoSelecionado.name());
-    
-            //preenche a lista de departamentos daquele sócio
-            campoDepartamentosSocio.setItems(FXCollections.observableArrayList(listaDepartamentosSocio));
-    
-            //exclui o registro no banco de dados
-            int idDepartamento = departamentoDAO.buscarIdDepartamento(departamentoSelecionado.name());
-            socio_DepartamentoDAO.desvincularSocioDepartamento(idSocioSelecionado, idDepartamento);
-        } else {
-            System.out.println("Ação cancelada pelo usuário.");
-        }
-        
-    }
-
-    @FXML
-    void alterarAction(ActionEvent event) throws SQLException {
+    void salvarAction(ActionEvent event) throws SQLException {
         if(!verificaFormulario()) { return ;}
+
+        //cria um objeto para armazenar as informações
+        Socio socioCadastro = new Socio();
 
         //altera as informações no objeto sócio
         String cpfLimpo = campoCpfSocio.getText().replaceAll("[^0-9]", "");
-        socioSelecionado.setCpfSocio(cpfLimpo);
-        socioSelecionado.setNomeSocio(campoNomeSocio.getText());
-        socioSelecionado.setEmailSocio(campoEmailSocio.getText());
-        socioSelecionado.setDataNascSocio(Date.valueOf(campoNascimentoSocio.getValue()));
+        socioCadastro.setCpfSocio(cpfLimpo);
+        socioCadastro.setNomeSocio(campoNomeSocio.getText());
+        socioCadastro.setEmailSocio(campoEmailSocio.getText());
+        socioCadastro.setDataNascSocio(Date.valueOf(campoNascimentoSocio.getValue()));
+        socioCadastro.setUsuario(App.usuarioLogado);
 
         //verifica se o telefone esta preenchido
         if(!campoTelefoneSocio.getText().isEmpty()) {  
-            socioSelecionado.setTelefoneSocio(campoTelefoneSocio.getText());
+            socioCadastro.setTelefoneSocio(campoTelefoneSocio.getText());
         } else {
-            socioSelecionado.setTelefoneSocio("");
+            socioCadastro.setTelefoneSocio("");
         }
 
+        //cria um objeto endereço para armazenar o endereço do sócio
+        Endereco endereco = new Endereco();
+
         //altera od dados do endereço
-        enderecoSocioSelecionado.setRua(campoRuaSocio.getText());
-        enderecoSocioSelecionado.setNumero(Integer.parseInt(campoNumeroSocio.getText()));
-        enderecoSocioSelecionado.setBairro(campoBairroSocio.getText());
-        enderecoSocioSelecionado.setCidade(campoCidadeSocio.getText());
-        enderecoSocioSelecionado.setEstado(campoEstadoSocio.getValue().name());
+        endereco.setRua(campoRuaSocio.getText());
+        endereco.setNumero(Integer.parseInt(campoNumeroSocio.getText()));
+        endereco.setBairro(campoBairroSocio.getText());
+        endereco.setCidade(campoCidadeSocio.getText());
+        endereco.setEstado(campoEstadoSocio.getValue().name());
         String cepLimpo = campoCepSocio.getText().replaceAll("[^0-9]", "");
-        enderecoSocioSelecionado.setCep(cepLimpo);
+        endereco.setCep(cepLimpo);
 
-        emitirAlerta("Sócio alterado com sucesso", AlertType.INFORMATION);
+        //cadastra o endereço no banco de dados
+        enderecoDAO.cadastrarEndereco(endereco);
 
-        socioDAO.atualizarSocio(socioSelecionado);
-        enderecoDAO.alterarEndereco(enderecoSocioSelecionado);
+        //atribui o endereço ao sócio
+        socioCadastro.setEndereco(endereco);
 
+        //cadastra o sócio no banco de dados
+        socioDAO.cadastrarSocio(socioCadastro);
+
+        //cadastra os departamentos que foram selecionados
+        for (String departamento : listaDepartamentosSocio) {
+            //cria o registro no banco de dados
+            int idDepartamento = departamentoDAO.buscarIdDepartamento(departamento);
+            socio_DepartamentoDAO.vincularSocioDepartamento(socioCadastro.getIdSocio(), idDepartamento);
+        }
+
+        emitirAlerta("Sócio cadastrado com sucesso", AlertType.INFORMATION);
         Stage stage = (Stage) painelFundo.getScene().getWindow();
         stage.close();
     }
 
-    //FUNÇÕES
+    //MÉTODOS
     //configura os elementos da tela
     public void initialize() {
         //tira o foco dos campos, para o cursos não ficar em nenhum deles
@@ -235,65 +208,7 @@ public class AlterarSocioController {
         //impede do usuario digitar no campo da data
         campoNascimentoSocio.setEditable(false);
     }
-
-    //define qual é o sócio que foi selecionado
-    public void setIdSocioSelecionado(int idSocio) throws SQLException {
-        this.idSocioSelecionado = idSocio;
-        
-        // Carrega o sócio e preenche a tela
-        buscarDadosSocio(); 
-    }
-
-    //preenche os dados nos labels
-    private void buscarDadosSocio() throws SQLException {
-        //busca os dados do sócio selecionado
-        socioSelecionado = socioDAO.buscarPorId(idSocioSelecionado);
-        enderecoSocioSelecionado = enderecoDAO.buscarPorId(socioSelecionado.getEndereco().getIdEndereco());
-        listaDepartamentosSocio = socio_DepartamentoDAO.buscarDepartamentosSocio(idSocioSelecionado);
-
-        //preenche os campos com os dados do sócio 
-        campoNomeSocio.setText(socioSelecionado.getNomeSocio());
-        campoCpfSocio.setText(socioSelecionado.getCpfSocio());
-        campoEmailSocio.setText(socioSelecionado.getEmailSocio());
-        campoTelefoneSocio.setText(socioSelecionado.getTelefoneSocio());
-
-        //preenche o campo da data de nascimento do socio
-        LocalDate localDate = ((java.sql.Date) socioSelecionado.getDataNascSocio()).toLocalDate();        
-        campoNascimentoSocio.setValue(localDate);
-
-        //preenche a lista de departamentos daquele sócio
-        campoDepartamentosSocio.setItems(FXCollections.observableArrayList(listaDepartamentosSocio));
-
-        //preenche os dados do endereço do sócio
-        campoRuaSocio.setText(enderecoSocioSelecionado.getRua());
-        campoNumeroSocio.setText(String.valueOf(enderecoSocioSelecionado.getNumero()));
-        campoBairroSocio.setText(enderecoSocioSelecionado.getBairro());
-        campoCepSocio.setText(enderecoSocioSelecionado.getCep());
-        campoCidadeSocio.setText(enderecoSocioSelecionado.getCidade());
-        campoEstadoSocio.setValue(EstadosBrasil.valueOf(enderecoSocioSelecionado.getEstado()));
-    }
-
-    //emite um alerta
-    private void emitirAlerta(String mensagem, AlertType tipoAlerta) {
-        Alert alerta = new Alert(tipoAlerta);
-        alerta.setTitle("Aviso");
-        alerta.setHeaderText(null);
-        alerta.setContentText(mensagem);
-        alerta.showAndWait();
-    }
-
-    private boolean emitirAlertaConfirmacao(String mensagem, AlertType tipoAlerta) {
-        Alert alerta = new Alert(tipoAlerta);
-        alerta.setTitle("Confirmação");
-        alerta.setHeaderText(null);
-        alerta.setContentText(mensagem);
-
-        Optional<ButtonType> resultado = alerta.showAndWait();
-
-        // Verifica se o usuário clicou no botão OK
-        return resultado.isPresent() && resultado.get() == ButtonType.OK;
-    }
-
+    
     public boolean verificaFormulario() {
         //verifica campos de texto
         if (campoNomeSocio.getText() == null || campoNomeSocio.getText().trim().isEmpty() ||
@@ -366,4 +281,14 @@ public class AlterarSocioController {
         
         return true;
     }
+
+    //emite um alerta
+    private void emitirAlerta(String mensagem, AlertType tipoAlerta) {
+        Alert alerta = new Alert(tipoAlerta);
+        alerta.setTitle("Aviso");
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensagem);
+        alerta.showAndWait();
+    }
+
 }
