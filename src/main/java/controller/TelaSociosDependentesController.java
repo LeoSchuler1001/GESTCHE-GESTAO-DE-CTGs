@@ -52,6 +52,9 @@ public class TelaSociosDependentesController {
     private Button botaoInativarSocio;
 
     @FXML
+    private Button botaoAtivarSocio;
+
+    @FXML
     private Button botaoVerDados;
 
     @FXML
@@ -197,14 +200,52 @@ public class TelaSociosDependentesController {
 
         //verifica se um sócio foi selecionado
         if (socioSelecionado != null) {
+            //verifica se o sócio já está inativo
+            if(!socioSelecionado.isAtivoSocio()) {
+                emitirAlerta("Este sócio já está inativo!", AlertType.ERROR);
+                return;
+            }
+
             //faz a confirmação com o usuário
-            boolean confirmaExclusao = emitirAlertaConfirmacao("Deseja prosseguir com a inativação?", AlertType.CONFIRMATION);
-            if(confirmaExclusao) {
+            boolean confirmaInativacao = emitirAlertaConfirmacao("Deseja prosseguir com a inativação?", AlertType.CONFIRMATION);
+            if(confirmaInativacao) {
                 //pega o id so sócio selecionado
                 int idSocioSelecionado = socioSelecionado.getIdSocio();
 
                 //inativa o socio
                 socioDAO.desativarSocio(idSocioSelecionado);
+                
+                //atualiza a tabela depois da alteração
+                carregarDadosSegundoPlano();
+            }
+        } else {
+            emitirAlerta("Selecione um Sócio!", AlertType.ERROR);
+            return;
+        }
+    }
+
+    
+    @FXML
+    void ativarSocioAction(ActionEvent event) throws SQLException {
+        //verifica qual foi o sócio selecionado
+        SocioResumoDTO socioSelecionado = tabelaResumoSocios.getSelectionModel().getSelectedItem();
+
+        //verifica se um sócio foi selecionado
+        if (socioSelecionado != null) {
+            //verifica se o sócio já está ativo
+            if(socioSelecionado.isAtivoSocio()) {
+                emitirAlerta("Este sócio já está ativo!", AlertType.ERROR);
+                return;
+            }
+
+            //faz a confirmação com o usuário
+            boolean confirmaAtivacao = emitirAlertaConfirmacao("Deseja prosseguir com a ativação?", AlertType.CONFIRMATION);
+            if(confirmaAtivacao) {
+                //pega o id so sócio selecionado
+                int idSocioSelecionado = socioSelecionado.getIdSocio();
+
+                //inativa o socio
+                socioDAO.ativarSocio(idSocioSelecionado);
                 
                 //atualiza a tabela depois da alteração
                 carregarDadosSegundoPlano();

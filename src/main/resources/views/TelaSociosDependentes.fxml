@@ -208,6 +208,11 @@
                         <Insets />
                      </HBox.margin>
                   </Button>
+                  <Button fx:id="botaoAtivarSocio" mnemonicParsing="false" onAction="#ativarSocioAction" styleClass="botoes" text="ATIVAR SÓCIO">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Button>
                </children>
             </HBox>
          </children>

@@ -324,6 +324,16 @@ public class SocioDAO {
         }
     }
 
+    //ativa um socio
+    public void ativarSocio(int id) throws SQLException {
+        String sql = "UPDATE socio SET ativoSocio = TRUE WHERE pk_idSocio = ?";
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        }
+    }
+
     //cria uma lista com o resumo dos sócios
     public List<SocioResumoDTO> listarResumoSocios() throws SQLException {
         String sql = """
