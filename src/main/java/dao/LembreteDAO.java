@@ -23,25 +23,20 @@ public class LembreteDAO {
     //busca todos os lembretes que devem aparecer no dia de hoje
     public List<Lembrete> listarLembretesHoje(int idUsuario) throws SQLException {
         String sql = """
-                SELECT * FROM lembrete WHERE 
-                    CURRENT_DATE BETWEEN dataInicioLembrete AND dataFimLembrete
-                    AND (
-                        (LOWER(periodicidadeLembrete) IN ('unico', 'único', 'uma vez') 
-                        AND dataInicioLembrete = CURRENT_DATE)
-                        OR LOWER(periodicidadeLembrete) IN ('diario', 'diário')
-                        OR (LOWER(periodicidadeLembrete) = 'semanal' 
-                            AND EXTRACT(DOW FROM CURRENT_DATE) = EXTRACT(DOW FROM dataInicioLembrete))
-                        OR (LOWER(periodicidadeLembrete) = 'quinzenal' 
-                            AND (CURRENT_DATE - dataInicioLembrete) % 14 = 0)
-                        OR (LOWER(periodicidadeLembrete) = 'mensal' 
-                            AND EXTRACT(DAY FROM CURRENT_DATE) = EXTRACT(DAY FROM dataInicioLembrete))
-                        OR (LOWER(periodicidadeLembrete) = 'anual' 
-                            AND EXTRACT(DAY FROM CURRENT_DATE) = EXTRACT(DAY FROM dataInicioLembrete)
-                            AND EXTRACT(MONTH FROM CURRENT_DATE) = EXTRACT(MONTH FROM dataInicioLembrete))
-                    )
-                    AND fk_idUsuario = ?
-                    AND pagoLembrete = false;
-                """;
+                SELECT * FROM lembrete 
+                WHERE CURRENT_DATE BETWEEN dataInicioLembrete AND dataFimLembrete
+                AND (
+                        (periodicidadeLembrete = 'UMA VEZ' AND dataInicioLembrete = CURRENT_DATE)
+                        OR (periodicidadeLembrete = 'DIÁRIO')
+                        OR (periodicidadeLembrete = 'SEMANAL' AND EXTRACT(DOW FROM CURRENT_DATE) = EXTRACT(DOW FROM dataInicioLembrete))
+                        OR (periodicidadeLembrete = 'QUINZENAL' AND (CURRENT_DATE - dataInicioLembrete) % 14 = 0)
+                        OR (periodicidadeLembrete = 'MENSAL' AND EXTRACT(DAY FROM CURRENT_DATE) = EXTRACT(DAY FROM dataInicioLembrete))
+                        OR (periodicidadeLembrete = 'ANUAL' AND EXTRACT(DAY FROM CURRENT_DATE) = EXTRACT(DAY FROM dataInicioLembrete)
+                                                    AND EXTRACT(MONTH FROM CURRENT_DATE) = EXTRACT(MONTH FROM dataInicioLembrete))
+                )
+                AND fk_idUsuario = ?
+                AND pagoLembrete = false;
+        """;
         
         List<Lembrete> listaLembretes = new ArrayList<>();
 
