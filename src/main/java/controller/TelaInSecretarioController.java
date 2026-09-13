@@ -178,7 +178,7 @@ public class TelaInSecretarioController {
                 //cria as listas que irão armazenar os dados para preencher as tabelas
                 List<String> listaEmDia = socioDAO.listarSociosEmDia();
                 List<String> listaPendentes = socioDAO.listarSociosPendentes();
-                List<Lembrete> listaLembretes = lembreteDAO.listarLembretesHoje();
+                List<Lembrete> listaLembretes = lembreteDAO.listarLembretesHoje(App.usuarioLogado.getIdUsuario());
 
                 // Atualiza as tabelas e os mostradores
                 Platform.runLater(() -> {
@@ -199,7 +199,7 @@ public class TelaInSecretarioController {
                         tabelaSociosInadimplentes.setPlaceholder(new Label("Nenhum sócio inadimplente."));
                     }
                     if (listaLembretes.isEmpty()) {
-                        tabelaLembretes.setPlaceholder(new Label("Nenhum lembrete para hoje."));
+                        tabelaLembretes.setPlaceholder(new javafx.scene.control.Label("Sem lembretes."));
                     }
                 });
 

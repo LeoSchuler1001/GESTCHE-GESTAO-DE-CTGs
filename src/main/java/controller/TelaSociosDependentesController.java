@@ -439,12 +439,20 @@ public class TelaSociosDependentesController {
 
                 //cria as listas que irão armazenar os dados para preencher as tabelas
                 List<SocioResumoDTO> listalistaResumoSocios = socioDAO.listarResumoSocios();
-                List<Lembrete> listaLembretes = lembreteDAO.listarLembretesHoje();
+                List<Lembrete> listaLembretes = lembreteDAO.listarLembretesHoje(App.usuarioLogado.getIdUsuario());
 
                 // Atualiza as tabelas e os mostradores
                 Platform.runLater(() -> {
                     tabelaResumoSocios.setItems(FXCollections.observableArrayList(listalistaResumoSocios));
                     tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretes));
+
+                    if (listaLembretes.isEmpty()) {
+                        tabelaLembretes.setPlaceholder(new javafx.scene.control.Label("Sem lembretes."));
+                    }
+
+                    if (listalistaResumoSocios.isEmpty()) {
+                        tabelaResumoSocios.setPlaceholder(new javafx.scene.control.Label("Sem sócios cadastrados."));
+                    }
                 });
 
                 return null;

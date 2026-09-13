@@ -21,7 +21,7 @@ public class LembreteDAO {
 
     //MÉTODOS
     //busca todos os lembretes que devem aparecer no dia de hoje
-    public List<Lembrete> listarLembretesHoje() throws SQLException {
+    public List<Lembrete> listarLembretesHoje(int idUsuario) throws SQLException {
         String sql = """
                 SELECT * FROM lembrete WHERE 
                     CURRENT_DATE BETWEEN dataInicioLembrete AND dataFimLembrete
@@ -38,15 +38,42 @@ public class LembreteDAO {
                         OR (LOWER(periodicidadeLembrete) = 'anual' 
                             AND EXTRACT(DAY FROM CURRENT_DATE) = EXTRACT(DAY FROM dataInicioLembrete)
                             AND EXTRACT(MONTH FROM CURRENT_DATE) = EXTRACT(MONTH FROM dataInicioLembrete))
-                    );
+                    )
+                    AND fk_idUsuario = ?
+                    AND pagoLembrete = false;
                 """;
         
         List<Lembrete> listaLembretes = new ArrayList<>();
 
-        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                listaLembretes.add(montarObjLembrete(rs));
+        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, idUsuario);
+            
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há algum dependente com esse id
+                while (rs.next()) {
+                    listaLembretes.add(montarObjLembrete(rs));
+                }
+            }
+        }
+
+        return listaLembretes;
+    }
+
+    public List<Lembrete> listarLembretesUsuario(Usuario usuario) throws SQLException {
+        String sql = "SELECT * FROM lembrete WHERE fk_idUsuario = ? ORDER BY pagoLembrete ASC";
+
+        List<Lembrete> listaLembretes = new ArrayList<>();
+
+        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, usuario.getIdUsuario());
+            
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há algum dependente com esse id
+                while (rs.next()) {
+                    listaLembretes.add(montarObjLembrete(rs));
+                }
             }
         }
 

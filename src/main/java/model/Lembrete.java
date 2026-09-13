@@ -2,6 +2,12 @@ package model;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.text.SimpleDateFormat;
+
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class Lembrete {
     //ATRIBUTOS
@@ -12,11 +18,11 @@ public class Lembrete {
     private String periodicidadeLembrete;
     private String descricaoLembrete;
     private Time horarioLembrete;
-    private boolean pagoLembrete;
+    private BooleanProperty pagoLembrete = new SimpleBooleanProperty(false);
     private Usuario usuario;
 
     //CONSTRUTORES
-    public Lembrete(int idLembrete, String nomeLembrete, Date dataInicioLembrete, Date dataFimLembrete, String periodicidadeLembrete, String descricaoLembrete, Time horarioLembrete, boolean pagoLembrete, Usuario usuario) {
+    public Lembrete(int idLembrete, String nomeLembrete, Date dataInicioLembrete, Date dataFimLembrete, String periodicidadeLembrete, String descricaoLembrete, Time horarioLembrete, BooleanProperty pagoLembrete, Usuario usuario) {
         this.idLembrete = idLembrete;
         this.nomeLembrete = nomeLembrete;
         this.dataInicioLembrete = dataInicioLembrete;
@@ -28,7 +34,7 @@ public class Lembrete {
         this.usuario = usuario;
     }
 
-    public Lembrete(String nomeLembrete, Date dataInicioLembrete, Date dataFimLembrete, String periodicidadeLembrete, String descricaoLembrete, Time horarioLembrete, boolean pagoLembrete, Usuario usuario) {
+    public Lembrete(String nomeLembrete, Date dataInicioLembrete, Date dataFimLembrete, String periodicidadeLembrete, String descricaoLembrete, Time horarioLembrete, BooleanProperty pagoLembrete, Usuario usuario) {
         this.nomeLembrete = nomeLembrete;
         this.dataInicioLembrete = dataInicioLembrete;
         this.dataFimLembrete = dataFimLembrete;
@@ -100,11 +106,19 @@ public class Lembrete {
     }
 
     public boolean isPagoLembrete() {
+        return pagoLembrete.get();
+    }
+
+    public void setPagoLembrete(boolean pago) {
+        this.pagoLembrete.set(pago);
+    }
+
+    public BooleanProperty pagoLembreteProperty() {
         return pagoLembrete;
     }
 
-    public void setPagoLembrete(boolean pagoLembrete) {
-        this.pagoLembrete = pagoLembrete;
+    public void setPagoLembreteProperty(BooleanProperty pago) {
+        this.pagoLembrete.set(pago.get());
     }
 
     public Usuario getUsuario() {
@@ -113,5 +127,25 @@ public class Lembrete {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public StringProperty dataInicioFormatada() {
+        if (dataInicioLembrete != null) {
+            SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
+            String dataFormatada = formatador.format(dataInicioLembrete);
+            
+            return new SimpleStringProperty(dataFormatada);
+        }
+        return new SimpleStringProperty("");
+    }
+
+    public StringProperty dataFimFormatada() {
+        if (dataFimLembrete != null) {
+            SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
+            String dataFormatada = formatador.format(dataFimLembrete);
+            
+            return new SimpleStringProperty(dataFormatada);
+        }
+        return new SimpleStringProperty("");
     }
 }

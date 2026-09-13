@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +37,7 @@ public class TelaDepartamentosController {
     //conexão com o banco de dados
     ConexaoBanco conexaoBanco = new ConexaoBanco();
     DepartamentoDAO departamentoDAO = new DepartamentoDAO(conexaoBanco);
+    List<Lembrete> listaLembretes = new ArrayList<>();
 
     @FXML
     private Button botaoAlterar;
@@ -241,12 +243,20 @@ public class TelaDepartamentosController {
 
                 //cria as listas que irão armazenar os dados para preencher as tabelas
                 List<Departamento> listaDepartamentos = departamentoDAO.listarTodos();
-                List<Lembrete> listaLembretes = lembreteDAO.listarLembretesHoje();
+                listaLembretes = lembreteDAO.listarLembretesHoje(App.usuarioLogado.getIdUsuario());
 
                 // Atualiza as tabelas e os mostradores
                 Platform.runLater(() -> {
                     tabelaDepartamento.setItems(FXCollections.observableArrayList(listaDepartamentos));
                     tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretes));
+
+                    if (listaLembretes.isEmpty()) {
+                        tabelaLembretes.setPlaceholder(new javafx.scene.control.Label("Sem lembretes."));
+                    }
+
+                    if (listaDepartamentos.isEmpty()) {
+                        tabelaDepartamento.setPlaceholder(new javafx.scene.control.Label("Sem departamentos cadastrados."));
+                    }
                 });
 
                 return null;
