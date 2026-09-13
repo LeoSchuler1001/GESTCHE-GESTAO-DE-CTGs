@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,10 @@ import model.Lembrete;
 
 public class TelaLembretesController {
     //ATRIBUTOS
+    //cria a conexão com o banco de dados
+    ConexaoBanco conexao = new ConexaoBanco();
+    LembreteDAO lembreteDAO = new LembreteDAO(conexao);
+    
     @FXML
     private Button botaoDetalhar;
     
@@ -134,8 +139,31 @@ public class TelaLembretesController {
     }
 
     @FXML
-    void concluidoAction(ActionEvent event) {
+    void concluidoAction(ActionEvent event) throws SQLException {
+        //verifica qual foi o lembrete selecionado
+        Lembrete lembreteSelecionado = tabelaInformacoesLembretes.getSelectionModel().getSelectedItem();
 
+        //verifica se um lembrete foi selecionado
+        if(lembreteSelecionado != null) {
+            //verifica se o sócio já está ativo
+            if(lembreteSelecionado.isPagoLembrete()) {
+                emitirAlerta("Este lembrete já está conluído!", AlertType.ERROR);
+                return;
+            }
+
+            Boolean confirmaExclusao = emitirAlertaConfirmacao("Deseja marcar como concluído?", AlertType.CONFIRMATION);
+
+            if(confirmaExclusao) {
+                lembreteDAO.marcarConcluido(lembreteSelecionado);
+
+                //atualiza a tabela depois da alteração
+                carregarDadosSegundoPlano();
+
+                emitirAlerta("Lembrete concluído!", AlertType.INFORMATION);
+            }
+        } else {
+            emitirAlerta("Selecione um departamento!", AlertType.ERROR);
+        }
     }
 
     @FXML
@@ -144,8 +172,25 @@ public class TelaLembretesController {
     }
 
     @FXML
-    void excluirAction(ActionEvent event) {
+    void excluirAction(ActionEvent event) throws SQLException {
+        //verifica qual foi o lembrete selecionado
+        Lembrete lembreteSelecionado = tabelaInformacoesLembretes.getSelectionModel().getSelectedItem();
 
+        //verifica se um lembrete foi selecionado
+        if(lembreteSelecionado != null) {
+            Boolean confirmaExclusao = emitirAlertaConfirmacao("Deseja prosseguir com a exclusão?", AlertType.CONFIRMATION);
+
+            if(confirmaExclusao) {
+                lembreteDAO.excluirLembrete(lembreteSelecionado);
+
+                //atualiza a tabela depois da alteração
+                carregarDadosSegundoPlano();
+
+                emitirAlerta("Lembrete excluído!", AlertType.INFORMATION);
+            }
+        } else {
+            emitirAlerta("Selecione um departamento!", AlertType.ERROR);
+        }
     }
 
     //MÉTODOS
@@ -192,10 +237,6 @@ public class TelaLembretesController {
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                //cria a conexão com o banco de dados
-                ConexaoBanco conexao = new ConexaoBanco();
-                LembreteDAO lembreteDAO = new LembreteDAO(conexao);
-
                 //cria as listas que irão armazenar os dados para preencher as tabelas
                 List<Lembrete> listaTodosLembretes = lembreteDAO.listarLembretesUsuario(App.usuarioLogado);
                 List<Lembrete> listaLembretesHoje = lembreteDAO.listarLembretesHoje(App.usuarioLogado.getIdUsuario());

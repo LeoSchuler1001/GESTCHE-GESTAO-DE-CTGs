@@ -80,6 +80,26 @@ public class LembreteDAO {
         return listaLembretes;
     }
 
+    //exclui um lembrete
+    public void excluirLembrete(Lembrete lembrete) throws SQLException {
+        String sql = "DELETE FROM lembrete WHERE pk_idLembrete = ?";
+
+        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, lembrete.getIdLembrete());
+            stmt.executeUpdate();
+        }
+    }
+
+    //marca como concluido um lembrete
+    public  void marcarConcluido(Lembrete lembrete) throws SQLException {
+        String sql = "UPDATE lembrete SET pagoLembrete = TRUE WHERE pk_idLembrete = ?";
+
+        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, lembrete.getIdLembrete());
+            stmt.executeUpdate();
+        }
+    }
+
     //método auxiliar, que vai montar o objeto lembrete após a consulta sql
     private Lembrete montarObjLembrete(ResultSet rs) throws SQLException {
         //cria o objeto
