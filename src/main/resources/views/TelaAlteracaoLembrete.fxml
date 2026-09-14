@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="painelFundo" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="600.0" style="-fx-background-color: #D9D9D9;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AlterarLembreteController">
+   <children>
+      <ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="600.0" vbarPolicy="NEVER">
+         <content>
+            <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="600.0">
+               <children>
+                  <Label text="ALTERAR LEMBRETE" textFill="#3c4641">
+                     <font>
+                        <Font name="Gadugi" size="30.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <GridPane prefHeight="178.0" prefWidth="560.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="292.79998779296875" minWidth="10.0" prefWidth="109.59998779296875" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="489.1999633789062" minWidth="10.0" prefWidth="451.2000122070312" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label styleClass="textos" text="Nome: " />
+                        <Label styleClass="textos" text="Descrição:" GridPane.rowIndex="1" />
+                        <TextField fx:id="campoNomeLembrete" styleClass="campoPreenchimento" GridPane.columnIndex="1" />
+                        <TextField fx:id="campoDescricaoLembrete" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label styleClass="textos" text="Início:" GridPane.rowIndex="2">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </Label>
+                        <DatePicker fx:id="campoInicioLembrete" prefHeight="26.0" prefWidth="462.0" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label prefHeight="26.0" prefWidth="138.0" styleClass="textos" text="Periodicidade:" GridPane.rowIndex="3">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </Label>
+                        <ComboBox fx:id="campoPeriodicidadeLembrete" prefHeight="26.0" prefWidth="453.0" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                     </children>
+                     <VBox.margin>
+                        <Insets left="20.0" right="20.0" top="20.0" />
+                     </VBox.margin>
+                  </GridPane>
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="292.79998779296875" minWidth="10.0" prefWidth="126.99998779296874" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="491.2000274658203" minWidth="10.0" prefWidth="472.60001220703117" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </GridPane>
+                  <HBox fx:id="botaoRegistrarPagamento" alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="botaoFechar" mnemonicParsing="false" onAction="#fecharAction" styleClass="botoes" text="FECHAR" />
+                        <Button fx:id="botaoSalvar" mnemonicParsing="false" onAction="#salvarAction" styleClass="botoes" text="SALVAR">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</VBox>

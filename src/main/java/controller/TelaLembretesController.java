@@ -137,13 +137,29 @@ public class TelaLembretesController {
     }
 
     @FXML
-    void detalharAction(ActionEvent event) {
+    void alterarAction(ActionEvent event) throws IOException {
+        //abre a tela de cadastro de lembretes
+        //carregamento do fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaAlteracaoLembrete.fxml"));
+        Parent root = fxmlLoader.load();
 
-    }
+        //cria e exibe a tela de alteração
+        Stage telaExibicao = new Stage();
+        telaExibicao.setTitle("Alterar Lembrete");
+        telaExibicao.setScene(new Scene(root));
 
-    @FXML
-    void alterarAction(ActionEvent event) {
+        //proibe que o usuario possa alterar o tamanho da tela
+        telaExibicao.setResizable(false);
 
+        //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+        telaExibicao.initModality(Modality.WINDOW_MODAL);
+        telaExibicao.initOwner(tabelaInformacoesLembretes.getScene().getWindow());
+
+        //abre a tela e aguarda o usuário fechar
+        telaExibicao.showAndWait();
+
+        //atualiza a tabela depois do cadastro
+        carregarDadosSegundoPlano();
     }
 
     

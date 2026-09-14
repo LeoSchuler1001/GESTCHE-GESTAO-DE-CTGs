@@ -7,11 +7,14 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Optional;
+
 import app.App;
 import dao.ConexaoBanco;
 import dao.LembreteDAO;
+import enums.EstadosBrasil;
 import enums.PeriodicidadeLembretes;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -25,14 +28,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import model.Departamento;
 import model.Lembrete;
 
-public class CadastrarLembreteController {
+public class AlterarLembreteController {
     //ATRIBUTOS
     private final DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    Locale localBrasil = new Locale("pt", "BR");    
+    Locale localBrasil = new Locale("pt", "BR");
     ConexaoBanco conexaoBanco = new ConexaoBanco();
     LembreteDAO lembreteDAO = new LembreteDAO(conexaoBanco);
+    private Lembrete lembreteSelecionado;
 
     @FXML
     private Button botaoFechar;
@@ -58,6 +63,7 @@ public class CadastrarLembreteController {
     @FXML
     private VBox painelFundo;
 
+    //BOTÕES
     @FXML
     void fecharAction(ActionEvent event) {
         Stage stage = (Stage) painelFundo.getScene().getWindow();
@@ -69,28 +75,25 @@ public class CadastrarLembreteController {
         if(!verificaFormulario()) { return; }
 
         //faz a confirmação com o usuário
-        boolean confirmaCadastro = emitirAlertaConfirmacao("Deseja realmente cadastrar?", AlertType.CONFIRMATION);
+        boolean confirmaCadastro = emitirAlertaConfirmacao("Deseja realmente alterar?", AlertType.CONFIRMATION);
 
         if(confirmaCadastro) {
-            //cria um objeto lembrete
-            Lembrete lembrete = new Lembrete();
-
             //atribui as informações ao objeto lembrete
-            lembrete.setNomeLembrete(campoNomeLembrete.getText());
-            lembrete.setDescricaoLembrete(campoDescricaoLembrete.getText());
+            lembreteSelecionado.setNomeLembrete(campoNomeLembrete.getText());
+            lembreteSelecionado.setDescricaoLembrete(campoDescricaoLembrete.getText());
             
-            lembrete.setDataInicioLembrete(Date.valueOf(campoInicioLembrete.getValue()));
-            lembrete.setUsuario(App.usuarioLogado);
+            lembreteSelecionado.setDataInicioLembrete(Date.valueOf(campoInicioLembrete.getValue()));
+            lembreteSelecionado.setUsuario(App.usuarioLogado);
 
             //recupera a hora do sistema
             LocalTime horarioAtual = LocalTime.now();
-            lembrete.setHorarioLembrete(java.sql.Time.valueOf(horarioAtual));
+            lembreteSelecionado.setHorarioLembrete(java.sql.Time.valueOf(horarioAtual));
 
-            lembrete.setPeriodicidadeLembrete(campoPeriodicidadeLembrete.getValue());
+            lembreteSelecionado.setPeriodicidadeLembrete(campoPeriodicidadeLembrete.getValue());
 
-            lembreteDAO.cadastrarLembrete(lembrete);
+            lembreteDAO.atualizarLembrete(lembreteSelecionado);
 
-            emitirAlerta("Débito cadastrado com sucesso", AlertType.INFORMATION);
+            emitirAlerta("lembrete alterado com sucesso", AlertType.INFORMATION);
             
             Stage stage = (Stage) painelFundo.getScene().getWindow();
             stage.close();
@@ -127,6 +130,42 @@ public class CadastrarLembreteController {
         for (PeriodicidadeLembretes periodicidade : PeriodicidadeLembretes.values()) {
             campoPeriodicidadeLembrete.getItems().add(periodicidade.getDescricao());
         }
+    }
+
+    public void carregarDadosEmSegundoPlano(Lembrete lembreteSelecionado) {
+        this.lembreteSelecionado = lembreteSelecionado;
+
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                buscarDadosLembrete();
+                return null;
+            }
+        };
+
+        //mostra um aviso caso os dados não possam ser carregados
+        task.setOnFailed(e -> {
+            Throwable ex = task.getException();
+            ex.printStackTrace();
+            Platform.runLater(() -> emitirAlerta("Erro ao carregar os dados.", AlertType.ERROR));
+        });
+
+        new Thread(task).start(); 
+    }
+
+    //preenche os dados nos labels
+    private void buscarDadosLembrete() throws SQLException {
+        //preenche os campos com os dados do departamento
+        campoNomeLembrete.setText(lembreteSelecionado.getNomeLembrete());
+        campoDescricaoLembrete.setText(lembreteSelecionado.getDescricaoLembrete());
+
+        //preenche o campo da data de inicio do lembrete
+        LocalDate localDate = ((java.sql.Date) lembreteSelecionado.getDataInicioLembrete()).toLocalDate();        
+        campoInicioLembrete.setValue(localDate);
+
+        
+        campoPeriodicidadeLembrete.setValue(lembreteSelecionado.getPeriodicidadeLembrete());
+
     }
 
     //método auxiliar para emitir alertas

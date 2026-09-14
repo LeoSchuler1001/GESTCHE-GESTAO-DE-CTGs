@@ -219,7 +219,7 @@ public class DetalheDebitoController {
         String valor = formatoMoeda.format(valorDebito);
         campoValorDebito.setText(valor);
 
-        //preenche o campo da data de nascimento do socio
+        //preenche o campo da data de vencimento do debito
         LocalDate localDate = ((java.sql.Date) debitoSelecionado.getVencimentoDebito()).toLocalDate();        
         campoVencimentoDebito.setValue(localDate);
     }
