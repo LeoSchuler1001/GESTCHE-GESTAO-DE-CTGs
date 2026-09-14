@@ -115,11 +115,10 @@ CREATE TABLE lembrete(
     pk_idLembrete SERIAL PRIMARY KEY,
     nomeLembrete VARCHAR(100) NOT NULL,
     dataInicioLembrete DATE NOT NULL,
-    dataFimLembrete DATE NOT NULL,
     periodicidadeLembrete VARCHAR(100) NOT NULL,
     descricaoLembrete TEXT,
     horarioLembrete TIME NOT NULL,
-    pagoLembrete BOOLEAN NOT NULL DEFAULT FALSE,
+    ativoLembrete BOOLEAN NOT NULL DEFAULT FALSE,
     fk_idUsuario INT,
 
     CONSTRAINT fk_lembrete_usuario FOREIGN KEY(fk_idUsuario) REFERENCES usuario(pk_idUsuario) ON DELETE SET NULL

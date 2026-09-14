@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,19 +24,20 @@ public class LembreteDAO {
     //busca todos os lembretes que devem aparecer no dia de hoje
     public List<Lembrete> listarLembretesHoje(int idUsuario) throws SQLException {
         String sql = """
-                SELECT * FROM lembrete 
-                WHERE CURRENT_DATE BETWEEN dataInicioLembrete AND dataFimLembrete
+                SELECT *
+                FROM lembrete
+                WHERE fk_idUsuario = ?
+                AND ativoLembrete = TRUE
+                AND dataInicioLembrete <= (NOW() AT TIME ZONE 'America/Sao_Paulo')::date
                 AND (
-                        (periodicidadeLembrete = 'UMA VEZ' AND dataInicioLembrete = CURRENT_DATE)
-                        OR (periodicidadeLembrete = 'DIÁRIO')
-                        OR (periodicidadeLembrete = 'SEMANAL' AND EXTRACT(DOW FROM CURRENT_DATE) = EXTRACT(DOW FROM dataInicioLembrete))
-                        OR (periodicidadeLembrete = 'QUINZENAL' AND (CURRENT_DATE - dataInicioLembrete) % 14 = 0)
-                        OR (periodicidadeLembrete = 'MENSAL' AND EXTRACT(DAY FROM CURRENT_DATE) = EXTRACT(DAY FROM dataInicioLembrete))
-                        OR (periodicidadeLembrete = 'ANUAL' AND EXTRACT(DAY FROM CURRENT_DATE) = EXTRACT(DAY FROM dataInicioLembrete)
-                                                    AND EXTRACT(MONTH FROM CURRENT_DATE) = EXTRACT(MONTH FROM dataInicioLembrete))
-                )
-                AND fk_idUsuario = ?
-                AND pagoLembrete = false;
+                        (periodicidadeLembrete = 'UMA VEZ' AND dataInicioLembrete = (NOW() AT TIME ZONE 'America/Sao_Paulo')::date)
+                    OR (periodicidadeLembrete = 'DIÁRIO')
+                    OR (periodicidadeLembrete = 'SEMANAL' AND ((NOW() AT TIME ZONE 'America/Sao_Paulo')::date - dataInicioLembrete) % 7 = 0)
+                    OR (periodicidadeLembrete = 'QUINZENAL' AND ((NOW() AT TIME ZONE 'America/Sao_Paulo')::date - dataInicioLembrete) % 15 = 0)
+                    OR (periodicidadeLembrete = 'MENSAL' AND EXTRACT(DAY FROM (NOW() AT TIME ZONE 'America/Sao_Paulo')::date) = EXTRACT(DAY FROM dataInicioLembrete))
+                    OR (periodicidadeLembrete = 'ANUAL' AND EXTRACT(MONTH FROM (NOW() AT TIME ZONE 'America/Sao_Paulo')::date) = EXTRACT(MONTH FROM dataInicioLembrete) 
+                                                        AND EXTRACT(DAY FROM (NOW() AT TIME ZONE 'America/Sao_Paulo')::date) = EXTRACT(DAY FROM dataInicioLembrete))
+                );
         """;
         
         List<Lembrete> listaLembretes = new ArrayList<>();
@@ -56,7 +58,7 @@ public class LembreteDAO {
     }
 
     public List<Lembrete> listarLembretesUsuario(Usuario usuario) throws SQLException {
-        String sql = "SELECT * FROM lembrete WHERE fk_idUsuario = ? ORDER BY pagoLembrete ASC";
+        String sql = "SELECT * FROM lembrete WHERE fk_idUsuario = ? ORDER BY ativoLembrete ASC";
 
         List<Lembrete> listaLembretes = new ArrayList<>();
 
@@ -95,6 +97,31 @@ public class LembreteDAO {
         }
     }
 
+    //cadastra um lembrete
+    public void cadastrarLembrete(Lembrete lembrete) throws SQLException {
+        String sql = "INSERT INTO lembrete (nomeLembrete, dataInicioLembrete, periodicidadeLembrete, descricaoLembrete, horarioLembrete, fk_idUsuario) VALUES (?, ?, ?, ?, ?, ?)";
+    
+        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, lembrete.getNomeLembrete());
+            stmt.setDate(2, new java.sql.Date(lembrete.getDataInicioLembrete().getTime()));
+            stmt.setString(3, lembrete.getPeriodicidadeLembrete());
+            stmt.setString(4, lembrete.getDescricaoLembrete());
+            stmt.setTime(5, lembrete.getHorarioLembrete());
+            stmt.setInt(6, lembrete.getUsuario().getIdUsuario());
+
+
+            //executa o comando sql no banco de dados
+            stmt.executeUpdate();
+
+            // Atribui o ID gerado pelo SERIAL de volta ao objeto Usuario
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    lembrete.setIdLembrete(rs.getInt(1));
+                }
+            }
+        }
+    }
+
     //método auxiliar, que vai montar o objeto lembrete após a consulta sql
     private Lembrete montarObjLembrete(ResultSet rs) throws SQLException {
         //cria o objeto
@@ -104,11 +131,10 @@ public class LembreteDAO {
         lembrete.setIdLembrete(rs.getInt("pk_idLembrete"));
         lembrete.setNomeLembrete(rs.getString("nomeLembrete"));
         lembrete.setDataInicioLembrete(rs.getDate("dataInicioLembrete"));
-        lembrete.setDataFimLembrete(rs.getDate("dataFimLembrete"));
         lembrete.setPeriodicidadeLembrete(rs.getString("periodicidadeLembrete"));
         lembrete.setDescricaoLembrete(rs.getString("descricaoLembrete"));
         lembrete.setHorarioLembrete(rs.getTime("horarioLembrete"));
-        lembrete.setPagoLembrete(rs.getBoolean("pagoLembrete"));
+        lembrete.setAtivoLembrete(rs.getBoolean("ativoLembrete"));
 
         //verifica qual é a chave estrangeira do usuário e atribui o objeto ao socio
         int idUsuario = rs.getInt("fk_idUsuario");

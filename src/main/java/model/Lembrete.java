@@ -14,34 +14,31 @@ public class Lembrete {
     private int idLembrete;
     private String nomeLembrete;
     private Date dataInicioLembrete;
-    private Date dataFimLembrete;
     private String periodicidadeLembrete;
     private String descricaoLembrete;
     private Time horarioLembrete;
-    private BooleanProperty pagoLembrete = new SimpleBooleanProperty(false);
+    private BooleanProperty ativoLembrete = new SimpleBooleanProperty(true);
     private Usuario usuario;
 
     //CONSTRUTORES
-    public Lembrete(int idLembrete, String nomeLembrete, Date dataInicioLembrete, Date dataFimLembrete, String periodicidadeLembrete, String descricaoLembrete, Time horarioLembrete, BooleanProperty pagoLembrete, Usuario usuario) {
+    public Lembrete(int idLembrete, String nomeLembrete, Date dataInicioLembrete, String periodicidadeLembrete, String descricaoLembrete, Time horarioLembrete, BooleanProperty ativoLembrete, Usuario usuario) {
         this.idLembrete = idLembrete;
         this.nomeLembrete = nomeLembrete;
         this.dataInicioLembrete = dataInicioLembrete;
-        this.dataFimLembrete = dataFimLembrete;
         this.periodicidadeLembrete = periodicidadeLembrete;
         this.descricaoLembrete = descricaoLembrete;
         this.horarioLembrete = horarioLembrete;
-        this.pagoLembrete = pagoLembrete;
+        this.ativoLembrete = ativoLembrete;
         this.usuario = usuario;
     }
 
-    public Lembrete(String nomeLembrete, Date dataInicioLembrete, Date dataFimLembrete, String periodicidadeLembrete, String descricaoLembrete, Time horarioLembrete, BooleanProperty pagoLembrete, Usuario usuario) {
+    public Lembrete(String nomeLembrete, Date dataInicioLembrete, String periodicidadeLembrete, String descricaoLembrete, Time horarioLembrete, BooleanProperty ativoLembrete, Usuario usuario) {
         this.nomeLembrete = nomeLembrete;
         this.dataInicioLembrete = dataInicioLembrete;
-        this.dataFimLembrete = dataFimLembrete;
         this.periodicidadeLembrete = periodicidadeLembrete;
         this.descricaoLembrete = descricaoLembrete;
         this.horarioLembrete = horarioLembrete;
-        this.pagoLembrete = pagoLembrete;
+        this.ativoLembrete = ativoLembrete;
         this.usuario = usuario;
     }
     
@@ -73,14 +70,6 @@ public class Lembrete {
         this.dataInicioLembrete = dataInicioLembrete;
     }
 
-    public Date getDataFimLembrete() {
-        return dataFimLembrete;
-    }
-
-    public void setDataFimLembrete(Date dataFimLembrete) {
-        this.dataFimLembrete = dataFimLembrete;
-    }
-
     public String getPeriodicidadeLembrete() {
         return periodicidadeLembrete;
     }
@@ -105,20 +94,20 @@ public class Lembrete {
         this.horarioLembrete = horarioLembrete;
     }
 
-    public boolean isPagoLembrete() {
-        return pagoLembrete.get();
+    public boolean isAtivoLembrete() {
+        return ativoLembrete.get();
     }
 
-    public void setPagoLembrete(boolean pago) {
-        this.pagoLembrete.set(pago);
+    public void setAtivoLembrete(boolean ativo) {
+        this.ativoLembrete.set(ativo);
     }
 
-    public BooleanProperty pagoLembreteProperty() {
-        return pagoLembrete;
+    public BooleanProperty ativoLembreteProperty() {
+        return ativoLembrete;
     }
 
-    public void setPagoLembreteProperty(BooleanProperty pago) {
-        this.pagoLembrete.set(pago.get());
+    public void setAtivoLembreteProperty(BooleanProperty ativo) {
+        this.ativoLembrete.set(ativo.get());
     }
 
     public Usuario getUsuario() {
@@ -133,16 +122,6 @@ public class Lembrete {
         if (dataInicioLembrete != null) {
             SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
             String dataFormatada = formatador.format(dataInicioLembrete);
-            
-            return new SimpleStringProperty(dataFormatada);
-        }
-        return new SimpleStringProperty("");
-    }
-
-    public StringProperty dataFimFormatada() {
-        if (dataFimLembrete != null) {
-            SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
-            String dataFormatada = formatador.format(dataFimLembrete);
             
             return new SimpleStringProperty(dataFormatada);
         }

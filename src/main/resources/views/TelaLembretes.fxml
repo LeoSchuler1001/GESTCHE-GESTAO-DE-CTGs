@@ -167,12 +167,11 @@
          <children>
             <TableView fx:id="tabelaInformacoesLembretes" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="900.0">
               <columns>
-                <TableColumn fx:id="colunaNome" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="NOME" />
+                <TableColumn fx:id="colunaNome" maxWidth="230.0" minWidth="230.0" prefWidth="230.0" text="NOME" />
                 <TableColumn fx:id="colunaInicio" maxWidth="80.0" minWidth="80.0" text="INÍCIO" />
-                  <TableColumn fx:id="colunaFim" maxWidth="80.0" minWidth="80.0" text="FIM" />
                   <TableColumn fx:id="colunaPeriodicidade" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="PERIODICIDADE" />
                   <TableColumn fx:id="colunaDescricao" maxWidth="340.0" minWidth="340.0" prefWidth="340.0" text="DESCRIÇÃO" />
-                  <TableColumn fx:id="colunaConcluido" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="CONCLUÍDO" />
+                  <TableColumn fx:id="colunaAtivo" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="ATIVO" />
               </columns>
                <VBox.margin>
                   <Insets top="20.0" />
@@ -181,7 +180,12 @@
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <Button fx:id="botaoAlterar" mnemonicParsing="false" onAction="#alterarAction" styleClass="botoes" text="ALTERAR" />
-                  <Button fx:id="botaoConcluido" mnemonicParsing="false" onAction="#concluidoAction" styleClass="botoes" text="CONCLUÍDO">
+                  <Button fx:id="botaoAtivar" mnemonicParsing="false" onAction="#ativarAction" styleClass="botoes" text="ATIVAR">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="botaoDesativar" mnemonicParsing="false" onAction="#desativarAction" styleClass="botoes" text="DESATIVAR">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>

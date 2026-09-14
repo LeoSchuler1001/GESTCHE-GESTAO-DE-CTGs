@@ -14,6 +14,9 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -23,6 +26,8 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import model.Lembrete;
 
 public class TelaLembretesController {
@@ -47,13 +52,16 @@ public class TelaLembretesController {
     private Button botaoExcluir;
 
     @FXML
-    private TableColumn<Lembrete, Boolean> colunaConcluido;
+    private Button botaoDesativar;
+
+    @FXML
+    private Button botaoAtivar;
+
+    @FXML
+    private TableColumn<Lembrete, Boolean> colunaAtivo;
 
     @FXML
     private TableColumn<Lembrete, String> colunaDescricao;
-
-    @FXML
-    private TableColumn<Lembrete, String> colunaFim;
 
     @FXML
     private TableColumn<Lembrete, String> colunaInicio;
@@ -138,37 +146,42 @@ public class TelaLembretesController {
 
     }
 
+    
     @FXML
-    void concluidoAction(ActionEvent event) throws SQLException {
-        //verifica qual foi o lembrete selecionado
-        Lembrete lembreteSelecionado = tabelaInformacoesLembretes.getSelectionModel().getSelectedItem();
+    void desativarAction(ActionEvent event) {
 
-        //verifica se um lembrete foi selecionado
-        if(lembreteSelecionado != null) {
-            //verifica se o sócio já está ativo
-            if(lembreteSelecionado.isPagoLembrete()) {
-                emitirAlerta("Este lembrete já está conluído!", AlertType.ERROR);
-                return;
-            }
+    }
 
-            Boolean confirmaExclusao = emitirAlertaConfirmacao("Deseja marcar como concluído?", AlertType.CONFIRMATION);
+    
+    @FXML
+    void ativarAction(ActionEvent event) {
 
-            if(confirmaExclusao) {
-                lembreteDAO.marcarConcluido(lembreteSelecionado);
-
-                //atualiza a tabela depois da alteração
-                carregarDadosSegundoPlano();
-
-                emitirAlerta("Lembrete concluído!", AlertType.INFORMATION);
-            }
-        } else {
-            emitirAlerta("Selecione um departamento!", AlertType.ERROR);
-        }
     }
 
     @FXML
-    void criarNovoAction(ActionEvent event) {
+    void criarNovoAction(ActionEvent event) throws IOException {
+        //abre a tela de cadastro de lembretes
+        //carregamento do fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaCadastrarLembrete.fxml"));
+        Parent root = fxmlLoader.load();
 
+        //cria e exibe a tela de alteração
+        Stage telaExibicao = new Stage();
+        telaExibicao.setTitle("Cadastrar Lembrete");
+        telaExibicao.setScene(new Scene(root));
+
+        //proibe que o usuario possa alterar o tamanho da tela
+        telaExibicao.setResizable(false);
+
+        //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+        telaExibicao.initModality(Modality.WINDOW_MODAL);
+        telaExibicao.initOwner(tabelaInformacoesLembretes.getScene().getWindow());
+
+        //abre a tela e aguarda o usuário fechar
+        telaExibicao.showAndWait();
+
+        //atualiza a tabela depois do cadastro
+        carregarDadosSegundoPlano();
     }
 
     @FXML
@@ -189,7 +202,7 @@ public class TelaLembretesController {
                 emitirAlerta("Lembrete excluído!", AlertType.INFORMATION);
             }
         } else {
-            emitirAlerta("Selecione um departamento!", AlertType.ERROR);
+            emitirAlerta("Selecione um lembrete!", AlertType.ERROR);
         }
     }
 
@@ -197,8 +210,8 @@ public class TelaLembretesController {
     //inicializa a tela
     public void initialize() {
         //configura a coluna conclluido com um checkbox
-        colunaConcluido.setCellValueFactory(cellData -> cellData.getValue().pagoLembreteProperty());
-        colunaConcluido.setCellFactory(CheckBoxTableCell.forTableColumn(colunaConcluido));
+        colunaAtivo.setCellValueFactory(cellData -> cellData.getValue().ativoLembreteProperty());
+        colunaAtivo.setCellFactory(CheckBoxTableCell.forTableColumn(colunaAtivo));
 
         //configura as colunas das tabelas
         this.colunaNome.setCellValueFactory(cellData -> 
@@ -206,8 +219,6 @@ public class TelaLembretesController {
         );
 
         this.colunaInicio.setCellValueFactory(cellData -> cellData.getValue().dataInicioFormatada());
-
-        this.colunaFim.setCellValueFactory(cellData -> cellData.getValue().dataFimFormatada());
 
         this.colunaPeriodicidade.setCellValueFactory(cellData -> 
             new SimpleStringProperty(cellData.getValue().getPeriodicidadeLembrete())
