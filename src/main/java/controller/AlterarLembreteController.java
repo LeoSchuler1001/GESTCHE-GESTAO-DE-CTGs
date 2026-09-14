@@ -11,7 +11,6 @@ import java.util.Optional;
 import app.App;
 import dao.ConexaoBanco;
 import dao.LembreteDAO;
-import enums.EstadosBrasil;
 import enums.PeriodicidadeLembretes;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -28,7 +27,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import model.Departamento;
 import model.Lembrete;
 
 public class AlterarLembreteController {

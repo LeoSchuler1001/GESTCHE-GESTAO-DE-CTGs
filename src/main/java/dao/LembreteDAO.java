@@ -124,7 +124,7 @@ public class LembreteDAO {
 
     //atualiza um lembrete
     public void atualizarLembrete(Lembrete lembrete) throws SQLException {
-        String sql = "UPDATE lembrete SET nomeLembrete = ?, dataInicioLembrete = ?, periodicidadeLembrete = ?, descricaoLembrete = , horarioLembrete, fk_idUsuario) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "UPDATE lembrete SET nomeLembrete = ?, dataInicioLembrete = ?, periodicidadeLembrete = ?, descricaoLembrete = ?, horarioLembrete = ?, fk_idUsuario = ? WHERE pk_idLembrete = ?";
     
         try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, lembrete.getNomeLembrete());
@@ -134,7 +134,8 @@ public class LembreteDAO {
             stmt.setTime(5, lembrete.getHorarioLembrete());
             stmt.setInt(6, lembrete.getUsuario().getIdUsuario());
 
-
+            stmt.setInt(7, lembrete.getIdLembrete());
+            
             //executa o comando sql no banco de dados
             stmt.executeUpdate();
 
