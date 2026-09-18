@@ -87,11 +87,21 @@ public class LembreteDAO {
         }
     }
 
-    //marca como concluido um lembrete
-    public  void marcarConcluido(Lembrete lembrete) throws SQLException {
-        String sql = "UPDATE lembrete SET pagoLembrete = TRUE WHERE pk_idLembrete = ?";
+    //inativa um lembrete
+    public void inativarLembrete(Lembrete lembrete) throws SQLException {
+        String sql = "UPDATE lembrete SET ativoLembrete = FALSE WHERE pk_idLembrete = ?";
 
-        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, lembrete.getIdLembrete());
+            stmt.executeUpdate();
+        }
+    }
+
+    //ativa um lembrete
+    public void ativarLembrete(Lembrete lembrete) throws SQLException {
+        String sql = "UPDATE lembrete SET ativoLembrete = TRUE WHERE pk_idLembrete = ?";
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
             stmt.setInt(1, lembrete.getIdLembrete());
             stmt.executeUpdate();
         }

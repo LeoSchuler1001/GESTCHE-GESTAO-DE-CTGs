@@ -165,7 +165,7 @@ public class TelaLembretesController {
     
             //abre a tela e aguarda o usuário fechar
             telaExibicao.showAndWait();
-    
+            
             //atualiza a tabela depois do cadastro
             carregarDadosSegundoPlano();
         } else {
@@ -175,14 +175,66 @@ public class TelaLembretesController {
 
     
     @FXML
-    void desativarAction(ActionEvent event) {
+    void desativarAction(ActionEvent event) throws SQLException {
+        //verifica qual foi o lembrete selecionado
+        Lembrete lembreteSelecionado = tabelaInformacoesLembretes.getSelectionModel().getSelectedItem();
 
+        //verifica se um lembrete foi selecionado
+        if(lembreteSelecionado != null) {
+            //verifica se o lembrete já não está inativo
+            if(!lembreteSelecionado.isAtivoLembrete()) {
+                emitirAlerta("Este lembrete já está inativo", AlertType.ERROR);
+                return;
+            }
+
+            //faz a confirmação com o usuário
+            boolean confirmaInativacao = emitirAlertaConfirmacao("Deseja prosseguir com a inativação?", AlertType.CONFIRMATION);
+            if(confirmaInativacao) {
+                //inativa o lembrete
+                lembreteDAO.inativarLembrete(lembreteSelecionado);
+
+                //atualiza a tabela depois da alteração
+                carregarDadosSegundoPlano();
+                
+                //emite um alerta
+                emitirAlerta("Lembrete desativado.", AlertType.INFORMATION);
+            }
+        } else {
+            emitirAlerta("Selecione um lembrete!", AlertType.ERROR);
+            return;
+        }
     }
 
     
     @FXML
-    void ativarAction(ActionEvent event) {
+    void ativarAction(ActionEvent event) throws SQLException {
+        //verifica qual foi o lembrete selecionado
+        Lembrete lembreteSelecionado = tabelaInformacoesLembretes.getSelectionModel().getSelectedItem();
 
+        //verifica se um lembrete foi selecionado
+        if(lembreteSelecionado != null) {
+            //verifica se o lembrete já não está inativo
+            if(lembreteSelecionado.isAtivoLembrete()) {
+                emitirAlerta("Este lembrete já está ativo", AlertType.ERROR);
+                return;
+            }
+
+            //faz a confirmação com o usuário
+            boolean confirmaAtivacao = emitirAlertaConfirmacao("Deseja prosseguir com a ativação?", AlertType.CONFIRMATION);
+            if(confirmaAtivacao) {
+                //inativa o sócio
+                lembreteDAO.ativarLembrete(lembreteSelecionado);
+
+                //atualiza a tabela depois da alteração
+                carregarDadosSegundoPlano();
+                
+                //emite um alerta
+                emitirAlerta("Lembrete ativado.", AlertType.INFORMATION);
+            }
+        } else {
+            emitirAlerta("Selecione um lembrete!", AlertType.ERROR);
+            return;
+        }
     }
 
     @FXML
