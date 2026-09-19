@@ -13,23 +13,34 @@
     <description>Sistema de Gestão Financeira e Administrativa para CTG</description>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.compilerVersion>21</maven.compiler.compilerVersion>
+        <maven.compiler.executable>C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hotspot\bin\javac.exe</maven.compiler.executable>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <build>
-    <plugins>
-        <plugin>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-maven-plugin</artifactId>
-            <version>0.0.8</version>
-            <configuration>
-                <mainClass>app.App</mainClass>
-            </configuration>
-        </plugin>
-    </plugins>
-</build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <release>21</release>
+                    <executable>C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hotspot\bin\javac.exe</executable>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>app.App</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
        <dependency>
