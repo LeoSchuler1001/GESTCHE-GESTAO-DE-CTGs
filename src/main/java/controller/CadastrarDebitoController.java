@@ -29,7 +29,7 @@ import model.Debito;
 public class CadastrarDebitoController {
     //ATRIBUTOS
     private final DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    Locale localBrasil = new Locale("pt", "BR");    
+    Locale localBrasil = Locale.of("pt", "BR");  
     NumberFormat formatoMoeda = NumberFormat.getCurrencyInstance(localBrasil);
     ConexaoBanco conexaoBanco = new ConexaoBanco();
     DebitoDAO debitoDAO = new DebitoDAO(conexaoBanco);
@@ -112,7 +112,7 @@ public class CadastrarDebitoController {
         Platform.runLater(() -> painelFundo.requestFocus());
 
         //configura para que a data do seletor de datas fique em português
-        Locale.setDefault(new Locale("pt", "BR"));
+        Locale.setDefault(Locale.of("pt", "BR"));
         campoVencimentoDebito.setConverter(new StringConverter<LocalDate>() {
             public String toString(LocalDate date) {
                 return (date != null) ? formatoData.format(date) : "";

@@ -30,7 +30,7 @@ import model.Lembrete;
 public class CadastrarLembreteController {
     //ATRIBUTOS
     private final DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    Locale localBrasil = new Locale("pt", "BR");    
+    Locale localBrasil = Locale.of("pt", "BR");    
     ConexaoBanco conexaoBanco = new ConexaoBanco();
     LembreteDAO lembreteDAO = new LembreteDAO(conexaoBanco);
 

@@ -126,7 +126,7 @@ public class DetalheDependenteController {
         Platform.runLater(() -> painelFundo.requestFocus());
 
         //configura para que a data do seletor de datas fique em português
-        Locale.setDefault(new Locale("pt", "BR"));
+        Locale.setDefault(Locale.of("pt", "BR"));
         campoNascimentoDependente.setConverter(new StringConverter<LocalDate>() {
             public String toString(LocalDate date) {
                 return (date != null) ? formatoData.format(date) : "";
