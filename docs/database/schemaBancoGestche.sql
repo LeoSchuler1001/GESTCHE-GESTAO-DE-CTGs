@@ -48,6 +48,8 @@ CREATE TABLE socio(
     pk_idSocio SERIAL PRIMARY KEY,
     cpfSocio CHAR(11) NOT NULL UNIQUE,
     nomeSocio VARCHAR(100) NOT NULL,
+    sexoSocio VARCHAR(9) NOT NULL,
+    corSocio VARCHAR(8) NOT NULL,
     telefoneSocio VARCHAR(11),
     dataNascSocio DATE NOT NULL,
     emailSocio VARCHAR(100),
@@ -63,6 +65,8 @@ CREATE TABLE dependente(
     pk_idDependente SERIAL PRIMARY KEY,
     nomeDependente VARCHAR(100) NOT NULL,
     cpfDependente CHAR(11) NOT NULL UNIQUE,
+    sexoDependente VARCHAR(9) NOT NULL,
+    corDependente VARCHAR(8) NOT NULL,
     dataNascDependente DATE NOT NULL,
     fk_idSocio INT NOT NULL,
 

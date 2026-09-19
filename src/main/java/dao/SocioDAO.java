@@ -101,31 +101,34 @@ public class SocioDAO {
 
     //cadastra um novo sócio no banco de dados
     public void cadastrarSocio(Socio socio) throws SQLException {
-        String sql = "INSERT INTO socio (cpfSocio, nomeSocio, telefoneSocio, dataNascSocio, emailSocio, ativoSocio, fk_idEndereco, fk_idUsuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO socio (cpfSocio, nomeSocio, sexoSocio, corSocio, telefoneSocio, dataNascSocio, emailSocio, ativoSocio, fk_idEndereco, fk_idUsuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, socio.getCpfSocio());
             stmt.setString(2, socio.getNomeSocio());
 
+            stmt.setString(3, socio.getSexoSocio());
+            stmt.setString(4, socio.getCorSocio());
+
             //atribui o telefone se estiver preenchido
             if(socio.getTelefoneSocio() != null && !socio.getTelefoneSocio().isBlank()) {
-                stmt.setString(3, socio.getTelefoneSocio());
+                stmt.setString(5, socio.getTelefoneSocio());
             } else {
-                stmt.setNull(3, Types.VARCHAR);
+                stmt.setNull(5, Types.VARCHAR);
             }
 
-            stmt.setDate(4, new java.sql.Date(socio.getDataNascSocio().getTime()));
-            stmt.setString(5, socio.getEmailSocio());
-            stmt.setBoolean(6, true);
+            stmt.setDate(6, new java.sql.Date(socio.getDataNascSocio().getTime()));
+            stmt.setString(7, socio.getEmailSocio());
+            stmt.setBoolean(8, true);
             
             //atribui o endereço se estiver preenchido
             if (socio.getEndereco() != null) {
-                stmt.setInt(7, socio.getEndereco().getIdEndereco());
+                stmt.setInt(9, socio.getEndereco().getIdEndereco());
             } else {
-                stmt.setNull(7, Types.INTEGER);
+                stmt.setNull(9, Types.INTEGER);
             }
 
-            stmt.setInt(8, socio.getUsuario().getIdUsuario());
+            stmt.setInt(10, socio.getUsuario().getIdUsuario());
 
             //executa o comando sql no banco de dados
             stmt.executeUpdate();
@@ -279,35 +282,38 @@ public class SocioDAO {
 
     //atualiza um sócio
     public void atualizarSocio(Socio socio) throws SQLException {
-        String sql = "UPDATE socio SET cpfSocio = ?, nomeSocio = ?, telefoneSocio = ?, dataNascSocio = ?, emailSocio = ?, ativoSocio = ?, fk_idEndereco = ?, fk_idUsuario = ? WHERE pk_idSocio = ?";
+        String sql = "UPDATE socio SET cpfSocio = ?, nomeSocio = ?, sexoSocio = ?, corSocio = ?, telefoneSocio = ?, dataNascSocio = ?, emailSocio = ?, ativoSocio = ?, fk_idEndereco = ?, fk_idUsuario = ? WHERE pk_idSocio = ?";
         
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
             stmt.setString(1, socio.getCpfSocio());
             stmt.setString(2, socio.getNomeSocio());
 
+            stmt.setString(3, socio.getSexoSocio());
+            stmt.setString(4, socio.getCorSocio());
+
             //verifica se o socio tem telefone cadastrado
             if (socio.getTelefoneSocio() != null && !socio.getTelefoneSocio().isBlank()) {
-                stmt.setString(3, socio.getTelefoneSocio());
+                stmt.setString(5, socio.getTelefoneSocio());
             } else {
-                stmt.setNull(3, Types.VARCHAR);
+                stmt.setNull(5, Types.VARCHAR);
             }
 
-            stmt.setDate(4, new java.sql.Date(socio.getDataNascSocio().getTime()));
-            stmt.setString(5, socio.getEmailSocio());
-            stmt.setBoolean(6, socio.isAtivoSocio());
+            stmt.setDate(6, new java.sql.Date(socio.getDataNascSocio().getTime()));
+            stmt.setString(7, socio.getEmailSocio());
+            stmt.setBoolean(8, socio.isAtivoSocio());
 
             // verifica se o socio tem endereço cadastrado
             if (socio.getEndereco() != null) {
-                stmt.setInt(7, socio.getEndereco().getIdEndereco());
+                stmt.setInt(9, socio.getEndereco().getIdEndereco());
             } else {
-                stmt.setNull(7, Types.INTEGER);
+                stmt.setNull(9, Types.INTEGER);
             }
 
             //verifica qual é a chave estrangeira do usuario que cadastrou
             int idUsuario = socio.getUsuario().getIdUsuario();
-            stmt.setInt(8, idUsuario);
+            stmt.setInt(10, idUsuario);
 
-            stmt.setInt(9, socio.getIdSocio());
+            stmt.setInt(11, socio.getIdSocio());
 
             //executa o comando sql
             stmt.executeUpdate();
@@ -410,6 +416,8 @@ public class SocioDAO {
         socio.setIdSocio(rs.getInt("pk_idSocio"));
         socio.setCpfSocio(rs.getString("cpfSocio"));
         socio.setNomeSocio(rs.getString("nomeSocio"));
+        socio.setSexoSocio(rs.getString("sexoSocio"));
+        socio.setCorSocio(rs.getString("corSocio"));
         socio.setTelefoneSocio(rs.getString("telefoneSocio"));
         socio.setDataNascSocio(rs.getDate("dataNascSocio"));
         socio.setEmailSocio(rs.getString("emailSocio"));

@@ -13,8 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox fx:id="painelFundo" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #D9D9D9;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AlterarSocioController">
+<VBox fx:id="painelFundo" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="600.0" style="-fx-background-color: #D9D9D9;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AlterarSocioController">
    <children>
       <Label text="ALTERAR SÓCIO" textFill="#3c4641">
          <font>
@@ -24,7 +23,7 @@
             <Insets top="20.0" />
          </VBox.margin>
       </Label>
-      <GridPane prefHeight="174.0" prefWidth="580.0">
+      <GridPane prefHeight="246.0" prefWidth="560.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="292.79998779296875" minWidth="10.0" prefWidth="96.2" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="489.1999633789062" minWidth="10.0" prefWidth="463.40000000000003" />
@@ -33,20 +32,26 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <Label styleClass="textos" text="Nome:" />
             <Label styleClass="textos" text="CPF:" GridPane.rowIndex="1" />
-            <Label styleClass="textos" text="Telefone:" GridPane.rowIndex="2" />
-            <Label prefHeight="26.0" prefWidth="134.0" styleClass="textos" text="Nascimento:" GridPane.rowIndex="3" />
-            <Label styleClass="textos" text="Email:" GridPane.rowIndex="4" />
+            <Label styleClass="textos" text="Telefone:" GridPane.rowIndex="4" />
+            <Label prefHeight="26.0" prefWidth="134.0" styleClass="textos" text="Nascimento:" GridPane.rowIndex="5" />
+            <Label styleClass="textos" text="Email:" GridPane.rowIndex="6" />
             <TextField fx:id="campoNomeSocio" styleClass="campoPreenchimento" GridPane.columnIndex="1" />
             <TextField fx:id="campoCpfSocio" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <TextField fx:id="campoTelefoneSocio" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField fx:id="campoEmailSocio" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <DatePicker fx:id="campoNascimentoSocio" prefHeight="26.0" prefWidth="472.0" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="campoTelefoneSocio" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="campoEmailSocio" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <DatePicker fx:id="campoNascimentoSocio" prefHeight="26.0" prefWidth="472.0" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label styleClass="textos" text="Sexo:" GridPane.rowIndex="2" />
+            <Label styleClass="textos" text="Cor:" GridPane.rowIndex="3" />
+            <ComboBox fx:id="campoSexoSocio" prefHeight="26.0" prefWidth="484.0" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ComboBox fx:id="campoCorSocio" prefHeight="26.0" prefWidth="486.0" styleClass="campoPreenchimento" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
          <VBox.margin>
             <Insets left="20.0" right="20.0" />

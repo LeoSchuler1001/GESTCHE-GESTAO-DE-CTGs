@@ -10,6 +10,8 @@ import java.util.Optional;
 import dao.ConexaoBanco;
 import dao.DependenteDAO;
 import dao.SocioDAO;
+import enums.CorSociosDependentes;
+import enums.SexoSociosDependentes;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,6 +19,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -48,6 +51,12 @@ public class CadastrarDependenteController {
     private TextField campoNomeDependente;
 
     @FXML
+    private ComboBox<SexoSociosDependentes> campoSexoDependente;
+    
+    @FXML
+    private ComboBox<CorSociosDependentes> campoCorDependente;
+
+    @FXML
     private VBox painelFundo;
 
     //BOTÕES
@@ -72,6 +81,8 @@ public class CadastrarDependenteController {
             String cpfLimpo = campoCpfDependente.getText().replaceAll("[^0-9]", "");
             dependente.setCpfDependente(cpfLimpo);
             dependente.setNomeDependente(campoNomeDependente.getText());
+            dependente.setSexoDependente(campoSexoDependente.getValue().name());
+            dependente.setCorDependente(campoCorDependente.getValue().name());
             dependente.setDataNascDependente(Date.valueOf(campoNascimentoDependente.getValue()));
             dependente.setSocio(socioDAO.buscarPorId(idSocioSelecionado));
 
@@ -108,6 +119,12 @@ public class CadastrarDependenteController {
 
         //impede do usuario digitar no campo da data
         campoNascimentoDependente.setEditable(false);
+
+        //preenche a lista de sexos
+        campoSexoDependente.getItems().setAll(SexoSociosDependentes.values());
+
+        //preenche a lista de cores
+        campoCorDependente.getItems().setAll(CorSociosDependentes.values());
     }
 
     //método auxiliar para emitir alertas
@@ -146,6 +163,18 @@ public class CadastrarDependenteController {
             campoNascimentoDependente.getValue() == null) {
             
             emitirAlerta("Preencha todos os campos!", AlertType.ERROR);
+            return false;
+        }
+
+        //verifica o sexo
+        if (campoSexoDependente.getValue() == null) {
+            emitirAlerta("Selecione o sexo!", AlertType.ERROR);
+            return false;
+        }
+
+        //verifica a cor
+        if (campoCorDependente.getValue() == null) {
+            emitirAlerta("Selecione a cor!", AlertType.ERROR);
             return false;
         }
 

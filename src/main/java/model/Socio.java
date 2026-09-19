@@ -9,6 +9,8 @@ public class Socio {
     private int idSocio;
     private String cpfSocio;
     private String nomeSocio;
+    private String corSocio;
+    private String sexoSocio;
     private String telefoneSocio;
     private Date dataNascSocio;
     private String emailSocio;
@@ -73,6 +75,22 @@ public class Socio {
 
     public void setNomeSocio(String nomeSocio) {
         this.nomeSocio = nomeSocio;
+    }
+
+    public String getCorSocio() {
+        return corSocio;
+    }
+
+    public void setCorSocio(String corSocio) {
+        this.corSocio = corSocio;
+    }
+
+    public String getSexoSocio() {
+        return sexoSocio;
+    }
+
+    public void setSexoSocio(String sexoSocio) {
+        this.sexoSocio = sexoSocio;
     }
 
     public String getTelefoneSocio() {

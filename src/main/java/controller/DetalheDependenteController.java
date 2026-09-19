@@ -11,6 +11,8 @@ import app.App;
 import dao.ConexaoBanco;
 import dao.DependenteDAO;
 import dao.LogAuditoriaDAO;
+import enums.CorSociosDependentes;
+import enums.SexoSociosDependentes;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.util.StringConverter;
@@ -20,6 +22,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -54,6 +57,12 @@ public class DetalheDependenteController {
     private TextField campoNomeDependente;
 
     @FXML
+    private ComboBox<SexoSociosDependentes> campoSexoDependente;
+
+    @FXML
+    private ComboBox<CorSociosDependentes> campoCorDependente;
+
+    @FXML
     private VBox painelFundo;
 
     //BOTÕES
@@ -69,6 +78,8 @@ public class DetalheDependenteController {
             dependenteSelecionado.setNomeDependente(campoNomeDependente.getText());
             String cpfLimpo = campoCpfDependente.getText().replaceAll("[^0-9]", "");
             dependenteSelecionado.setCpfDependente(cpfLimpo);
+            dependenteSelecionado.setSexoDependente(campoSexoDependente.getValue().name());
+            dependenteSelecionado.setCorDependente(campoCorDependente.getValue().name());
             dependenteSelecionado.setDataNascDependente(Date.valueOf(campoNascimentoDependente.getValue()));
             
             dependenteDAO.atualizarDependente(dependenteSelecionado);
@@ -132,6 +143,12 @@ public class DetalheDependenteController {
 
         //impede do usuario digitar no campo da data
         campoNascimentoDependente.setEditable(false);
+
+        //preenche a lista de sexos
+        campoSexoDependente.getItems().setAll(SexoSociosDependentes.values());
+
+        //preenche a lista de cores
+        campoCorDependente.getItems().setAll(CorSociosDependentes.values());
     }
 
     //diz qual que foi o dependente selecionado
@@ -186,6 +203,9 @@ public class DetalheDependenteController {
         //preenche os campos com os dados do departamento
         campoNomeDependente.setText(dependenteSelecionado.getNomeDependente());
         campoCpfDependente.setText(dependenteSelecionado.getCpfDependente());
+        
+        campoSexoDependente.setValue(SexoSociosDependentes.valueOf(dependenteSelecionado.getSexoDependente()));
+        campoCorDependente.setValue(CorSociosDependentes.valueOf(dependenteSelecionado.getCorDependente()));
 
         //preenche o campo da data de nascimento do socio
         LocalDate localDate = ((java.sql.Date) dependenteSelecionado.getDataNascDependente()).toLocalDate();        
@@ -198,6 +218,18 @@ public class DetalheDependenteController {
             campoCpfDependente.getText() == null || campoCpfDependente.getText().trim().isEmpty()) {
             
             emitirAlertaSimples("Preencha todos os campos obrigatórios!");
+            return false;
+        }
+
+        //verifica o sexo
+        if (campoSexoDependente.getValue() == null) {
+            emitirAlerta("Selecione o sexo!", AlertType.ERROR);
+            return false;
+        }
+
+        //verifica a cor
+        if (campoCorDependente.getValue() == null) {
+            emitirAlerta("Selecione a cor!", AlertType.ERROR);
             return false;
         }
 

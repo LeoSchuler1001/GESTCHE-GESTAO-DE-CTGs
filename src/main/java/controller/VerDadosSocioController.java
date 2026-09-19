@@ -105,6 +105,12 @@ public class VerDadosSocioController {
     private TextField campoTelefoneSocio;
 
     @FXML
+    private TextField campoSexoSocio;
+
+    @FXML
+    private TextField campoCorSocio;
+
+    @FXML
     private Button detalharDebito;
 
     @FXML
@@ -246,6 +252,10 @@ public class VerDadosSocioController {
         campoNomeSocio.setFocusTraversable(false);
         campoCpfSocio.setMouseTransparent(true);
         campoCpfSocio.setFocusTraversable(false);
+        campoSexoSocio.setMouseTransparent(true);
+        campoSexoSocio.setFocusTraversable(false);
+        campoCorSocio.setMouseTransparent(true);
+        campoCorSocio.setFocusTraversable(false);
         campoTelefoneSocio.setMouseTransparent(true);
         campoTelefoneSocio.setFocusTraversable(false);
         campoNascimentoSocio.setMouseTransparent(true);
@@ -327,6 +337,8 @@ public class VerDadosSocioController {
         //preenche os campos com os dados do sócio 
         campoNomeSocio.setText(socioSelecionado.getNomeSocio());
         campoCpfSocio.setText(socioSelecionado.getCpfSocio());
+        campoSexoSocio.setText(socioSelecionado.getSexoSocio());
+        campoCorSocio.setText(socioSelecionado.getCorSocio());
         campoEmailSocio.setText(socioSelecionado.getEmailSocio());
         campoTelefoneSocio.setText(socioSelecionado.getTelefoneSocio());
 

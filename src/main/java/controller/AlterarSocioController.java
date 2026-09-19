@@ -14,7 +14,9 @@ import dao.EnderecoDAO;
 import dao.SocioDAO;
 import dao.Socio_DepartamentoDAO;
 import dao.DepartamentoDAO;
+import enums.CorSociosDependentes;
 import enums.EstadosBrasil;
+import enums.SexoSociosDependentes;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.util.StringConverter;
@@ -84,6 +86,12 @@ public class AlterarSocioController {
 
     @FXML
     private ComboBox<EstadosBrasil> campoEstadoSocio;
+
+    @FXML
+    private ComboBox<CorSociosDependentes> campoCorSocio;
+
+    @FXML
+    private ComboBox<SexoSociosDependentes> campoSexoSocio;
 
     @FXML
     private DatePicker campoNascimentoSocio;
@@ -176,6 +184,8 @@ public class AlterarSocioController {
         String cpfLimpo = campoCpfSocio.getText().replaceAll("[^0-9]", "");
         socioSelecionado.setCpfSocio(cpfLimpo);
         socioSelecionado.setNomeSocio(campoNomeSocio.getText());
+        socioSelecionado.setSexoSocio(campoSexoSocio.getValue().name());
+        socioSelecionado.setCorSocio(campoCorSocio.getValue().name());
         socioSelecionado.setEmailSocio(campoEmailSocio.getText());
         socioSelecionado.setDataNascSocio(Date.valueOf(campoNascimentoSocio.getValue()));
 
@@ -256,6 +266,12 @@ public class AlterarSocioController {
         //preenche a lista de estados
         campoEstadoSocio.getItems().setAll(EstadosBrasil.values());
 
+        //preenche a lista de sexos
+        campoSexoSocio.getItems().setAll(SexoSociosDependentes.values());
+
+        //preenche a lista de cores
+        campoCorSocio.getItems().setAll(CorSociosDependentes.values());
+
         //impede do usuario digitar no campo da data
         campoNascimentoSocio.setEditable(false);
     }
@@ -278,6 +294,8 @@ public class AlterarSocioController {
         //preenche os campos com os dados do sócio 
         campoNomeSocio.setText(socioSelecionado.getNomeSocio());
         campoCpfSocio.setText(socioSelecionado.getCpfSocio());
+        campoSexoSocio.setValue(SexoSociosDependentes.valueOf(socioSelecionado.getSexoSocio()));
+        campoCorSocio.setValue(CorSociosDependentes.valueOf(socioSelecionado.getCorSocio()));
         campoEmailSocio.setText(socioSelecionado.getEmailSocio());
         campoTelefoneSocio.setText(socioSelecionado.getTelefoneSocio());
 
@@ -330,6 +348,18 @@ public class AlterarSocioController {
             campoCepSocio.getText() == null || campoCepSocio.getText().trim().isEmpty()) {
             
             emitirAlerta("Preencha todos os campos!", AlertType.ERROR);
+            return false;
+        }
+
+        //verifica o sexo
+        if (campoSexoSocio.getValue() == null) {
+            emitirAlerta("Selecione o sexo!", AlertType.ERROR);
+            return false;
+        }
+
+        //verifica a cor
+        if (campoCorSocio.getValue() == null) {
+            emitirAlerta("Selecione a cor!", AlertType.ERROR);
             return false;
         }
 

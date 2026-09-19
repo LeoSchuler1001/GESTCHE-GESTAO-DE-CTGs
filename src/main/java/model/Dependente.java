@@ -7,6 +7,8 @@ public class Dependente {
     private int idDependente;
     private String nomeDependente;
     private String cpfDependente;
+    private String corDependente;
+    private String sexoDependente; 
     private Date dataNascDependente;
     private Socio socio;
     
@@ -52,6 +54,22 @@ public class Dependente {
 
     public void setCpfDependente(String cpfDependente) {
         this.cpfDependente = cpfDependente;
+    }
+
+    public String getCorDependente() {
+        return corDependente;
+    }
+
+    public void setCorDependente(String corDependente) {
+        this.corDependente = corDependente;
+    }
+
+    public String getSexoDependente() {
+        return sexoDependente;
+    }
+
+    public void setSexoDependente(String sexoDependente) {
+        this.sexoDependente = sexoDependente;
     }
 
     public Date getDataNascDependente() {

@@ -28,13 +28,15 @@ public class DependenteDAO {
     //cadastrar um novo dependente
     public void cadastrarDependente(Dependente dependente) throws SQLException {
         //cria o comando sql
-        String sql = "INSERT INTO dependente (nomeDependente, cpfDependente, dataNascDependente, fk_idSocio) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO dependente (nomeDependente, cpfDependente, sexoDependente, corDependente, dataNascDependente, fk_idSocio) VALUES (?, ?, ?, ?, ?, ?)";
 
         try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, dependente.getNomeDependente());
             stmt.setString(2, dependente.getCpfDependente());
-            stmt.setDate(3, new java.sql.Date(dependente.getDataNascDependente().getTime()));
-            stmt.setInt(4, dependente.getSocio().getIdSocio());
+            stmt.setString(3, dependente.getSexoDependente());
+            stmt.setString(4, dependente.getCorDependente());
+            stmt.setDate(5, new java.sql.Date(dependente.getDataNascDependente().getTime()));
+            stmt.setInt(6, dependente.getSocio().getIdSocio());
 
             //executa o comando sql no banco de dados
             stmt.executeUpdate();
@@ -177,14 +179,16 @@ public class DependenteDAO {
 
     //atualiza um dependente
     public void atualizarDependente(Dependente dependente) throws SQLException {
-        String sql = "UPDATE dependente SET nomeDependente = ?, cpfDependente = ?, dataNascDependente = ?, fk_idSocio = ? WHERE pk_idDependente = ?";
+        String sql = "UPDATE dependente SET nomeDependente = ?, cpfDependente = ?, sexoDependente = ?, corDependente = ?, dataNascDependente = ?, fk_idSocio = ? WHERE pk_idDependente = ?";
         
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
             stmt.setString(1, dependente.getNomeDependente());
             stmt.setString(2, dependente.getCpfDependente());
-            stmt.setDate(3, new java.sql.Date(dependente.getDataNascDependente().getTime()));
-            stmt.setInt(4, dependente.getSocio().getIdSocio());
-            stmt.setInt(5, dependente.getIdDependente());
+            stmt.setString(3, dependente.getSexoDependente());
+            stmt.setString(4, dependente.getCorDependente());
+            stmt.setDate(5, new java.sql.Date(dependente.getDataNascDependente().getTime()));
+            stmt.setInt(6, dependente.getSocio().getIdSocio());
+            stmt.setInt(7, dependente.getIdDependente());
 
             //executa o comando sql
             stmt.executeUpdate();
@@ -210,6 +214,8 @@ public class DependenteDAO {
         dependente.setIdDependente(rs.getInt("pk_idDependente"));
         dependente.setNomeDependente(rs.getString("nomeDependente"));
         dependente.setCpfDependente(rs.getString("cpfDependente"));
+        dependente.setSexoDependente(rs.getString("sexoDependente"));
+        dependente.setCorDependente(rs.getString("corDependente"));
         dependente.setDataNascDependente(rs.getDate("dataNascDependente"));
 
         //verifica qual a chave estrangeira do sócio

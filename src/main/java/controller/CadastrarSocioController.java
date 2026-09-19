@@ -14,7 +14,9 @@ import dao.DepartamentoDAO;
 import dao.EnderecoDAO;
 import dao.SocioDAO;
 import dao.Socio_DepartamentoDAO;
+import enums.CorSociosDependentes;
 import enums.EstadosBrasil;
+import enums.SexoSociosDependentes;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -75,6 +77,12 @@ public class CadastrarSocioController {
 
     @FXML
     private ComboBox<EstadosBrasil> campoEstadoSocio;
+    
+    @FXML
+    private ComboBox<CorSociosDependentes> campoCorSocio;
+    
+    @FXML
+    private ComboBox<SexoSociosDependentes> campoSexoSocio;
 
     @FXML
     private DatePicker campoNascimentoSocio;
@@ -133,6 +141,8 @@ public class CadastrarSocioController {
         String cpfLimpo = campoCpfSocio.getText().replaceAll("[^0-9]", "");
         socioCadastro.setCpfSocio(cpfLimpo);
         socioCadastro.setNomeSocio(campoNomeSocio.getText());
+        socioCadastro.setSexoSocio(campoSexoSocio.getValue().name());
+        socioCadastro.setCorSocio(campoCorSocio.getValue().name());
         socioCadastro.setEmailSocio(campoEmailSocio.getText());
         socioCadastro.setDataNascSocio(Date.valueOf(campoNascimentoSocio.getValue()));
         socioCadastro.setUsuario(App.usuarioLogado);
@@ -218,7 +228,7 @@ public class CadastrarSocioController {
             }
         });
 
-         //preenche o comboBox dos departamentos
+        //preenche o comboBox dos departamentos
         listaTodosDepartamentos = departamentoDAO.listarTodos();
         List<String> nomeDepartamentos = new ArrayList<>();
         for (Departamento departamento : listaTodosDepartamentos) {
@@ -228,6 +238,12 @@ public class CadastrarSocioController {
 
         //preenche a lista de estados
         campoEstadoSocio.getItems().setAll(EstadosBrasil.values());
+
+        //preenche a lista de sexos
+        campoSexoSocio.getItems().setAll(SexoSociosDependentes.values());
+
+        //preenche a lista de cores
+        campoCorSocio.getItems().setAll(CorSociosDependentes.values());
 
         //impede do usuario digitar no campo da data
         campoNascimentoSocio.setEditable(false);
@@ -245,6 +261,18 @@ public class CadastrarSocioController {
             campoCepSocio.getText() == null || campoCepSocio.getText().trim().isEmpty()) {
             
             emitirAlerta("Preencha todos os campos!", AlertType.ERROR);
+            return false;
+        }
+
+        //verifica o sexo
+        if (campoSexoSocio.getValue() == null) {
+            emitirAlerta("Selecione o sexo!", AlertType.ERROR);
+            return false;
+        }
+
+        //verifica a cor
+        if (campoCorSocio.getValue() == null) {
+            emitirAlerta("Selecione a cor!", AlertType.ERROR);
             return false;
         }
 
