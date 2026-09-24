@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.chart.PieChart;
 import model.Endereco;
 import model.Socio;
 import model.Usuario;
@@ -34,6 +38,23 @@ public class SocioDAO {
     //conta a quantidade de sócios
     public int contarSocios() throws SQLException {
         String sql = "SELECT count(cpfSocio) FROM socio";
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há informações
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            } 
+        }
+
+        return 0;
+    }
+
+    //conta a quantidade de sócios
+    public int contarDependentesAtivos() throws SQLException {
+        String sql = "SELECT count(dependente.cpfDependente) FROM dependente, socio WHERE socio.pk_idSocio = dependente.fk_idSocio AND socio.ativoSocio = TRUE";
 
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
             //cria um ResultSet para armazenar as informações buscadas
@@ -405,6 +426,194 @@ public class SocioDAO {
         }
 
         return listaResumo;
+    }
+
+    //função para preencher o gráfico de sócios ativos e inativos
+    public ObservableList<PieChart.Data> buscarPorcentagemAtivosInativos() {
+        ObservableList<PieChart.Data> dadosAtivosInativos = FXCollections.observableArrayList();
+        
+        String sql = "SELECT CASE WHEN ativoSocio = TRUE THEN 'Ativos' ELSE 'Inativos' END AS status, COUNT(*) AS quantidade FROM socio GROUP BY ativoSocio";
+
+        try (Connection conexaoBanco = conexao.getConexao();
+             PreparedStatement stmt = conexaoBanco.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String status = rs.getString("status");
+                double quantidade = rs.getDouble("quantidade");
+                dadosAtivosInativos.add(new PieChart.Data(status, quantidade));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return dadosAtivosInativos;
+    }
+
+    //função para preencher o gráfico dos sócios em dia e dos sócios inadimplentes
+    public ObservableList<PieChart.Data> buscarPorcentagemEmdiaInadimplentes() {
+        ObservableList<PieChart.Data> dadosEmdiaInadimplentes = FXCollections.observableArrayList();
+        
+        String sql = "WITH status_socios AS (" +
+                    "    SELECT s.pk_idSocio, " +
+                    "        CASE " +
+                    "            WHEN EXISTS (" +
+                    "                SELECT 1 FROM debito d " +
+                    "                WHERE d.fk_idSocio = s.pk_idSocio " +
+                    "                  AND d.vencimentoDebito < CURRENT_DATE " +
+                    "                  AND d.dtPgmtDebito IS NULL" +
+                    "            ) THEN 'Inadimplentes' " +
+                    "            ELSE 'Em dia' " +
+                    "        END AS status_pagamento " +
+                    "    FROM socio s " +
+                    "    WHERE s.ativoSocio = TRUE" +
+                    ") " +
+                    "SELECT status_pagamento, COUNT(*) AS quantidade " +
+                    "FROM status_socios " +
+                    "GROUP BY status_pagamento";
+
+        try (Connection conexaoBanco = conexao.getConexao();
+            PreparedStatement stmt = conexaoBanco.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String status = rs.getString("status_pagamento");
+                double quantidade = rs.getDouble("quantidade");
+                dadosEmdiaInadimplentes.add(new PieChart.Data(status, quantidade));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return dadosEmdiaInadimplentes;
+    }
+
+    //função para buscar os dados para preencher o gráfico de homens e mulheres
+    public ObservableList<PieChart.Data> buscarPorcentagemHomensMulheres() {
+        ObservableList<PieChart.Data> dadosHomensMulheres = FXCollections.observableArrayList();
+        
+        String sql = "SELECT genero, COUNT(*) AS quantidade FROM (" +
+                    "    SELECT sexoSocio AS genero FROM socio WHERE ativoSocio = TRUE " +
+                    "    UNION ALL " +
+                    "    SELECT d.sexoDependente AS genero " +
+                    "    FROM dependente d " +
+                    "    JOIN socio s ON d.fk_idSocio = s.pk_idSocio " +
+                    "    WHERE s.ativoSocio = TRUE" +
+                    ") AS todos_membros " +
+                    "GROUP BY genero";
+
+        try (Connection conexaoBanco = conexao.getConexao();
+            PreparedStatement stmt = conexaoBanco.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String genero = rs.getString("genero");
+                double quantidade = rs.getDouble("quantidade");
+                
+                if (genero != null && !genero.isEmpty()) {
+                    dadosHomensMulheres.add(new PieChart.Data(genero, quantidade));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return dadosHomensMulheres;
+    }
+
+    //função que busca os dados para preencher o gráfico das etnias
+    public ObservableList<PieChart.Data> buscarPorcentagemEtnias() {
+        ObservableList<PieChart.Data> dadosEtnias = FXCollections.observableArrayList();
+        
+        // Consulta que une a cor dos Sócios Ativos e a cor dos seus Dependentes
+        String sql = "SELECT cor, COUNT(*) AS quantidade FROM (" +
+                    "    SELECT corSocio AS cor FROM socio WHERE ativoSocio = TRUE " +
+                    "    UNION ALL " +
+                    "    SELECT d.corDependente AS cor " +
+                    "    FROM dependente d " +
+                    "    JOIN socio s ON d.fk_idSocio = s.pk_idSocio " +
+                    "    WHERE s.ativoSocio = TRUE" +
+                    ") AS todas_cores " +
+                    "GROUP BY cor";
+
+        try (Connection conexaoBanco = conexao.getConexao();
+            PreparedStatement stmt = conexaoBanco.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String cor = rs.getString("cor");
+                double quantidade = rs.getDouble("quantidade");
+                
+                if (cor != null && !cor.isEmpty()) {
+                    dadosEtnias.add(new PieChart.Data(cor, quantidade));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return dadosEtnias;
+    }
+
+    //função para buscar os dados para preencher o gráfico de faixa etária
+    public ObservableList<PieChart.Data> buscarPorcentagemFaixaEtaria() {
+        ObservableList<PieChart.Data> dadosFaixaEtaria = FXCollections.observableArrayList();
+        
+        String sql = "SELECT faixa_etaria, COUNT(*) AS quantidade FROM (" +
+                    "    SELECT " +
+                    "        CASE " +
+                    "            WHEN EXTRACT(YEAR FROM AGE(dataNascSocio)) < 18 THEN '0-17 anos' " +
+                    "            WHEN EXTRACT(YEAR FROM AGE(dataNascSocio)) BETWEEN 18 AND 35 THEN '18-35 anos' " +
+                    "            WHEN EXTRACT(YEAR FROM AGE(dataNascSocio)) BETWEEN 36 AND 50 THEN '36-50 anos' " +
+                    "            WHEN EXTRACT(YEAR FROM AGE(dataNascSocio)) BETWEEN 51 AND 65 THEN '51-65 anos' " +
+                    "            ELSE 'Mais de 65 anos' " +
+                    "        END AS faixa_etaria " +
+                    "    FROM socio WHERE ativoSocio = TRUE " +
+                    "    UNION ALL " +
+                    "    SELECT " +
+                    "        CASE " +
+                    "            WHEN EXTRACT(YEAR FROM AGE(d.dataNascDependente)) < 18 THEN '0-17 anos' " +
+                    "            WHEN EXTRACT(YEAR FROM AGE(d.dataNascDependente)) BETWEEN 18 AND 35 THEN '18-35 anos' " +
+                    "            WHEN EXTRACT(YEAR FROM AGE(d.dataNascDependente)) BETWEEN 36 AND 50 THEN '36-50 anos' " +
+                    "            WHEN EXTRACT(YEAR FROM AGE(d.dataNascDependente)) BETWEEN 51 AND 65 THEN '51-65 anos' " +
+                    "            ELSE 'Mais de 65 anos' " +
+                    "        END AS faixa_etaria " +
+                    "    FROM dependente d " +
+                    "    JOIN socio s ON d.fk_idSocio = s.pk_idSocio " +
+                    "    WHERE s.ativoSocio = TRUE" +
+                    ") AS todas_idades " +
+                    "GROUP BY faixa_etaria " +
+                    "ORDER BY " +
+                    "    CASE faixa_etaria " +
+                    "        WHEN '0-17 anos' THEN 1 " +
+                    "        WHEN '18-35 anos' THEN 2 " +
+                    "        WHEN '36-50 anos' THEN 3 " +
+                    "        WHEN '51-65 anos' THEN 4 " +
+                    "        ELSE 5 " +
+                    "    END";
+
+        try (Connection conexaoBanco = conexao.getConexao();
+            PreparedStatement stmt = conexaoBanco.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String faixa = rs.getString("faixa_etaria");
+                double quantidade = rs.getDouble("quantidade");
+                
+                if (faixa != null) {
+                    dadosFaixaEtaria.add(new PieChart.Data(faixa, quantidade));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return dadosFaixaEtaria;
     }
 
     //método auxiliar, que vai montar o objeto sócio após a consulta sql

@@ -1,9 +1,19 @@
 package controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 import app.App;
+import dao.ConexaoBanco;
+import dao.LembreteDAO;
+import dao.SocioDAO;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
@@ -13,11 +23,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import model.Lembrete;
 
 public class TelaGraficosRelatoriosController {
-
+    //ATRIBUTOS
     @FXML
     private Button botaoGerarPdf;
 
@@ -31,7 +43,34 @@ public class TelaGraficosRelatoriosController {
     private Label campoNumeroTotal;
 
     @FXML
+    private ProgressIndicator carregamentoDependentes;
+
+    @FXML
+    private ProgressIndicator carregamentoSocios;
+
+    @FXML
+    private ProgressIndicator carregamentoTotal;
+    
+    @FXML
+    private ProgressIndicator carregamentoGrafico1;
+
+    @FXML
+    private ProgressIndicator carregamentoGrafico2;
+
+    @FXML
+    private ProgressIndicator carregamentoGrafico3;
+
+    @FXML
+    private ProgressIndicator carregamentoGrafico4;
+
+    @FXML
+    private ProgressIndicator carregamentoGrafico5;
+
+    @FXML
     private PieChart graficoAtivosInativos;
+
+    @FXML
+    private PieChart graficoEmdiaInadimplentes;
 
     @FXML
     private PieChart graficoEtnias;
@@ -43,7 +82,7 @@ public class TelaGraficosRelatoriosController {
     private PieChart graficoHomensMulheres;
 
     @FXML
-    private TableColumn<?, ?> lembretes;
+    private TableColumn<Lembrete, String> lembretes;
 
     @FXML
     private Hyperlink linkConfiguracoes;
@@ -64,7 +103,7 @@ public class TelaGraficosRelatoriosController {
     private Hyperlink linkSair;
 
     @FXML
-    private TableView<?> tabelaLembretes;
+    private TableView<Lembrete> tabelaLembretes;
 
     //BOTÕES
     @FXML
@@ -109,6 +148,94 @@ public class TelaGraficosRelatoriosController {
     }
 
     //MÉTODOS
+    //inicializa a tela
+    public void initialize() throws SQLException {
+        this.lembretes.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getNomeLembrete())
+        );
+
+        //chama a função que irá carregar os dados das tabelas e dos mostradores
+        carregarDadosSegundoPlano();        
+    }
+
+    //carrega os dados em segundo plano
+    private void carregarDadosSegundoPlano() {
+        //coloca os ícones de carregamento nas tabelas enquanto os dados não são carregados
+        tabelaLembretes.setPlaceholder(criarIndicator());
+
+        //cria uma tarefa que irá carregar os dados em segundo plano
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                //cria a conexão com o banco de dados
+                ConexaoBanco conexao = new ConexaoBanco();
+                LembreteDAO lembreteDAO = new LembreteDAO(conexao);
+                SocioDAO socioDAO = new SocioDAO(conexao);
+
+                //cria a lista que vai armazenar os lembretes
+                List<Lembrete> listaLembretes = lembreteDAO.listarLembretesHoje(App.usuarioLogado.getIdUsuario());
+
+                //cria as listas de dados que vão armazenar as informações dos gráficos
+                ObservableList<PieChart.Data> dadosAtivosInativos = socioDAO.buscarPorcentagemAtivosInativos();
+                ObservableList<PieChart.Data> dadosEmdiaInadimplentes = socioDAO.buscarPorcentagemEmdiaInadimplentes();
+                ObservableList<PieChart.Data> dadosHomensMulheres = socioDAO.buscarPorcentagemHomensMulheres();
+                ObservableList<PieChart.Data> dadosEtnias = socioDAO.buscarPorcentagemEtnias();
+                ObservableList<PieChart.Data> dadosFaixaEtaria = socioDAO.buscarPorcentagemFaixaEtaria();
+
+                //cria as variáveis que vão armazenar as quantidades de sócios e dependentes
+                int quantidadeSociosAtivos = socioDAO.contarSociosAtivos();
+                int quantidadeDependentesAtivos = socioDAO.contarDependentesAtivos();
+                int totalAtivos = quantidadeDependentesAtivos + quantidadeSociosAtivos;
+
+                // Atualiza as tabelas e os gráficos
+                Platform.runLater(() -> {
+                    tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretes));
+
+                    graficoAtivosInativos.setData(dadosAtivosInativos);
+                    graficoEmdiaInadimplentes.setData(dadosEmdiaInadimplentes);
+                    graficoHomensMulheres.setData(dadosHomensMulheres);
+                    graficoEtnias.setData(dadosEtnias);
+                    graficoFaixaEtaria.setData(dadosFaixaEtaria);
+
+                    campoNumeroSocios.setText(String.valueOf(quantidadeSociosAtivos));
+                    campoNumeroDependentes.setText(String.valueOf(quantidadeDependentesAtivos));
+                    campoNumeroTotal.setText(String.valueOf(totalAtivos));
+
+                    if (listaLembretes.isEmpty()) {
+                        tabelaLembretes.setPlaceholder(new javafx.scene.control.Label("Sem lembretes."));
+                    }
+                });
+
+                return null;
+            }
+        };
+
+        //mostra os icones de carregamento enquanto a tarefa está rodando em segundo plano
+        carregamentoTotal.visibleProperty().bind(task.runningProperty());
+        carregamentoDependentes.visibleProperty().bind(task.runningProperty());
+        carregamentoSocios.visibleProperty().bind(task.runningProperty());
+        carregamentoGrafico1.visibleProperty().bind(task.runningProperty());
+        carregamentoGrafico2.visibleProperty().bind(task.runningProperty());
+        carregamentoGrafico3.visibleProperty().bind(task.runningProperty());
+        carregamentoGrafico4.visibleProperty().bind(task.runningProperty());
+        carregamentoGrafico5.visibleProperty().bind(task.runningProperty());
+
+        //mostra os labels com as informações assim que a tarefa parar de rodar em segundo plano
+        campoNumeroSocios.visibleProperty().bind(task.runningProperty().not());
+        campoNumeroDependentes.visibleProperty().bind(task.runningProperty().not());
+        campoNumeroTotal.visibleProperty().bind(task.runningProperty().not());
+
+        //mostra um aviso caso os dados não possam ser carregados
+        task.setOnFailed(e -> {
+            Throwable ex = task.getException();
+            ex.printStackTrace();
+            Platform.runLater(() -> emitirAlerta("Erro ao carregar os dados.", AlertType.ERROR));
+        });
+
+        //cria uma nova Thread para rodar a tarefa de carregamento em segundo plano
+        new Thread(task).start();
+    }
+
     //método auxiliar para emitir alertas
     private boolean emitirAlerta(String mensagem, AlertType tipoAlerta) {
         Alert alerta = new Alert(tipoAlerta);
@@ -120,5 +247,12 @@ public class TelaGraficosRelatoriosController {
 
         // Verifica se o usuário clicou no botão OK
         return resultado.isPresent() && resultado.get() == ButtonType.OK;
+    }
+    
+    // Método auxiliar para criar instâncias padronizadas do ProgressIndicator
+    private ProgressIndicator criarIndicator() {
+        ProgressIndicator indicador = new ProgressIndicator();
+        indicador.setMaxSize(40, 40);
+        return indicador;
     }
 }
