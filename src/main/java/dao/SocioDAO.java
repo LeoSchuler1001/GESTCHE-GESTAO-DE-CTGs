@@ -439,8 +439,8 @@ public class SocioDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                String status = rs.getString("status");
                 double quantidade = rs.getDouble("quantidade");
+                String status = rs.getString("status") + " (" + String.valueOf((int) quantidade) + ")";
                 dadosAtivosInativos.add(new PieChart.Data(status, quantidade));
             }
 
@@ -478,8 +478,8 @@ public class SocioDAO {
             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                String status = rs.getString("status_pagamento");
                 double quantidade = rs.getDouble("quantidade");
+                String status = rs.getString("status_pagamento") + " (" + String.valueOf((int) quantidade) + ")";
                 dadosEmdiaInadimplentes.add(new PieChart.Data(status, quantidade));
             }
 
@@ -509,8 +509,8 @@ public class SocioDAO {
             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                String genero = rs.getString("genero");
                 double quantidade = rs.getDouble("quantidade");
+                String genero = rs.getString("genero") + " (" + String.valueOf((int) quantidade) + ")";
                 
                 if (genero != null && !genero.isEmpty()) {
                     dadosHomensMulheres.add(new PieChart.Data(genero, quantidade));
@@ -544,8 +544,8 @@ public class SocioDAO {
             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                String cor = rs.getString("cor");
                 double quantidade = rs.getDouble("quantidade");
+                String cor = rs.getString("cor") + " (" + String.valueOf((int) quantidade) + ")";
                 
                 if (cor != null && !cor.isEmpty()) {
                     dadosEtnias.add(new PieChart.Data(cor, quantidade));
@@ -601,8 +601,8 @@ public class SocioDAO {
             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                String faixa = rs.getString("faixa_etaria");
                 double quantidade = rs.getDouble("quantidade");
+                String faixa = rs.getString("faixa_etaria") + " (" + String.valueOf((int) quantidade) + ")";
                 
                 if (faixa != null) {
                     dadosFaixaEtaria.add(new PieChart.Data(faixa, quantidade));

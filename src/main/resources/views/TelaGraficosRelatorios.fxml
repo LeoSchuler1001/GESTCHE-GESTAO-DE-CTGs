@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
@@ -21,7 +22,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="800.0" minWidth="1200.0" style="-fx-background-color: #D9D9D9;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TelaGraficosRelatoriosController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="800.0" minWidth="1200.0" prefWidth="1200.0" style="-fx-background-color: #D9D9D9;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TelaGraficosRelatoriosController">
    <left>
       <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="220.0" style="-fx-background-color: #5D8A66;" BorderPane.alignment="CENTER">
          <children>
@@ -167,129 +168,148 @@
       </VBox>
    </left>
    <center>
-      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="TOP_CENTER">
          <children>
-            <HBox alignment="CENTER" prefHeight="300.0" prefWidth="980.0">
-               <children>
-                  <GridPane prefHeight="272.0" prefWidth="300.0">
-                    <columnConstraints>
-                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints maxHeight="130.79999389648438" minHeight="10.0" prefHeight="47.40000610351562" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="258.5999954223633" minHeight="10.0" prefHeight="252.1999938964844" vgrow="SOMETIMES" />
-                    </rowConstraints>
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="980.0" vbarPolicy="ALWAYS" VBox.vgrow="NEVER">
+               <content>
+                  <StackPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="2400.0" prefWidth="980.0" style="-fx-background-color: #D9D9D9;">
                      <children>
-                        <Label styleClass="textos" text="SÓCIOS ATIVOS E INATIVOS" />
-                        <PieChart fx:id="graficoAtivosInativos" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="300.0" GridPane.rowIndex="1" />
-                        <ProgressIndicator fx:id="carregamentoGrafico1" maxHeight="20.0" maxWidth="20.0" minHeight="-Infinity" minWidth="-Infinity" GridPane.rowIndex="1" />
+                        <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2400.0" prefWidth="963.0">
+                           <children>
+                              <HBox alignment="CENTER" prefHeight="149.0" prefWidth="963.0">
+                                 <children>
+                                    <GridPane prefHeight="103.0" prefWidth="906.0">
+                                      <columnConstraints>
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="83.19998779296876" minHeight="10.0" prefHeight="79.9999755859375" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <!-- SÓCIOS -->
+                                          <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e6c673" height="50.0" stroke="BLACK" strokeType="INSIDE" width="150.0" GridPane.rowIndex="1" />
+                                          <StackPane GridPane.rowIndex="1">
+                                             <Label fx:id="campoNumeroSocios" styleClass="textos" text="100" />
+                                             <ProgressIndicator fx:id="carregamentoSocios" maxHeight="20.0" maxWidth="20.0" minHeight="20.0" minWidth="20.0" />
+                                          </StackPane>
+                  
+                                                            <!-- DEPENDENTES -->
+                                          <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e6c673" height="50.0" stroke="BLACK" strokeType="INSIDE" width="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <StackPane prefHeight="74.0" prefWidth="302.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                             <Label fx:id="campoNumeroDependentes" styleClass="textos" text="100" />
+                                             <ProgressIndicator fx:id="carregamentoDependentes" maxHeight="20.0" maxWidth="20.0" minHeight="20.0" minWidth="20.0" />
+                                          </StackPane>
+                  
+                                                            <!-- TOTAL -->
+                                          <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e6c673" height="50.0" stroke="BLACK" strokeType="INSIDE" width="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                          <StackPane GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                             <Label fx:id="campoNumeroTotal" styleClass="textos" text="100" />
+                                             <ProgressIndicator fx:id="carregamentoTotal" maxHeight="20.0" maxWidth="20.0" minHeight="20.0" minWidth="20.0" />
+                                          </StackPane>
+                                          <Label styleClass="textos" text="SÓCIOS" />
+                                          <Label styleClass="textos" text="DEPENDENTES" GridPane.columnIndex="1" />
+                                          <Label styleClass="textos" text="TOTAL" GridPane.columnIndex="2" />
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets top="20.0" />
+                                       </HBox.margin>
+                                    </GridPane>
+                                 </children>
+                              </HBox>
+                              <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="963.0">
+                                <columnConstraints>
+                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                                  <RowConstraints maxHeight="360.0" minHeight="-Infinity" prefHeight="360.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label styleClass="textos" text="SÓCIOS EM DIA E INADIMPLENTES" />
+                                    <PieChart fx:id="graficoEmdiaInadimplentes" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="550.0" GridPane.rowIndex="1" />
+                                    <ProgressIndicator fx:id="carregamentoGrafico2" maxHeight="20.0" maxWidth="20.0" minHeight="-Infinity" minWidth="-Infinity" GridPane.rowIndex="1" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="50.0" />
+                                 </VBox.margin>
+                              </GridPane>
+                              <GridPane prefHeight="400.0" prefWidth="963.0">
+                                <columnConstraints>
+                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                                  <RowConstraints maxHeight="360.0" minHeight="-Infinity" prefHeight="360.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label styleClass="textos" text="HOMENS E MULHERES" />
+                                    <PieChart fx:id="graficoHomensMulheres" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="550.0" GridPane.rowIndex="1" />
+                                    <ProgressIndicator fx:id="carregamentoGrafico3" maxHeight="20.0" maxWidth="20.0" minHeight="-Infinity" minWidth="-Infinity" GridPane.rowIndex="1" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="50.0" />
+                                 </VBox.margin>
+                              </GridPane>
+                              <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="963.0">
+                                <columnConstraints>
+                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                                  <RowConstraints maxHeight="360.0" minHeight="-Infinity" prefHeight="360.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label styleClass="textos" text="ETNIAS" />
+                                    <PieChart fx:id="graficoEtnias" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="550.0" GridPane.rowIndex="1" />
+                                    <ProgressIndicator fx:id="carregamentoGrafico4" maxHeight="20.0" maxWidth="20.0" minHeight="-Infinity" minWidth="-Infinity" GridPane.rowIndex="1" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="50.0" />
+                                 </VBox.margin>
+                              </GridPane>
+                              <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="963.0">
+                                <columnConstraints>
+                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="200.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                                  <RowConstraints maxHeight="360.0" minHeight="-Infinity" prefHeight="360.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label styleClass="textos" text="SÓCIOS ATIVOS E INATIVOS" />
+                                    <PieChart fx:id="graficoAtivosInativos" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="550.0" GridPane.rowIndex="1" />
+                                    <ProgressIndicator fx:id="carregamentoGrafico1" maxHeight="20.0" maxWidth="20.0" minHeight="-Infinity" minWidth="-Infinity" GridPane.rowIndex="1" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="50.0" />
+                                 </VBox.margin>
+                              </GridPane>
+                              <GridPane prefWidth="300.0">
+                                <columnConstraints>
+                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                                  <RowConstraints maxHeight="360.0" minHeight="-Infinity" prefHeight="360.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label styleClass="textos" text="FAIXA ETÁRIA" />
+                                    <PieChart fx:id="graficoFaixaEtaria" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="550.0" GridPane.rowIndex="1" />
+                                    <ProgressIndicator fx:id="carregamentoGrafico5" maxHeight="20.0" maxWidth="20.0" minHeight="-Infinity" minWidth="-Infinity" GridPane.rowIndex="1" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="50.0" />
+                                 </VBox.margin>
+                              </GridPane>
+                           </children>
+                        </VBox>
                      </children>
-                  </GridPane>
-                  <GridPane prefHeight="300.0" prefWidth="300.0">
-                    <columnConstraints>
-                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints maxHeight="143.99999084472657" minHeight="10.0" prefHeight="48.00000610351563" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="252.79999389648438" minHeight="10.0" prefHeight="252.79999389648438" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <Label styleClass="textos" text="SÓCIOS EM DIA E INADIMPLENTES" />
-                        <PieChart fx:id="graficoEmdiaInadimplentes" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="300.0" GridPane.rowIndex="1" />
-                        <ProgressIndicator fx:id="carregamentoGrafico2" maxHeight="20.0" maxWidth="20.0" minHeight="-Infinity" minWidth="-Infinity" GridPane.rowIndex="1" />
-                     </children>
-                  </GridPane>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="120.0" prefWidth="200.0">
-               <children>
-                  <GridPane prefHeight="100.0" prefWidth="906.0">
-                    <columnConstraints>
-                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints maxHeight="45.60001220703125" minHeight="10.0" prefHeight="20.8000244140625" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="83.19998779296876" minHeight="10.0" prefHeight="79.9999755859375" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <!-- SÓCIOS -->
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e6c673" height="50.0" stroke="BLACK" strokeType="INSIDE" width="150.0" GridPane.rowIndex="1" />
-                        <StackPane GridPane.rowIndex="1">
-                           <Label fx:id="campoNumeroSocios" styleClass="textos" text="100" />
-                           <ProgressIndicator fx:id="carregamentoSocios" maxHeight="20.0" maxWidth="20.0" minHeight="20.0" minWidth="20.0" />
-                        </StackPane>
-
-                        <!-- DEPENDENTES -->
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e6c673" height="50.0" stroke="BLACK" strokeType="INSIDE" width="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <StackPane GridPane.columnIndex="1" GridPane.rowIndex="1">
-                           <Label fx:id="campoNumeroDependentes" styleClass="textos" text="100" />
-                           <ProgressIndicator fx:id="carregamentoDependentes" maxHeight="20.0" maxWidth="20.0" minHeight="20.0" minWidth="20.0" />
-                        </StackPane>
-
-                        <!-- TOTAL -->
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e6c673" height="50.0" stroke="BLACK" strokeType="INSIDE" width="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <StackPane GridPane.columnIndex="2" GridPane.rowIndex="1">
-                           <Label fx:id="campoNumeroTotal" styleClass="textos" text="100" />
-                           <ProgressIndicator fx:id="carregamentoTotal" maxHeight="20.0" maxWidth="20.0" minHeight="20.0" minWidth="20.0" />
-                        </StackPane>
-                     </children>
-                     <HBox.margin>
-                        <Insets top="20.0" />
-                     </HBox.margin>
-                  </GridPane>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="300.0" prefWidth="200.0">
-               <children>
-                  <GridPane prefWidth="300.0">
-                    <columnConstraints>
-                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints maxHeight="142.4" minHeight="10.0" prefHeight="39.19995727539063" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="261.60004272460935" minHeight="10.0" prefHeight="261.60004272460935" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <Label styleClass="textos" text="HOMENS E MULHERES" />
-                        <PieChart fx:id="graficoHomensMulheres" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="300.0" GridPane.rowIndex="1" />
-                        <ProgressIndicator fx:id="carregamentoGrafico3" maxHeight="20.0" maxWidth="20.0" minHeight="-Infinity" minWidth="-Infinity" GridPane.rowIndex="1" />
-                     </children>
-                  </GridPane>
-                  <GridPane prefWidth="300.0">
-                    <columnConstraints>
-                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints maxHeight="142.4" minHeight="10.0" prefHeight="43.19995727539063" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="257.60004272460935" minHeight="10.0" prefHeight="257.60004272460935" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <Label styleClass="textos" text="ETNIAS" />
-                        <PieChart fx:id="graficoEtnias" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="300.0" GridPane.rowIndex="1" />
-                        <ProgressIndicator fx:id="carregamentoGrafico4" maxHeight="20.0" maxWidth="20.0" minHeight="-Infinity" minWidth="-Infinity" GridPane.rowIndex="1" />
-                     </children>
-                  </GridPane>
-                  <GridPane prefWidth="300.0">
-                    <columnConstraints>
-                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints maxHeight="142.4" minHeight="10.0" prefHeight="36.00000610351563" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="264.79999389648435" minHeight="10.0" prefHeight="264.79999389648435" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <Label styleClass="textos" text="FAIXA ETÁRIA" />
-                        <PieChart fx:id="graficoFaixaEtaria" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="300.0" GridPane.rowIndex="1" />
-                        <ProgressIndicator fx:id="carregamentoGrafico5" maxHeight="20.0" maxWidth="20.0" minHeight="-Infinity" minWidth="-Infinity" GridPane.rowIndex="1" />
-                     </children>
-                  </GridPane>
-               </children>
-               <VBox.margin>
-                  <Insets top="20.0" />
-               </VBox.margin>
-            </HBox>
+                  </StackPane>
+               </content>
+            </ScrollPane>
             <HBox alignment="CENTER" prefHeight="59.0" prefWidth="980.0">
                <children>
                   <Button fx:id="botaoGerarPdf" mnemonicParsing="false" onAction="#gerarPdfAction" styleClass="botoes" text="GERAR PDF" />
