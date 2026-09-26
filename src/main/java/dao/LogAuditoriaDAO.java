@@ -12,12 +12,10 @@ import model.Usuario;
 public class LogAuditoriaDAO {
     //ATRIBUTOS
     private ConexaoBanco conexao;
-    private UsuarioDAO usuarioDAO;
 
     //CONSTRUTORES
     public LogAuditoriaDAO(ConexaoBanco conexao) {
         this.conexao = conexao;
-        this.usuarioDAO = new UsuarioDAO(conexao);
     }
 
     public LogAuditoriaDAO() {
@@ -76,11 +74,6 @@ public class LogAuditoriaDAO {
         logAuditoria.setDataHoraLog(rs.getTimestamp("dataHoraLog").toLocalDateTime());
         logAuditoria.setDescricaoLog(rs.getString("descricaoLog"));
         logAuditoria.setNomeUsuario(rs.getString("nomeUsuario"));
-
-        //verifica qual é a chave estrangeira do usuário e atribui o objeto ao socio
-        int idUsuario = rs.getInt("fk_idUsuario");
-        Usuario usuario = usuarioDAO.buscarPorId(idUsuario);
-        logAuditoria.setUsuario(usuario);
 
         //retorna o usuario
         return logAuditoria;
