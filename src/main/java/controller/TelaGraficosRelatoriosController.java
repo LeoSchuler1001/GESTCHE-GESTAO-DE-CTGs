@@ -1,9 +1,13 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import javax.imageio.ImageIO;
 
 import app.App;
 import dao.ConexaoBanco;
@@ -11,11 +15,14 @@ import dao.LembreteDAO;
 import dao.SocioDAO;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.embed.swing.SwingFXUtils;
+import java.awt.image.BufferedImage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -26,10 +33,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.WritableImage;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import model.Lembrete;
+import util.GerarPdf;
 
 public class TelaGraficosRelatoriosController {
     //ATRIBUTOS
+    GerarPdf gerarPdf = new GerarPdf();
+
     @FXML
     private Button botaoGerarPdf;
 
@@ -108,7 +121,49 @@ public class TelaGraficosRelatoriosController {
     //BOTÕES
     @FXML
     void gerarPdfAction(ActionEvent event) {
+        //abre uma janela para o usuário escolher onde salvar o arquivo
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Salvar Relatório de Gráficos");
+        fileChooser.setInitialFileName("relatorio_graficos.pdf");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
+        Stage stage = (Stage) tabelaLembretes.getScene().getWindow(); 
+        File arquivoDestino = fileChooser.showSaveDialog(stage);
 
+        //verifica se foi selecionado um local válido
+        if (arquivoDestino != null) {
+            try {
+                List<File> imagensGraficos = new ArrayList<>();
+
+                //seleciona os gráficos que vão ser incluídos no pdf
+                PieChart[] meusGraficos = { 
+                    graficoEmdiaInadimplentes, 
+                    graficoHomensMulheres, 
+                    graficoEtnias, 
+                    graficoAtivosInativos, 
+                    graficoFaixaEtaria 
+                };
+
+                //captura a imagem de todos os gráficos
+                for (int i = 0; i < meusGraficos.length; i++) {
+                    if (meusGraficos[i] != null) {
+                        WritableImage writableImage = meusGraficos[i].snapshot(new SnapshotParameters(), null);
+                        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(writableImage, null);
+                        
+                        File imagem = File.createTempFile("grafico_" + i, ".png");
+                        ImageIO.write(bufferedImage, "png", imagem);
+                        imagem.deleteOnExit();
+                        
+                        imagensGraficos.add(imagem);
+                    }
+                }
+
+                //chama o método de gerar pdfs
+                gerarPdf.gerarRelatorio(imagensGraficos, arquivoDestino);
+
+            } catch (IOException e) {
+                emitirAlerta("Selecione um local válido para salvar o pdf", AlertType.ERROR);
+            }
+        }
     }
 
     @FXML
@@ -180,7 +235,7 @@ public class TelaGraficosRelatoriosController {
                 ObservableList<PieChart.Data> dadosEmdiaInadimplentes = socioDAO.buscarPorcentagemEmdiaInadimplentes();
                 ObservableList<PieChart.Data> dadosHomensMulheres = socioDAO.buscarPorcentagemHomensMulheres();
                 ObservableList<PieChart.Data> dadosEtnias = socioDAO.buscarPorcentagemEtnias();
-                ObservableList<PieChart.Data> dadosFaixaEtaria = socioDAO.buscarPorcentagemFaixaEtaria();
+                ObservableList<PieChart.Data> dadosFaixaEtaria = socioDAO.buscarPorcentagemFaixaEtaria();              
 
                 //cria as variáveis que vão armazenar as quantidades de sócios e dependentes
                 int quantidadeSociosAtivos = socioDAO.contarSociosAtivos();
