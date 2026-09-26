@@ -6,9 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import javax.imageio.ImageIO;
-
 import app.App;
 import dao.ConexaoBanco;
 import dao.LembreteDAO;
@@ -42,6 +40,9 @@ import util.GerarPdf;
 public class TelaGraficosRelatoriosController {
     //ATRIBUTOS
     GerarPdf gerarPdf = new GerarPdf();
+    //cria as variáveis que vão armazenar as quantidades de sócios e dependentes
+    int quantidadeSociosAtivos;
+    int quantidadeDependentesAtivos;
 
     @FXML
     private Button botaoGerarPdf;
@@ -158,7 +159,7 @@ public class TelaGraficosRelatoriosController {
                 }
 
                 //chama o método de gerar pdfs
-                gerarPdf.gerarRelatorio(imagensGraficos, arquivoDestino);
+                gerarPdf.gerarRelatorioGeralSocios(imagensGraficos, arquivoDestino, quantidadeSociosAtivos, quantidadeDependentesAtivos);
 
             } catch (IOException e) {
                 emitirAlerta("Selecione um local válido para salvar o pdf", AlertType.ERROR);
@@ -209,6 +210,8 @@ public class TelaGraficosRelatoriosController {
             new SimpleStringProperty(cellData.getValue().getNomeLembrete())
         );
 
+        botaoGerarPdf.setDisable(true);
+
         //chama a função que irá carregar os dados das tabelas e dos mostradores
         carregarDadosSegundoPlano();        
     }
@@ -217,6 +220,7 @@ public class TelaGraficosRelatoriosController {
     private void carregarDadosSegundoPlano() {
         //coloca os ícones de carregamento nas tabelas enquanto os dados não são carregados
         tabelaLembretes.setPlaceholder(criarIndicator());
+        botaoGerarPdf.setDisable(true);
 
         //cria uma tarefa que irá carregar os dados em segundo plano
         Task<Void> task = new Task<>() {
@@ -238,8 +242,8 @@ public class TelaGraficosRelatoriosController {
                 ObservableList<PieChart.Data> dadosFaixaEtaria = socioDAO.buscarPorcentagemFaixaEtaria();              
 
                 //cria as variáveis que vão armazenar as quantidades de sócios e dependentes
-                int quantidadeSociosAtivos = socioDAO.contarSociosAtivos();
-                int quantidadeDependentesAtivos = socioDAO.contarDependentesAtivos();
+                quantidadeSociosAtivos = socioDAO.contarSociosAtivos();
+                quantidadeDependentesAtivos = socioDAO.contarDependentesAtivos();
                 int totalAtivos = quantidadeDependentesAtivos + quantidadeSociosAtivos;
 
                 // Atualiza as tabelas e os gráficos
@@ -259,6 +263,8 @@ public class TelaGraficosRelatoriosController {
                     if (listaLembretes.isEmpty()) {
                         tabelaLembretes.setPlaceholder(new javafx.scene.control.Label("Sem lembretes."));
                     }
+
+                    botaoGerarPdf.setDisable(false);
                 });
 
                 return null;
