@@ -27,7 +27,7 @@ public class GerarPdf {
         "5. Distribuição por Faixa Etária"
     };
 
-    //nétodo auxiliar para incluir o rodapé do sistema Gestchê
+    //método auxiliar para incluir o rodapé do sistema Gestchê
     private void adicionarRodape(PDPageContentStream contentStream, float larguraPagina) throws IOException {
         String dataFormatada = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         String textoRodape = "Relatório emitido pelo sistema Gestchê em " + dataFormatada;

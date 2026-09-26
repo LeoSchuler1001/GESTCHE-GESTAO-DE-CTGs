@@ -4,17 +4,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+import java.util.ArrayList;
+import java.util.List;
 import model.LogAuditoria;
 import model.Usuario;
 
 public class LogAuditoriaDAO {
     //ATRIBUTOS
     private ConexaoBanco conexao;
+    private UsuarioDAO usuarioDAO;
 
     //CONSTRUTORES
     public LogAuditoriaDAO(ConexaoBanco conexao) {
         this.conexao = conexao;
+        this.usuarioDAO = new UsuarioDAO(conexao);
     }
 
     public LogAuditoriaDAO() {
@@ -43,5 +46,43 @@ public class LogAuditoriaDAO {
                 }
             }
         }
+    }
+
+    public List<LogAuditoria> listarLogs() throws SQLException {
+        //cria o comando sql
+        String sql = "SELECT * FROM logAuditoria ORDER BY dataHoraLog DESC";
+
+        List<LogAuditoria> listaLogs = new ArrayList<>();
+
+        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    listaLogs.add(montarObjLogs(rs));
+                }
+            }
+        }
+
+        return listaLogs;
+    }
+
+    //método auxiliar, que vai montar o objeto logAuditoria após a consulta sql
+    private LogAuditoria montarObjLogs(ResultSet rs) throws SQLException {
+        //cria o objeto
+        LogAuditoria logAuditoria = new LogAuditoria();
+
+        //atribui os valores
+        logAuditoria.setIdLog(rs.getInt("pk_idLog"));
+        logAuditoria.setDataHoraLog(rs.getTimestamp("dataHoraLog").toLocalDateTime());
+        logAuditoria.setDescricaoLog(rs.getString("descricaoLog"));
+        logAuditoria.setNomeUsuario(rs.getString("nomeUsuario"));
+
+        //verifica qual é a chave estrangeira do usuário e atribui o objeto ao socio
+        int idUsuario = rs.getInt("fk_idUsuario");
+        Usuario usuario = usuarioDAO.buscarPorId(idUsuario);
+        logAuditoria.setUsuario(usuario);
+
+        //retorna o usuario
+        return logAuditoria;
     }
 }

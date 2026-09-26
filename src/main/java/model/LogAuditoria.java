@@ -1,6 +1,8 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class LogAuditoria {
     //ATRIBUTOS
@@ -68,5 +70,17 @@ public class LogAuditoria {
 
     public void setNomeUsuario(String nomeUsuario) {
         this.nomeUsuario = nomeUsuario;
-    } 
+    }
+    
+    public String getDataLog() {
+        if (dataHoraLog == null) return "";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.forLanguageTag("pt-BR"));
+        return dataHoraLog.format(formatter);
+    }
+    
+    public String getHoraLog() {
+        if (dataHoraLog == null) return "";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        return dataHoraLog.format(formatter);
+    }
 }

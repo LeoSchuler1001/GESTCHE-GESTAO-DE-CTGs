@@ -6,18 +6,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import app.App;
 import model.Lembrete;
 import model.Usuario;
 
 public class LembreteDAO {
     //ATRIBUTOS
     private ConexaoBanco conexao;
-    private UsuarioDAO usuarioDAO;
     
     //CONTRUTOR
     public LembreteDAO(ConexaoBanco conexao) {
         this.conexao = conexao;
-        this.usuarioDAO = new UsuarioDAO(conexao);
     }
 
     //MÉTODOS
@@ -173,9 +173,7 @@ public class LembreteDAO {
         lembrete.setAtivoLembrete(rs.getBoolean("ativoLembrete"));
 
         //verifica qual é a chave estrangeira do usuário e atribui o objeto ao socio
-        int idUsuario = rs.getInt("fk_idUsuario");
-        Usuario usuario = usuarioDAO.buscarPorId(idUsuario);
-        lembrete.setUsuario(usuario);
+        lembrete.setUsuario(App.usuarioLogado);
 
         //retorna o usuario
         return lembrete;

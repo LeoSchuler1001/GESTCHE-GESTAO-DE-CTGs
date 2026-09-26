@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.scene.input.MouseEvent;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -22,7 +23,9 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.util.Callback;
 import model.Lembrete;
 
 public class TelaInSecretarioController {
@@ -130,10 +133,20 @@ public class TelaInSecretarioController {
     //FUNÇÕES
     //inicializa a tela
     public void initialize() throws SQLException {
-        //faz com que o usuario não possa clicar nas tabelas
-        tabelaSociosEmdia.setMouseTransparent(true);
+        //desativa a seleção nas tabelas, mas mantêm o scroll
+        Callback<TableView<String>, TableRow<String>> desativarSelecao = tv -> {
+            TableRow<String> row = new TableRow<>();
+            
+            row.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> event.consume());
+            row.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> event.consume());
+            
+            return row;
+        };
+
+        tabelaSociosEmdia.setRowFactory(desativarSelecao);
         tabelaSociosEmdia.setFocusTraversable(false);
-        tabelaSociosInadimplentes.setMouseTransparent(true);
+
+        tabelaSociosInadimplentes.setRowFactory(desativarSelecao);
         tabelaSociosInadimplentes.setFocusTraversable(false);
 
         //configura as colunas das tabelas para receber os nomes dos sócios e lembretes
