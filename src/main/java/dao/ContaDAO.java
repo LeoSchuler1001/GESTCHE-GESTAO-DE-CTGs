@@ -60,7 +60,7 @@ public class ContaDAO {
             }
         }
 
-        //retorna null caso não haja nenhum departamento
+        //retorna null caso não haja nenhuma conta
         return null;
     }
 
@@ -105,7 +105,7 @@ public class ContaDAO {
         }
     }
 
-    //método auxiliar, que vai montar o objeto departamento após a consulta sql
+    //método auxiliar, que vai montar o objeto categoria após a consulta sql
     private Conta montarObjConta(ResultSet rs) throws SQLException {
         //cria o objeto
         Conta conta = new Conta();
