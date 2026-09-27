@@ -13,3 +13,5 @@ Thumbs.db
 *.log
 
 docs/organizacao.text
+
+dao/CredenciaisBancoDados.java

@@ -5,17 +5,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConexaoBanco {
-    //ATRIBUTOS 
-    private static final String URL = "jdbc:postgresql://aws-0-sa-east-1.pooler.supabase.com:6543/postgres?prepareThreshold=0";
-    private static final String USER = "postgres.rqolgvzsbbbdxwxdcwzg";
-    private static final String PASSWORD = "Tentenovamente1001@";
-
     //MÉTODOS
     //cria a conexão com o banco de dados
     public Connection getConexao() {
         try {
             Class.forName("org.postgresql.Driver"); 
-            return DriverManager.getConnection(URL, USER, PASSWORD);
+            return DriverManager.getConnection(CredenciaisBancoDados.getUrl(), CredenciaisBancoDados.getUser(), CredenciaisBancoDados.getPassword());
         } catch (ClassNotFoundException e) {
             System.err.println("Não foi possível conectar ao banco de dados!");
             return null;
