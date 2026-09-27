@@ -103,6 +103,7 @@ CREATE TABLE debito(
 
 CREATE TABLE conta(
     pk_idConta SERIAL PRIMARY KEY,
+    saldo NUMERIC(10,2) NOT NULL DEFAULT 0.00,
     nomeConta VARCHAR(100) NOT NULL,
     corConta VARCHAR(7) NOT NULL,
     iconeConta VARCHAR(100) NOT NULL

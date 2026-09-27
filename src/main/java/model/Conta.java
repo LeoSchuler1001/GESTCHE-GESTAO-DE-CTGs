@@ -4,19 +4,22 @@ public class Conta {
     //ATRIBUTOS
     private int idConta;
     private String nomeConta;
+    private Double saldo;
     private String corConta;
     private String iconeConta;
 
     //CONSTRUTORES
-    public Conta(int idConta, String nomeConta, String corConta, String iconeConta) {
+    public Conta(int idConta, String nomeConta, Double saldo, String corConta, String iconeConta) {
         this.idConta = idConta;
         this.nomeConta = nomeConta;
+        this.saldo = saldo;
         this.corConta = corConta;
         this.iconeConta = iconeConta;
     }
 
-    public Conta(String nomeConta, String corConta, String iconeConta) {
+    public Conta(String nomeConta, Double saldo, String corConta, String iconeConta) {
         this.nomeConta = nomeConta;
+        this.saldo = saldo;
         this.corConta = corConta;
         this.iconeConta = iconeConta;
     }
@@ -55,5 +58,13 @@ public class Conta {
 
     public void setIconeConta(String iconeConta) {
         this.iconeConta = iconeConta;
+    }
+
+    public Double getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(Double saldo) {
+        this.saldo = saldo;
     }
 }

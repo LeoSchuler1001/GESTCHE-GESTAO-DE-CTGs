@@ -24,12 +24,13 @@ public class ContaDAO {
     //cadastrar uma nova conta
     public void cadastrarConta(Conta conta) throws SQLException {
         //cria o comando sql
-        String sql = "INSERT INTO conta (nomeConta, corConta, iconeConta) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO conta (nomeConta, saldo, corConta, iconeConta) VALUES (?, ?, ?, ?)";
 
         try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, conta.getNomeConta());
-            stmt.setString(2, conta.getCorConta());
-            stmt.setString(3, conta.getIconeConta());
+            stmt.setDouble(2, conta.getSaldo());
+            stmt.setString(3, conta.getCorConta());
+            stmt.setString(4, conta.getIconeConta());
 
             // Atribui o ID gerado pelo SERIAL de volta ao objeto conta
             try (ResultSet rs = stmt.getGeneratedKeys()) {
@@ -82,13 +83,14 @@ public class ContaDAO {
 
     //atualiza uma conta
     public void atualizarConta(Conta conta) throws SQLException {
-        String sql = "UPDATE conta SET nomeConta = ?, corConta = ?, iconeConta = ?  WHERE pk_idConta = ?";
+        String sql = "UPDATE conta SET nomeConta = ?, saldo = ?, corConta = ?, iconeConta = ?  WHERE pk_idConta = ?";
         
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
             stmt.setString(1, conta.getNomeConta());
-            stmt.setString(2, conta.getCorConta());
-            stmt.setString(3, conta.getIconeConta());
-            stmt.setInt(4, conta.getIdConta());
+            stmt.setDouble(2, conta.getSaldo());
+            stmt.setString(3, conta.getCorConta());
+            stmt.setString(4, conta.getIconeConta());
+            stmt.setInt(5, conta.getIdConta());
             
             //executa o comando sql
             stmt.executeUpdate();
@@ -112,6 +114,7 @@ public class ContaDAO {
 
         //atribui os valores
         conta.setIdConta(rs.getInt("pk_idConta"));
+        conta.setSaldo(rs.getDouble("saldo"));
         conta.setNomeConta(rs.getString("nomeConta"));
         conta.setCorConta(rs.getString("corConta"));
         conta.setIconeConta(rs.getString("iconeConta"));
