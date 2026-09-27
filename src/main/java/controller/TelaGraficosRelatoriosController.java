@@ -30,10 +30,13 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import model.Lembrete;
 import util.GerarPdf;
 
@@ -206,6 +209,19 @@ public class TelaGraficosRelatoriosController {
     //MÉTODOS
     //inicializa a tela
     public void initialize() throws SQLException {
+        //desativa a seleção na tabela de lembretes, mas mantêm o scroll
+        Callback<TableView<Lembrete>, TableRow<Lembrete>> desativarSelecaoLembrete = tv -> {
+            TableRow<Lembrete> row = new TableRow<>();
+            
+            row.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> event.consume());
+            row.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> event.consume());
+            
+            return row;
+        };
+
+        tabelaLembretes.setRowFactory(desativarSelecaoLembrete);
+        tabelaLembretes.setFocusTraversable(false);
+        
         this.lembretes.setCellValueFactory(cellData -> 
             new SimpleStringProperty(cellData.getValue().getNomeLembrete())
         );

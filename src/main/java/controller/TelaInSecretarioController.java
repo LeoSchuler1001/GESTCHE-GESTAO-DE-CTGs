@@ -149,6 +149,19 @@ public class TelaInSecretarioController {
         tabelaSociosInadimplentes.setRowFactory(desativarSelecao);
         tabelaSociosInadimplentes.setFocusTraversable(false);
 
+        //desativa a seleção na tabela de lembretes, mas mantêm o scroll
+        Callback<TableView<Lembrete>, TableRow<Lembrete>> desativarSelecaoLembrete = tv -> {
+            TableRow<Lembrete> row = new TableRow<>();
+            
+            row.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> event.consume());
+            row.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> event.consume());
+            
+            return row;
+        };
+
+        tabelaLembretes.setRowFactory(desativarSelecaoLembrete);
+        tabelaLembretes.setFocusTraversable(false);
+
         //configura as colunas das tabelas para receber os nomes dos sócios e lembretes
         this.sociosEmDia.setCellValueFactory(cellData -> 
             new SimpleStringProperty(cellData.getValue())

@@ -2,6 +2,8 @@ package controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+
+import javafx.scene.input.MouseEvent;
 import java.util.List;
 import java.util.Optional;
 import app.App;
@@ -21,7 +23,9 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.util.Callback;
 import model.Lembrete;
 import model.LogAuditoria;
 
@@ -106,6 +110,32 @@ public class TelaConfiguracoesController {
     //MÉTODOS
     //inicializa a tela
     public void initialize() throws SQLException {
+        //desativa a seleção nas tabelas, mas mantêm o scroll
+        Callback<TableView<LogAuditoria>, TableRow<LogAuditoria>> desativarSelecao = tv -> {
+            TableRow<LogAuditoria> row = new TableRow<>();
+            
+            row.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> event.consume());
+            row.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> event.consume());
+            
+            return row;
+        };
+
+        tabelaLogsAuditoria.setRowFactory(desativarSelecao);
+        tabelaLogsAuditoria.setFocusTraversable(false);
+
+        //desativa a seleção na tabela de lembretes, mas mantêm o scroll
+        Callback<TableView<Lembrete>, TableRow<Lembrete>> desativarSelecaoLembrete = tv -> {
+            TableRow<Lembrete> row = new TableRow<>();
+            
+            row.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> event.consume());
+            row.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> event.consume());
+            
+            return row;
+        };
+
+        tabelaLembretes.setRowFactory(desativarSelecaoLembrete);
+        tabelaLembretes.setFocusTraversable(false);
+
         //configura as colunas das tabelas
         this.descricaoLog.setCellValueFactory(cellData -> 
             new SimpleStringProperty(cellData.getValue().getDescricaoLog())

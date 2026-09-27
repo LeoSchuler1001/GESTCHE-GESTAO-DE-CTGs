@@ -26,9 +26,12 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 public class TelaSociosDependentesController {
     //ATRIBUTOS
@@ -394,6 +397,19 @@ public class TelaSociosDependentesController {
     //MÉTODOS
     //inicializa a tela
     public void initialize() {
+        //desativa a seleção na tabela de lembretes, mas mantêm o scroll
+        Callback<TableView<Lembrete>, TableRow<Lembrete>> desativarSelecaoLembrete = tv -> {
+            TableRow<Lembrete> row = new TableRow<>();
+            
+            row.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> event.consume());
+            row.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> event.consume());
+            
+            return row;
+        };
+
+        tabelaLembretes.setRowFactory(desativarSelecaoLembrete);
+        tabelaLembretes.setFocusTraversable(false);
+        
         //configura as colunas das tabelas para receber os nomes dos sócios e lembretes
         this.colunaNomeSocio.setCellValueFactory(cellData -> 
             new SimpleStringProperty(cellData.getValue().getNomeSocio())
