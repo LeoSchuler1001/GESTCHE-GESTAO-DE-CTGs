@@ -113,7 +113,7 @@ public class CategoriaDAO {
         //atribui os valores
         categoria.setIdCategoria(rs.getInt("pk_idCategoria"));
         categoria.setNomeCategoria(rs.getString("nomeCategoria"));
-        categoria.setCorCategoria(rs.getString("cor;categoria"));
+        categoria.setCorCategoria(rs.getString("corCategoria"));
         categoria.setIconeCategoria(rs.getString("iconeCategoria"));
 
         //retorna a conta

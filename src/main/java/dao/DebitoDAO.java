@@ -75,7 +75,7 @@ public class DebitoDAO {
             }
         }
 
-        //retorna null caso não haja nenhum departamento
+        //retorna null caso não haja nenhum debito
         return null;
     }
 
