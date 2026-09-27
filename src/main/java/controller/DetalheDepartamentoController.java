@@ -2,7 +2,6 @@ package controller;
 
 import java.sql.SQLException;
 import java.util.Optional;
-
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;

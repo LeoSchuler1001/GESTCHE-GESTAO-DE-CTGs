@@ -7,7 +7,6 @@ import java.util.List;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import model.Endereco;
 import model.LogAuditoria;
 import model.Usuario;

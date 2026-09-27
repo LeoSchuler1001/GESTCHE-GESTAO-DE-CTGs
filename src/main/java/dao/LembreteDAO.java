@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import app.App;
 import model.Lembrete;
 import model.Usuario;
@@ -118,7 +117,6 @@ public class LembreteDAO {
             stmt.setString(4, lembrete.getDescricaoLembrete());
             stmt.setTime(5, lembrete.getHorarioLembrete());
             stmt.setInt(6, lembrete.getUsuario().getIdUsuario());
-
 
             //executa o comando sql no banco de dados
             stmt.executeUpdate();

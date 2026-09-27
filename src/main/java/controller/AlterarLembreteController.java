@@ -7,7 +7,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Optional;
-
 import app.App;
 import dao.ConexaoBanco;
 import dao.LembreteDAO;
@@ -161,9 +160,7 @@ public class AlterarLembreteController {
         LocalDate localDate = ((java.sql.Date) lembreteSelecionado.getDataInicioLembrete()).toLocalDate();        
         campoInicioLembrete.setValue(localDate);
 
-        
         campoPeriodicidadeLembrete.setValue(lembreteSelecionado.getPeriodicidadeLembrete());
-
     }
 
     //método auxiliar para emitir alertas

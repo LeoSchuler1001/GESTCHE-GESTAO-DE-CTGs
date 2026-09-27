@@ -2,7 +2,6 @@ package controller;
 
 import java.sql.SQLException;
 import java.util.Optional;
-
 import dao.ConexaoBanco;
 import dao.DepartamentoDAO;
 import javafx.application.Platform;
@@ -39,6 +38,7 @@ public class AlterarDepartamentoController {
     @FXML
     private VBox painelFundo;
 
+    //BOTÕES
     @FXML
     void alterarDepartamentoAction(ActionEvent event) throws SQLException {
         if(!verificaFormulario()) { return; }

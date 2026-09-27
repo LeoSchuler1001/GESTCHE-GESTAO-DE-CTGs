@@ -2,7 +2,6 @@ package controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
-
 import app.App;
 import dao.UsuarioDAO;
 import javafx.event.ActionEvent;

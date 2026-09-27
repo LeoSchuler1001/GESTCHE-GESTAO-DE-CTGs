@@ -257,7 +257,6 @@ public class TelaSociosDependentesController {
         //verifica qual foi o sócio selecionado
         SocioResumoDTO socioSelecionado = tabelaResumoSocios.getSelectionModel().getSelectedItem();
 
-
         //verifica se um sócio foi selecionado
         if (socioSelecionado != null) {
             //verifica se o sócio já está inativo
@@ -284,7 +283,6 @@ public class TelaSociosDependentesController {
         }
     }
 
-    
     @FXML
     void ativarSocioAction(ActionEvent event) throws SQLException {
         //verifica qual foi o sócio selecionado

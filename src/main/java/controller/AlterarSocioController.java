@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.sql.Date;
-
 import dao.ConexaoBanco;
 import dao.EnderecoDAO;
 import dao.SocioDAO;
@@ -173,7 +172,6 @@ public class AlterarSocioController {
         } else {
             System.out.println("Ação cancelada pelo usuário.");
         }
-        
     }
 
     @FXML

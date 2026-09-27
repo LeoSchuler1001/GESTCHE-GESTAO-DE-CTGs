@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-
 import app.App;
 import dao.ConexaoBanco;
 import dao.LembreteDAO;
@@ -70,7 +69,7 @@ public class TelaInSecretarioController {
     private Hyperlink linkLembretes;
 
     @FXML
-    private Hyperlink linkSociosDepend;
+    private Hyperlink linkSociosDependentes;
 
     @FXML
     private Hyperlink linkSair;
@@ -106,7 +105,7 @@ public class TelaInSecretarioController {
     }
 
     @FXML
-    void sociosDependenAction(ActionEvent event) throws IOException {
+    void sociosDependentesAction(ActionEvent event) throws IOException {
         App.trocarTela("TelaSociosDependentes");
     }
 

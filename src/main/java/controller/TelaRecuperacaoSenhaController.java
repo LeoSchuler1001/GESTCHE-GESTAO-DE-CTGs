@@ -2,7 +2,6 @@ package controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
-
 import app.App;
 import dao.ConexaoBanco;
 import dao.UsuarioDAO;
@@ -123,5 +122,4 @@ public class TelaRecuperacaoSenhaController {
         alerta.setContentText(mensagem);
         alerta.showAndWait();
     }
-
 }

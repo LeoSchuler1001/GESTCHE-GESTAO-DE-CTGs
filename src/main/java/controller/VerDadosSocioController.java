@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import dao.ConexaoBanco;
 import dao.DebitoDAO;
 import dao.DepartamentoDAO;
@@ -333,7 +332,6 @@ public class VerDadosSocioController {
             listaNomeDebitos.add(debito.getTipoDebito());
         }
 
-
         //preenche os campos com os dados do sócio 
         campoNomeSocio.setText(socioSelecionado.getNomeSocio());
         campoCpfSocio.setText(socioSelecionado.getCpfSocio());
@@ -363,7 +361,6 @@ public class VerDadosSocioController {
         campoCepSocio.setText(enderecoSocioSelecionado.getCep());
         campoCidadeSocio.setText(enderecoSocioSelecionado.getCidade());
         campoEstadoSocio.setText(enderecoSocioSelecionado.getEstado());
-
 
         if (listaDepartamentosSocio == null || listaDepartamentosSocio.isEmpty()) {
             campoDepartamentosSocio.setPlaceholder(new Label("Nenhum departamento vinculado."));

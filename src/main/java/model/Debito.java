@@ -80,5 +80,4 @@ public class Debito {
     public void setSocio(Socio socio) {
         this.socio = socio;
     }
-    
 }

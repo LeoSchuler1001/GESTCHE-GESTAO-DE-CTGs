@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
 import model.Debito;
 import model.Socio;
 
@@ -109,8 +108,6 @@ public class DebitoDAO {
         String sql = "SELECT DEBITO.* FROM debito, socio WHERE debito.fk_idSocio = socio.pk_idSocio AND debito.dtPgmtDebito IS NULL AND socio.pk_idSocio = ?";
 
         List<Debito> listaDebitos = new ArrayList<>();
-
-        
 
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
             stmt.setInt(1, id);

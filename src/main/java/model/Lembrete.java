@@ -3,7 +3,6 @@ package model;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
-
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;

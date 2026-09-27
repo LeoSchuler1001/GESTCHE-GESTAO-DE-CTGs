@@ -148,4 +148,3 @@ CREATE TABLE movimentacao(
 CREATE INDEX idx_socio_ativo ON socio(ativoSocio);
 
 CREATE INDEX idx_debito_socio_venc ON debito(fk_idSocio, dtPgmtDebito, vencimentoDebito);
-

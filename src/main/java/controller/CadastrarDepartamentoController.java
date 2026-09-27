@@ -2,7 +2,6 @@ package controller;
 
 import java.sql.SQLException;
 import java.util.Optional;
-
 import dao.ConexaoBanco;
 import dao.DepartamentoDAO;
 import javafx.event.ActionEvent;

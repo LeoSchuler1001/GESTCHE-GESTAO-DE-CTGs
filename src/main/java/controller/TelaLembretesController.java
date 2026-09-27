@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-
 import app.App;
 import dao.ConexaoBanco;
 import dao.LembreteDAO;

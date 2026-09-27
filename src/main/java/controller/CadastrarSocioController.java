@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import app.App;
 import dao.ConexaoBanco;
 import dao.DepartamentoDAO;
@@ -42,7 +41,6 @@ public class CadastrarSocioController {
     private final DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     List<String> listaDepartamentosSocio = new ArrayList<>();
     List<Departamento> listaTodosDepartamentos;
-
 
     //conexões com o banco de dados
     ConexaoBanco conexaoBanco = new ConexaoBanco();
@@ -342,5 +340,4 @@ public class CadastrarSocioController {
         alerta.setContentText(mensagem);
         alerta.showAndWait();
     }
-
 }
