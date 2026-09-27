@@ -69,3 +69,8 @@
     -fx-font-family: "Gadugi";
     -fx-font-size: 16px;
 }
+
+.botaoTransparente {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
