@@ -145,7 +145,7 @@ public class TelaInTesoureiroAnoController {
     private TableView<Movimentacao> tabelaReceitas;
 
     @FXML
-    private TableColumn<Lembrete, Double> valorLembrete;
+    private TableColumn<Lembrete, String> valorLembrete;
 
     //BOTÕES
     @FXML
@@ -281,6 +281,12 @@ public class TelaInTesoureiroAnoController {
         this.nomeLembrete.setCellValueFactory(cellData -> 
             new SimpleStringProperty(cellData.getValue().getNomeLembrete())
         );
+
+        this.valorLembrete.setCellValueFactory(cellData -> {
+            double valor = cellData.getValue().getValorLembrete();
+            String formatado = String.format("R$ %.2f", valor);
+            return new SimpleStringProperty(formatado);
+        });
 
         //recebe as mudanças dos anos no seletor
         anoSelecionado.valueProperty().addListener((observable, oldValue, newValue) -> {
