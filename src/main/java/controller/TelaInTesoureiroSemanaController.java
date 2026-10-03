@@ -10,6 +10,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 
+import java.io.IOException;
+
+import app.App;
+
 public class TelaInTesoureiroSemanaController {
     //ATRIBUTOS
     @FXML
@@ -135,8 +139,8 @@ public class TelaInTesoureiroSemanaController {
     }
 
     @FXML
-    void anoAction(ActionEvent event) {
-
+    void anoAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaInTesoureiroAno");
     }
 
     @FXML
@@ -170,8 +174,8 @@ public class TelaInTesoureiroSemanaController {
     }
 
     @FXML
-    void diaAction(ActionEvent event) {
-
+    void diaAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaInTesoureiroDia");
     }
 
     @FXML
@@ -185,8 +189,8 @@ public class TelaInTesoureiroSemanaController {
     }
 
     @FXML
-    void mesAction(ActionEvent event) {
-
+    void mesAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaInTesoureiroMes");
     }
 
     @FXML
