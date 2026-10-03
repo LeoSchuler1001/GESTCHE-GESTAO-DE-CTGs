@@ -107,7 +107,7 @@ public class LembreteDAO {
     }
 
     //cadastra um lembrete
-    public void cadastrarLembrete(Lembrete lembrete) throws SQLException {
+    public void cadastrarLembreteSecretario(Lembrete lembrete) throws SQLException {
         String sql = "INSERT INTO lembrete (nomeLembrete, dataInicioLembrete, periodicidadeLembrete, descricaoLembrete, horarioLembrete, fk_idUsuario) VALUES (?, ?, ?, ?, ?, ?)";
     
         try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -131,7 +131,7 @@ public class LembreteDAO {
     }
 
     //atualiza um lembrete
-    public void atualizarLembrete(Lembrete lembrete) throws SQLException {
+    public void atualizarLembreteSecretario(Lembrete lembrete) throws SQLException {
         String sql = "UPDATE lembrete SET nomeLembrete = ?, dataInicioLembrete = ?, periodicidadeLembrete = ?, descricaoLembrete = ?, horarioLembrete = ?, fk_idUsuario = ? WHERE pk_idLembrete = ?";
     
         try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -167,6 +167,7 @@ public class LembreteDAO {
         lembrete.setDataInicioLembrete(rs.getDate("dataInicioLembrete"));
         lembrete.setPeriodicidadeLembrete(rs.getString("periodicidadeLembrete"));
         lembrete.setDescricaoLembrete(rs.getString("descricaoLembrete"));
+        lembrete.setValorLembrete(rs.getDouble("valorLembrete"));
         lembrete.setHorarioLembrete(rs.getTime("horarioLembrete"));
         lembrete.setAtivoLembrete(rs.getBoolean("ativoLembrete"));
 

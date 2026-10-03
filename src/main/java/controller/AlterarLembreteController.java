@@ -88,7 +88,7 @@ public class AlterarLembreteController {
 
             lembreteSelecionado.setPeriodicidadeLembrete(campoPeriodicidadeLembrete.getValue());
 
-            lembreteDAO.atualizarLembrete(lembreteSelecionado);
+            lembreteDAO.atualizarLembreteSecretario(lembreteSelecionado);
 
             emitirAlerta("lembrete alterado com sucesso", AlertType.INFORMATION);
             

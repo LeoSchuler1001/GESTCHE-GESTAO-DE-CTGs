@@ -122,6 +122,7 @@ CREATE TABLE lembrete(
     dataInicioLembrete DATE NOT NULL,
     periodicidadeLembrete VARCHAR(100) NOT NULL,
     descricaoLembrete TEXT,
+    valorLembrete NUMERIC(10,2),
     horarioLembrete TIME NOT NULL,
     ativoLembrete BOOLEAN NOT NULL DEFAULT FALSE,
     fk_idUsuario INT,

@@ -15,27 +15,30 @@ public class Lembrete {
     private Date dataInicioLembrete;
     private String periodicidadeLembrete;
     private String descricaoLembrete;
+    private Double valorLembrete;
     private Time horarioLembrete;
     private BooleanProperty ativoLembrete = new SimpleBooleanProperty(true);
     private Usuario usuario;
 
     //CONSTRUTORES
-    public Lembrete(int idLembrete, String nomeLembrete, Date dataInicioLembrete, String periodicidadeLembrete, String descricaoLembrete, Time horarioLembrete, BooleanProperty ativoLembrete, Usuario usuario) {
+    public Lembrete(int idLembrete, String nomeLembrete, Date dataInicioLembrete, String periodicidadeLembrete, String descricaoLembrete, Double valorLembrete, Time horarioLembrete, BooleanProperty ativoLembrete, Usuario usuario) {
         this.idLembrete = idLembrete;
         this.nomeLembrete = nomeLembrete;
         this.dataInicioLembrete = dataInicioLembrete;
         this.periodicidadeLembrete = periodicidadeLembrete;
         this.descricaoLembrete = descricaoLembrete;
+        this.valorLembrete = valorLembrete;
         this.horarioLembrete = horarioLembrete;
         this.ativoLembrete = ativoLembrete;
         this.usuario = usuario;
     }
 
-    public Lembrete(String nomeLembrete, Date dataInicioLembrete, String periodicidadeLembrete, String descricaoLembrete, Time horarioLembrete, BooleanProperty ativoLembrete, Usuario usuario) {
+    public Lembrete(String nomeLembrete, Date dataInicioLembrete, String periodicidadeLembrete, String descricaoLembrete, Double valorLembrete, Time horarioLembrete, BooleanProperty ativoLembrete, Usuario usuario) {
         this.nomeLembrete = nomeLembrete;
         this.dataInicioLembrete = dataInicioLembrete;
         this.periodicidadeLembrete = periodicidadeLembrete;
         this.descricaoLembrete = descricaoLembrete;
+        this.valorLembrete = valorLembrete;
         this.horarioLembrete = horarioLembrete;
         this.ativoLembrete = ativoLembrete;
         this.usuario = usuario;
@@ -115,6 +118,14 @@ public class Lembrete {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public Double getValorLembrete() {
+        return valorLembrete;
+    }
+
+    public void setValorLembrete(Double valorLembrete) {
+        this.valorLembrete = valorLembrete;
     }
 
     public StringProperty dataInicioFormatada() {

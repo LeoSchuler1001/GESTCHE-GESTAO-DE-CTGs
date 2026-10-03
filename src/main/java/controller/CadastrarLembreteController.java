@@ -88,7 +88,7 @@ public class CadastrarLembreteController {
 
             lembrete.setPeriodicidadeLembrete(campoPeriodicidadeLembrete.getValue());
 
-            lembreteDAO.cadastrarLembrete(lembrete);
+            lembreteDAO.cadastrarLembreteSecretario(lembrete);
 
             emitirAlerta("Débito cadastrado com sucesso", AlertType.INFORMATION);
             
