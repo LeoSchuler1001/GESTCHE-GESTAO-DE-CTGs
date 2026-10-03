@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
@@ -288,15 +289,26 @@
                      <children>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="465.0">
                            <children>
-                              <Label styleClass="linkMenuLateral" text="RECEITAS" />
+                              <Label styleClass="linkMenuLateral" text="RECEITAS">
+                                 <VBox.margin>
+                                    <Insets right="-107.0" />
+                                 </VBox.margin></Label>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" prefHeight="54.0" prefWidth="226.0">
+                           <children>
+                              <ComboBox fx:id="anoSelecionado" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="118.0" styleClass="campoPreenchimento" />
                            </children>
                         </VBox>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="465.0">
                            <children>
-                              <Label styleClass="linkMenuLateral" text="DESPESAS">
+                              <Label prefHeight="27.0" prefWidth="81.0" styleClass="linkMenuLateral" text="DESPESAS">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
+                                 <VBox.margin>
+                                    <Insets left="-60.0" />
+                                 </VBox.margin>
                               </Label>
                            </children>
                         </VBox>
@@ -304,24 +316,24 @@
                   </HBox>
                   <HBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="980.0">
                      <children>
-                        <TableView fx:id="tabelaReceitas" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="400.0">
+                        <TableView fx:id="tabelaReceitas" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="480.0" styleClass="tabelaMovimentacao">
                            <columns>
-                              <TableColumn fx:id="colunaDataReceita" maxWidth="80.0" text="Data" />
-                              <TableColumn fx:id="colunaDescricaoReceita" maxWidth="240.0" prefWidth="240.0" text="Descrição" />
-                              <TableColumn fx:id="colunaValorReceita" maxWidth="80.0" text="Valor" />
+                              <TableColumn fx:id="colunaDataReceita" maxWidth="120.0" prefWidth="120.0" text="Data" />
+                              <TableColumn fx:id="colunaDescricaoReceita" maxWidth="260.0" prefWidth="260.0" text="Descrição" />
+                              <TableColumn fx:id="colunaValorReceita" maxWidth="100.0" prefWidth="100.0" text="Valor" />
                            </columns>
                            <HBox.margin>
-                              <Insets right="30.0" />
+                              <Insets right="5.0" />
                            </HBox.margin>
                         </TableView>
-                        <TableView fx:id="tabelaDespesas" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="400.0">
+                        <TableView fx:id="tabelaDespesas" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="480.0" styleClass="tabelaMovimentacao">
                            <columns>
-                              <TableColumn fx:id="colunaDataDespesa" maxWidth="80.0" text="Data" />
-                              <TableColumn fx:id="colunaDescricaoDespesa" minWidth="240.0" prefWidth="240.0" text="Descrição" />
-                              <TableColumn fx:id="colunavalorDespesa" maxWidth="80.0" text="Valor" />
+                              <TableColumn fx:id="colunaDataDespesa" maxWidth="120.0" prefWidth="120.0" text="Data" />
+                              <TableColumn fx:id="colunaDescricaoDespesa" maxWidth="260.0" minWidth="260.0" prefWidth="260.0" text="Descrição" />
+                              <TableColumn fx:id="colunavalorDespesa" maxWidth="100.0" prefWidth="100.0" text="Valor" />
                            </columns>
                            <HBox.margin>
-                              <Insets left="30.0" />
+                              <Insets left="5.0" />
                            </HBox.margin>
                         </TableView>
                      </children>

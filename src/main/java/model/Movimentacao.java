@@ -1,6 +1,10 @@
 package model;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
+
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class Movimentacao {
     //ATRIBUTOS
@@ -112,5 +116,15 @@ public class Movimentacao {
 
     public void setLembrete(Lembrete lembrete) {
         this.lembrete = lembrete;
+    }
+
+    public StringProperty dataMovimentFormatada() {
+        if (dataMovimentacao != null) {
+            SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
+            String dataFormatada = formatador.format(dataMovimentacao);
+            
+            return new SimpleStringProperty(dataFormatada);
+        }
+        return new SimpleStringProperty("");
     }
 }

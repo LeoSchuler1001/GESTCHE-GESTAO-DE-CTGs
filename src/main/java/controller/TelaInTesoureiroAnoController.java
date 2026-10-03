@@ -1,21 +1,41 @@
 package controller;
 
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
-
+import javafx.scene.input.MouseEvent;
+import javafx.util.Callback;
+import model.Lembrete;
+import model.Movimentacao;
 import java.io.IOException;
-
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import app.App;
+import dao.ConexaoBanco;
+import dao.LembreteDAO;
+import dao.MovimentacaoDAO;
 
 public class TelaInTesoureiroAnoController {
     //ATRIBUTOS
+    @FXML
+    private ComboBox<Integer> anoSelecionado;
+    
     @FXML
     private Button botaoAdicionarDespesa;
 
@@ -44,22 +64,22 @@ public class TelaInTesoureiroAnoController {
     private ProgressIndicator carregamentoTotal;
 
     @FXML
-    private TableColumn<?, ?> colunaDataDespesa;
+    private TableColumn<Movimentacao, String> colunaDataDespesa;
 
     @FXML
-    private TableColumn<?, ?> colunaDataReceita;
+    private TableColumn<Movimentacao, String> colunaDataReceita;
 
     @FXML
-    private TableColumn<?, ?> colunaDescricaoDespesa;
+    private TableColumn<Movimentacao, String> colunaDescricaoDespesa;
 
     @FXML
-    private TableColumn<?, ?> colunaDescricaoReceita;
+    private TableColumn<Movimentacao, String> colunaDescricaoReceita;
 
     @FXML
-    private TableColumn<?, ?> colunaValorReceita;
+    private TableColumn<Movimentacao, String> colunaValorReceita;
 
     @FXML
-    private TableColumn<?, ?> colunavalorDespesa;
+    private TableColumn<Movimentacao, String> colunavalorDespesa;
 
     @FXML
     private ImageView iconeConta1;
@@ -107,7 +127,7 @@ public class TelaInTesoureiroAnoController {
     private Label nomeConta2;
 
     @FXML
-    private TableColumn<?, ?> nomeLembrete;
+    private TableColumn<Lembrete, String> nomeLembrete;
 
     @FXML
     private Label saldoConta1;
@@ -116,16 +136,16 @@ public class TelaInTesoureiroAnoController {
     private Label saldoConta2;
 
     @FXML
-    private TableView<?> tabelaDespesas;
+    private TableView<Movimentacao> tabelaDespesas;
 
     @FXML
-    private TableView<?> tabelaLembretes;
+    private TableView<Lembrete> tabelaLembretes;
 
     @FXML
-    private TableView<?> tabelaReceitas;
+    private TableView<Movimentacao> tabelaReceitas;
 
     @FXML
-    private TableColumn<?, ?> valorLembrete;
+    private TableColumn<Lembrete, Double> valorLembrete;
 
     //BOTÕES
     @FXML
@@ -199,8 +219,14 @@ public class TelaInTesoureiroAnoController {
     }
 
     @FXML
-    void sairAction(ActionEvent event) {
+    void sairAction(ActionEvent event) throws IOException {
+        boolean confirmaSaida = emitirAlerta("Deseja realmente sair?", AlertType.CONFIRMATION);
 
+        if (confirmaSaida) {
+            App.trocarTela("TelaLogin");
+        } else {
+            System.out.println("Ação cancelada pelo usuário.");
+        }
     }
 
     @FXML
@@ -209,4 +235,193 @@ public class TelaInTesoureiroAnoController {
     }
     
     //MÉTODOS
+    //inicializa a tela
+    public void initialize() {
+        //desativa a seleção na tabela de lembretes, mas mantêm o scroll
+        Callback<TableView<Lembrete>, TableRow<Lembrete>> desativarSelecaoLembrete = tv -> {
+            TableRow<Lembrete> row = new TableRow<>();
+            
+            row.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> event.consume());
+            row.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> event.consume());
+            
+            return row;
+        };
+
+        tabelaLembretes.setRowFactory(desativarSelecaoLembrete);
+        tabelaLembretes.setFocusTraversable(false);
+
+        //seleciona o ano atual para iniciar a tabela
+        anoSelecionado.setValue(2026);
+        
+        //configura as colunas das tabelas
+        this.colunaDescricaoDespesa.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getComentarioMovimentacao())
+        );
+
+        this.colunaDescricaoReceita.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getComentarioMovimentacao())
+        );
+
+        this.colunaDataDespesa.setCellValueFactory(cellData -> cellData.getValue().dataMovimentFormatada());
+
+        this.colunaDataReceita.setCellValueFactory(cellData -> cellData.getValue().dataMovimentFormatada());
+
+        this.colunavalorDespesa.setCellValueFactory(cellData -> {
+            double valor = cellData.getValue().getValorMovimentacao();
+            String formatado = String.format("R$ %.2f", valor);
+            return new SimpleStringProperty(formatado);
+        });
+
+        this.colunaValorReceita.setCellValueFactory(cellData -> {
+            double valor = cellData.getValue().getValorMovimentacao();
+            String formatado = String.format("R$ %.2f", valor);
+            return new SimpleStringProperty(formatado);
+        });
+
+        this.nomeLembrete.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getNomeLembrete())
+        );
+
+        //recebe as mudanças dos anos no seletor
+        anoSelecionado.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.equals(oldValue)) {
+                carregarTabelas();
+            }
+        });
+
+        //chama a função que irá carregar os dados das tabelas e dos mostradores
+        carregarDadosSegundoPlano();
+    }
+    
+    //carrega os dados em segundo plano
+    private void carregarDadosSegundoPlano() {
+        tabelaReceitas.getItems().clear();
+        tabelaDespesas.getItems().clear();
+
+        //coloca os ícones de carregamento nas tabelas enquanto os dados não são carregados
+        tabelaReceitas.setPlaceholder(criarIndicator());
+        tabelaDespesas.setPlaceholder(criarIndicator());
+        tabelaLembretes.setPlaceholder(criarIndicator());
+
+        //cria uma tarefa que irá carregar os dados em segundo plano
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                //cria a conexão com o banco de dados
+                ConexaoBanco conexao = new ConexaoBanco();
+                MovimentacaoDAO movimentacaoDAO = new MovimentacaoDAO(conexao);
+                LembreteDAO lembreteDAO = new LembreteDAO(conexao);
+
+                //cria as listas que irão armazenar os dados para preencher as tabelas
+                List<Movimentacao> listaReceitas = movimentacaoDAO.buscarReceitasAno(anoSelecionado.getValue());
+                List<Movimentacao> listaDespesas = movimentacaoDAO.buscarDespesasAno(anoSelecionado.getValue());
+                List<Lembrete> listaLembretes = lembreteDAO.listarLembretesHoje(App.usuarioLogado.getIdUsuario());
+                List<Integer> anos = movimentacaoDAO.buscarAnosComMovimentacoes();
+
+                if(anos.isEmpty()) { anos.add(LocalDate.now().getYear()); }
+
+                // Atualiza as tabelas e os mostradores
+                Platform.runLater(() -> {
+                    tabelaReceitas.setItems(FXCollections.observableArrayList(listaReceitas));
+                    tabelaDespesas.setItems(FXCollections.observableArrayList(listaDespesas));
+                    tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretes));
+
+                    anoSelecionado.getItems().setAll(anos);
+
+                    if (listaLembretes.isEmpty()) {
+                        tabelaLembretes.setPlaceholder(new javafx.scene.control.Label("Sem lembretes."));
+                    }
+
+                    if (listaReceitas.isEmpty()) {
+                        tabelaReceitas.setPlaceholder(new javafx.scene.control.Label("Sem movimentações no período."));
+                    }
+
+                    if (listaDespesas.isEmpty()) {
+                        tabelaDespesas.setPlaceholder(new javafx.scene.control.Label("Sem movimentações no período."));
+                    }
+                });
+
+                return null;
+            }
+        };
+
+        //mostra um aviso caso os dados não possam ser carregados
+        task.setOnFailed(e -> {
+            Throwable ex = task.getException();
+            ex.printStackTrace();
+            Platform.runLater(() -> emitirAlerta("Erro ao carregar os dados.", AlertType.ERROR));
+        });
+
+        //cria uma nova Thread para rodar a tarefa de carregamento em segundo plano
+        new Thread(task).start();
+    }
+
+    private void carregarTabelas() {
+        tabelaReceitas.getItems().clear();
+        tabelaDespesas.getItems().clear();
+
+        //coloca os ícones de carregamento nas tabelas enquanto os dados não são carregados
+        tabelaReceitas.setPlaceholder(criarIndicator());
+        tabelaDespesas.setPlaceholder(criarIndicator());
+
+        //cria uma tarefa que irá carregar os dados em segundo plano
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                //cria a conexão com o banco de dados
+                ConexaoBanco conexao = new ConexaoBanco();
+                MovimentacaoDAO movimentacaoDAO = new MovimentacaoDAO(conexao);
+
+                //cria as listas que irão armazenar os dados para preencher as tabelas
+                List<Movimentacao> listaReceitas = movimentacaoDAO.buscarReceitasAno(anoSelecionado.getValue());
+                List<Movimentacao> listaDespesas = movimentacaoDAO.buscarDespesasAno(anoSelecionado.getValue());
+
+                // Atualiza as tabelas
+                Platform.runLater(() -> {
+                    tabelaReceitas.setItems(FXCollections.observableArrayList(listaReceitas));
+                    tabelaDespesas.setItems(FXCollections.observableArrayList(listaDespesas));
+
+                    if (listaReceitas.isEmpty()) {
+                        tabelaReceitas.setPlaceholder(new javafx.scene.control.Label("Sem movimentações no período."));
+                    }
+
+                    if (listaDespesas.isEmpty()) {
+                        tabelaDespesas.setPlaceholder(new javafx.scene.control.Label("Sem movimentações no período."));
+                    }
+                });
+
+                return null;
+            }
+        };
+
+        //mostra um aviso caso os dados não possam ser carregados
+        task.setOnFailed(e -> {
+            Throwable ex = task.getException();
+            ex.printStackTrace();
+            Platform.runLater(() -> emitirAlerta("Erro ao carregar os dados.", AlertType.ERROR));
+        });
+
+        //cria uma nova Thread para rodar a tarefa de carregamento em segundo plano
+        new Thread(task).start();
+    }
+
+    // Método auxiliar para criar instâncias padronizadas do ProgressIndicator
+    private ProgressIndicator criarIndicator() {
+        ProgressIndicator indicador = new ProgressIndicator();
+        indicador.setMaxSize(40, 40);
+        return indicador;
+    }
+
+    //método auxiliar para emitir alertas
+    private boolean emitirAlerta(String mensagem, AlertType tipoAlerta) {
+        Alert alerta = new Alert(tipoAlerta);
+        alerta.setTitle("Confirmação");
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensagem);
+
+        Optional<ButtonType> resultado = alerta.showAndWait();
+
+        // Verifica se o usuário clicou no botão OK
+        return resultado.isPresent() && resultado.get() == ButtonType.OK;
+    }
 }

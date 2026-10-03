@@ -2,16 +2,18 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
-
 import java.io.IOException;
-
+import java.util.Optional;
 import app.App;
 
 public class TelaInTesoureiroDiaController {
@@ -199,8 +201,14 @@ public class TelaInTesoureiroDiaController {
     }
 
     @FXML
-    void sairAction(ActionEvent event) {
+    void sairAction(ActionEvent event) throws IOException {
+        boolean confirmaSaida = emitirAlerta("Deseja realmente sair?", AlertType.CONFIRMATION);
 
+        if (confirmaSaida) {
+            App.trocarTela("TelaLogin");
+        } else {
+            System.out.println("Ação cancelada pelo usuário.");
+        }
     }
 
     @FXML
@@ -209,4 +217,16 @@ public class TelaInTesoureiroDiaController {
     }
 
     //MÉTODOS
+    //método auxiliar para emitir alertas
+    private boolean emitirAlerta(String mensagem, AlertType tipoAlerta) {
+        Alert alerta = new Alert(tipoAlerta);
+        alerta.setTitle("Confirmação");
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensagem);
+
+        Optional<ButtonType> resultado = alerta.showAndWait();
+
+        // Verifica se o usuário clicou no botão OK
+        return resultado.isPresent() && resultado.get() == ButtonType.OK;
+    }
 }
