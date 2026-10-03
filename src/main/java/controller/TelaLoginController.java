@@ -51,6 +51,8 @@ public class TelaLoginController {
             //verifica o cargo do usuário
             if(App.usuarioLogado.getCargoUsuario().equals("Secretário")) {
                 App.trocarTela("TelaInicialSecretario");
+            } else if(App.usuarioLogado.getCargoUsuario().equals("Tesoureiro")) {
+                App.trocarTela("TelaInTesoureiroMes");
             }
         } else {
             //emite alerta de senha ou login errados
