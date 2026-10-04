@@ -175,8 +175,22 @@ public class MovimentacaoDAO {
     public List<Movimentacao> buscarReceitasPorDia(LocalDate dataSelecionada) {
         List<Movimentacao> receitas = new ArrayList<>();
         
-        String sql = "SELECT * FROM movimentacao WHERE dataMovimentacao = ? AND LOWER(tipoMovimentacao) = 'receita' ORDER BY pk_idMovimentacao";
-
+        String sql = "SELECT " +
+                     "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
+                     "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
+                     "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
+                     "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+                     "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
+                     "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
+                     "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
+                     "FROM movimentacao m " +
+                     "LEFT JOIN usuario u ON m.fk_idUsuario = u.pk_idUsuario " +
+                     "LEFT JOIN conta c ON m.fk_idConta = c.pk_idConta " +
+                     "LEFT JOIN categoria cat ON m.fk_idCategoria = cat.pk_idCategoria " +
+                     "LEFT JOIN lembrete l ON m.fk_idLembrete = l.pk_idLembrete " +
+                     "WHERE m.dataMovimentacao = ? " +
+                     "AND LOWER(m.tipoMovimentacao) = 'receita' " +
+                     "ORDER BY m.dataMovimentacao DESC";
         try (Connection conn = conexao.getConexao();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -197,8 +211,22 @@ public class MovimentacaoDAO {
     public List<Movimentacao> buscarDespesasPorDia(LocalDate dataSelecionada) {
         List<Movimentacao> despesas = new ArrayList<>();
 
-        String sql = "SELECT * FROM movimentacao WHERE dataMovimentacao = ? AND LOWER(tipoMovimentacao) = 'despesa' ORDER BY pk_idMovimentacao";
-
+        String sql = "SELECT " +
+                     "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
+                     "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
+                     "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
+                     "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+                     "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
+                     "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
+                     "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
+                     "FROM movimentacao m " +
+                     "LEFT JOIN usuario u ON m.fk_idUsuario = u.pk_idUsuario " +
+                     "LEFT JOIN conta c ON m.fk_idConta = c.pk_idConta " +
+                     "LEFT JOIN categoria cat ON m.fk_idCategoria = cat.pk_idCategoria " +
+                     "LEFT JOIN lembrete l ON m.fk_idLembrete = l.pk_idLembrete " +
+                     "WHERE m.dataMovimentacao = ? " +
+                     "AND LOWER(m.tipoMovimentacao) = 'despesa' " +
+                     "ORDER BY m.dataMovimentacao DESC";
         try (Connection conn = conexao.getConexao();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
