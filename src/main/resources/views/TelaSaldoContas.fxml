@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="painelFundo" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" style="-fx-background-color: #D9D9D9;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SaldoContasController">
+   <children>
+      <ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" vbarPolicy="NEVER">
+         <content>
+            <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0">
+               <children>
+                  <Label text="CONTAS" textFill="#3c4641">
+                     <font>
+                        <Font name="Gadugi" size="30.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <GridPane prefHeight="77.0" prefWidth="354.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="240.5999755859375" minWidth="10.0" prefWidth="87.60001602172852" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="392.59999084472656" minWidth="10.0" prefWidth="266.7999839782715" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label prefHeight="26.0" prefWidth="101.0" styleClass="textos" text="Saldo Total:" />
+                              <TextField fx:id="campoSaldoTotal" prefHeight="26.0" prefWidth="200.0" styleClass="campoPreenchimento" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </HBox>
+                  <TableView fx:id="tabelaContas" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="230.0" prefWidth="580.0">
+                    <columns>
+                      <TableColumn fx:id="colunaNomeConta" maxWidth="480.0" minWidth="480.0" prefWidth="480.0" text="NOME DA CONTA" />
+                      <TableColumn fx:id="colunaSaldoConta" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="SALDO" />
+                    </columns>
+                  </TableView>
+                  <HBox fx:id="botaoRegistrarPagamento" alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="botaoFechar" mnemonicParsing="false" onAction="#fecharAction" styleClass="botoes" text="FECHAR" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</VBox>

@@ -6,6 +6,9 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -19,6 +22,8 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.Conta;
 import model.Lembrete;
@@ -36,6 +41,7 @@ import dao.MovimentacaoDAO;
 public class TelaInTesoureiroAnoController {
     //ATRIBUTOS
     Double saldoTotal = 0.0;
+    List<Conta> listaContas;
 
     @FXML
     private ComboBox<Integer> anoSelecionado;
@@ -174,7 +180,6 @@ public class TelaInTesoureiroAnoController {
 
     @FXML
     void contasAction(ActionEvent event) {
-
     }
 
     @FXML
@@ -213,8 +218,30 @@ public class TelaInTesoureiroAnoController {
     }
 
     @FXML
-    void outrasContasAction(ActionEvent event) {
+    void outrasContasAction(ActionEvent event) throws IOException {
+        //abre a tela de contas
+        //carregamento do fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaSaldoContas.fxml"));
+        Parent root = fxmlLoader.load();
 
+        //obtem o controller da tela de alteração
+        SaldoContasController controller = fxmlLoader.getController();
+        controller.setListaContas(listaContas);
+
+        //cria e exibe a tela
+        Stage telaAlteracao = new Stage();
+        telaAlteracao.setTitle("Saldo Contas");
+        telaAlteracao.setScene(new Scene(root));
+
+        //proibe que o usuario possa alterar o tamanho da tela
+        telaAlteracao.setResizable(false);
+
+        //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+        telaAlteracao.initModality(Modality.WINDOW_MODAL);
+        telaAlteracao.initOwner(tabelaDespesas.getScene().getWindow());
+
+        //abre a tela e aguarda o usuário fechar
+        telaAlteracao.showAndWait();
     }
 
     @FXML
@@ -330,7 +357,7 @@ public class TelaInTesoureiroAnoController {
                 List<Integer> anos = movimentacaoDAO.buscarAnosComMovimentacoes();
 
                 //armazena as contas cadastradas
-                List<Conta> listaContas = contaDAO.listarContas();
+                listaContas = contaDAO.listarContas();
 
                 //calcula o total de saldo em todas as contas
                 for (Conta conta : listaContas) {
