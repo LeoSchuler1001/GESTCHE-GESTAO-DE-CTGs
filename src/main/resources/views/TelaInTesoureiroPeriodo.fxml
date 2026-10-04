@@ -7,6 +7,7 @@
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -275,14 +276,7 @@
                         <Insets right="20.0" />
                      </HBox.margin>
                   </Hyperlink>
-                  <Label styleClass="linkMenuLateral" text="PERÍODO">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets right="20.0" />
-                     </HBox.margin>
-                  </Label>
+                  <Hyperlink fx:id="linkPeriodo" styleClass="linkMenuLateral" text="PERÍODO" />
                </children>
             </HBox>
             <VBox alignment="TOP_CENTER" prefHeight="602.0" prefWidth="980.0">
@@ -291,7 +285,15 @@
                      <children>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="465.0">
                            <children>
-                              <Label styleClass="linkMenuLateral" text="RECEITAS" />
+                              <Label styleClass="linkMenuLateral" text="RECEITAS">
+                                 <VBox.margin>
+                                    <Insets right="-125.0" />
+                                 </VBox.margin></Label>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="250.0">
+                           <children>
+                              <TextField fx:id="periodoSelecionado" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="200.0" styleClass="campoPreenchimento" />
                            </children>
                         </VBox>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="465.0">
@@ -300,6 +302,9 @@
                                  <font>
                                     <Font size="18.0" />
                                  </font>
+                                 <VBox.margin>
+                                    <Insets left="-76.0" />
+                                 </VBox.margin>
                               </Label>
                            </children>
                         </VBox>
