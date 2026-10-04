@@ -7,8 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import model.Categoria;
 import model.Conta;
 import model.Lembrete;
@@ -244,6 +248,68 @@ public class MovimentacaoDAO {
         return despesas;
     }
 
+    //método para buscar as receitas por mês
+    public List<Movimentacao> buscarReceitasMes(String mesAnoStr) {
+        return buscarMovimentacoesPorMes(mesAnoStr, "receita");
+    }
+
+    //método para buscar as despesas por mês
+    public List<Movimentacao> buscarDespesasMes(String mesAnoStr) {
+        return buscarMovimentacoesPorMes(mesAnoStr, "despesa");
+    }
+
+    //método auxiliar para buscar as movimentacoes do mês
+    private List<Movimentacao> buscarMovimentacoesPorMes(String mesAnoStr, String tipoMovimentacao) {
+        List<Movimentacao> movimentacoes = new ArrayList<>();
+
+        try {
+            //converte a string para data
+            DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("MMMM/yyyy", Locale.of("pt", "BR"));
+            YearMonth anoMes = YearMonth.parse(mesAnoStr.toLowerCase(), formatoData);
+
+            //define o primeiro e último dia do mês
+            LocalDate inicioMes = anoMes.atDay(1);
+            LocalDate fimMes = anoMes.atEndOfMonth();
+
+            //monta o sql utilizando as datas
+            String sql = "SELECT " +
+                        "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
+                        "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
+                        "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
+                        "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+                        "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
+                        "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
+                        "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
+                        "FROM movimentacao m " +
+                        "LEFT JOIN usuario u ON m.fk_idUsuario = u.pk_idUsuario " +
+                        "LEFT JOIN conta c ON m.fk_idConta = c.pk_idConta " +
+                        "LEFT JOIN categoria cat ON m.fk_idCategoria = cat.pk_idCategoria " +
+                        "LEFT JOIN lembrete l ON m.fk_idLembrete = l.pk_idLembrete " +
+                        "WHERE m.dataMovimentacao BETWEEN ? AND ? " +
+                        "AND LOWER(m.tipoMovimentacao) = ? " +
+                        "ORDER BY m.dataMovimentacao DESC";
+
+            try (Connection conn = conexao.getConexao();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+                stmt.setDate(1, Date.valueOf(inicioMes));
+                stmt.setDate(2, Date.valueOf(fimMes));
+                stmt.setString(3, tipoMovimentacao.toLowerCase());
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        movimentacoes.add(montarObjMovimentacao(rs));
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return movimentacoes;
+    }
+
     //busca todas as movimentacoes de um determinado periodo
     public List<Movimentacao> buscarPorPeriodo(Date dataInicio, Date dataFim) throws SQLException {
         List<Movimentacao> listaMovimentacoes = new ArrayList<>();
@@ -355,6 +421,42 @@ public class MovimentacaoDAO {
         }
         
         return anos;
+    }
+
+    //retorna uma lista com os meses que possuem movimentação
+    public List<String> buscarMesesComMovimentacao() {
+        List<String> meses = new ArrayList<>();
+        
+        // Agrupa de forma segura pelo ano e mês da data, filtrando apenas o usuário ID 20 (se aplicável)
+        // Se quiser para todos os usuários, remova o "AND fk_idusuario = 20"
+        String sql = "SELECT DISTINCT EXTRACT(YEAR FROM datamovimentacao) AS ano, " +
+                    "                EXTRACT(MONTH FROM datamovimentacao) AS mes " +
+                    "FROM movimentacao " +
+                    "WHERE datamovimentacao IS NOT NULL " +
+                    "AND fk_idusuario = 20 " + 
+                    "ORDER BY ano DESC, mes DESC";
+
+        DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("MMMM/yyyy", Locale.of("pt", "BR"));
+
+        try (Connection conn = conexao.getConexao();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                int ano = rs.getInt("ano");
+                int mes = rs.getInt("mes");
+                
+                // Cria um LocalDate usando o dia 1 do ano e mês exatos retornados pelo banco
+                LocalDate data = LocalDate.of(ano, mes, 1);
+                
+                String mesFormatado = data.format(formatoData);
+                meses.add(mesFormatado);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return meses;
     }
 
     //retorna uma lista com todos os dias com movimentações cadastradas

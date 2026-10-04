@@ -287,7 +287,7 @@
                <children>
                   <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="54.0" prefWidth="980.0">
                      <children>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="465.0">
+                        <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="465.0">
                            <children>
                               <Label styleClass="linkMenuLateral" text="RECEITAS">
                                  <VBox.margin>
@@ -300,7 +300,7 @@
                               <ComboBox fx:id="diaSelecionado" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="180.0" styleClass="campoPreenchimento" />
                            </children>
                         </VBox>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="465.0">
+                        <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="465.0">
                            <children>
                               <Label styleClass="linkMenuLateral" text="DESPESAS">
                                  <font>
