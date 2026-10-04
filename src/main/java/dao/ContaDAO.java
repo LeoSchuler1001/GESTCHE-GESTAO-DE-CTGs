@@ -107,6 +107,21 @@ public class ContaDAO {
         }
     }
 
+    public Double saldoTotal() throws SQLException {
+        String sql = "SELECT SUM(saldo) as saldoTotal FROM conta";
+
+        Double saldoTotal = 0.0;
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    saldoTotal = rs.getDouble("saldoTotal");
+                }
+            }
+        }
+        return saldoTotal;
+    }
+
     //método auxiliar, que vai montar o objeto categoria após a consulta sql
     private Conta montarObjConta(ResultSet rs) throws SQLException {
         //cria o objeto

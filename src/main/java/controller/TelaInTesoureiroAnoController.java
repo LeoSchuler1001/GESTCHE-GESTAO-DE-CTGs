@@ -20,6 +20,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
+import model.Conta;
 import model.Lembrete;
 import model.Movimentacao;
 import java.io.IOException;
@@ -28,11 +29,14 @@ import java.util.List;
 import java.util.Optional;
 import app.App;
 import dao.ConexaoBanco;
+import dao.ContaDAO;
 import dao.LembreteDAO;
 import dao.MovimentacaoDAO;
 
 public class TelaInTesoureiroAnoController {
     //ATRIBUTOS
+    Double saldoTotal = 0.0;
+
     @FXML
     private ComboBox<Integer> anoSelecionado;
     
@@ -317,12 +321,21 @@ public class TelaInTesoureiroAnoController {
                 ConexaoBanco conexao = new ConexaoBanco();
                 MovimentacaoDAO movimentacaoDAO = new MovimentacaoDAO(conexao);
                 LembreteDAO lembreteDAO = new LembreteDAO(conexao);
+                ContaDAO contaDAO = new ContaDAO(conexao);
 
                 //cria as listas que irão armazenar os dados para preencher as tabelas
                 List<Movimentacao> listaReceitas = movimentacaoDAO.buscarReceitasAno(anoSelecionado.getValue());
                 List<Movimentacao> listaDespesas = movimentacaoDAO.buscarDespesasAno(anoSelecionado.getValue());
                 List<Lembrete> listaLembretes = lembreteDAO.listarLembretesHoje(App.usuarioLogado.getIdUsuario());
                 List<Integer> anos = movimentacaoDAO.buscarAnosComMovimentacoes();
+
+                //armazena as contas cadastradas
+                List<Conta> listaContas = contaDAO.listarContas();
+
+                //calcula o total de saldo em todas as contas
+                for (Conta conta : listaContas) {
+                    saldoTotal += conta.getSaldo();
+                }
 
                 if(anos.isEmpty()) { anos.add(LocalDate.now().getYear()); }
 
@@ -331,6 +344,12 @@ public class TelaInTesoureiroAnoController {
                     tabelaReceitas.setItems(FXCollections.observableArrayList(listaReceitas));
                     tabelaDespesas.setItems(FXCollections.observableArrayList(listaDespesas));
                     tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretes));
+
+                    campoSaldoTotal.setText("R$" + saldoTotal);
+                    nomeConta1.setText(listaContas.get(0).getNomeConta());
+                    nomeConta2.setText(listaContas.get(1).getNomeConta());
+                    saldoConta1.setText("R$" + listaContas.get(0).getSaldo());
+                    saldoConta2.setText("R$" + listaContas.get(1).getSaldo());
 
                     anoSelecionado.getItems().setAll(anos);
 
@@ -350,6 +369,18 @@ public class TelaInTesoureiroAnoController {
                 return null;
             }
         };
+
+        //mostra os icones de carregamento enquanto a tarefa está rodando em segundo plano
+        carregamentoTotal.visibleProperty().bind(task.runningProperty());
+        carregamentoConta1.visibleProperty().bind(task.runningProperty());
+        carregamentoConta2.visibleProperty().bind(task.runningProperty());
+
+        //mostra os labels com as informações assim que a tarefa parar de rodar em segundo plano
+        campoSaldoTotal.visibleProperty().bind(task.runningProperty().not());
+        saldoConta1.visibleProperty().bind(task.runningProperty().not());
+        saldoConta2.visibleProperty().bind(task.runningProperty().not());
+        nomeConta1.visibleProperty().bind(task.runningProperty().not());
+        nomeConta2.visibleProperty().bind(task.runningProperty().not());
 
         //mostra um aviso caso os dados não possam ser carregados
         task.setOnFailed(e -> {
