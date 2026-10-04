@@ -276,7 +276,10 @@
                         <Insets right="20.0" />
                      </HBox.margin>
                   </Hyperlink>
-                  <Hyperlink fx:id="linkPeriodo" styleClass="linkMenuLateral" text="PERÍODO" />
+                  <Hyperlink fx:id="linkPeriodo" styleClass="linkMenuLateral" text="PERÍODO">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font></Hyperlink>
                </children>
             </HBox>
             <VBox alignment="TOP_CENTER" prefHeight="602.0" prefWidth="980.0">
@@ -287,13 +290,13 @@
                            <children>
                               <Label styleClass="linkMenuLateral" text="RECEITAS">
                                  <VBox.margin>
-                                    <Insets right="-125.0" />
+                                    <Insets right="-175.0" />
                                  </VBox.margin></Label>
                            </children>
                         </VBox>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="250.0">
+                        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="54.0" prefWidth="350.0">
                            <children>
-                              <TextField fx:id="periodoSelecionado" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="200.0" styleClass="campoPreenchimento" />
+                              <TextField fx:id="periodoSelecionado" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="265.0" styleClass="campoPreenchimento" />
                            </children>
                         </VBox>
                         <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="465.0">
@@ -303,7 +306,7 @@
                                     <Font size="18.0" />
                                  </font>
                                  <VBox.margin>
-                                    <Insets left="-76.0" />
+                                    <Insets left="-175.0" />
                                  </VBox.margin>
                               </Label>
                            </children>
@@ -314,8 +317,8 @@
                      <children>
                         <TableView fx:id="tabelaReceitas" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="480.0" styleClass="tabelaMovimentacao">
                            <columns>
-                              <TableColumn fx:id="colunaDataReceita" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="Data" />
-                              <TableColumn fx:id="colunaDescricaoReceita" maxWidth="260.0" minWidth="260.0" prefWidth="260.0" text="Descrição" />
+                              <TableColumn fx:id="colunaDataReceita" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Data" />
+                              <TableColumn fx:id="colunaDescricaoReceita" maxWidth="280.0" minWidth="280.0" prefWidth="280.0" text="Descrição" />
                               <TableColumn fx:id="colunaValorReceita" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Valor" />
                            </columns>
                            <HBox.margin>
@@ -324,8 +327,8 @@
                         </TableView>
                         <TableView fx:id="tabelaDespesas" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="480.0" styleClass="tabelaMovimentacao">
                            <columns>
-                              <TableColumn fx:id="colunaDataDespesa" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="Data" />
-                              <TableColumn fx:id="colunaDescricaoDespesa" maxWidth="260.0" minWidth="260.0" prefWidth="260.0" text="Descrição" />
+                              <TableColumn fx:id="colunaDataDespesa" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Data" />
+                              <TableColumn fx:id="colunaDescricaoDespesa" maxWidth="280.0" minWidth="280.0" prefWidth="280.0" text="Descrição" />
                               <TableColumn fx:id="colunavalorDespesa" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Valor" />
                            </columns>
                            <HBox.margin>

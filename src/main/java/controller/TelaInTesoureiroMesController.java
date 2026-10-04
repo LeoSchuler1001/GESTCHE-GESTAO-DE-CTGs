@@ -28,7 +28,6 @@ import javafx.util.Callback;
 import model.Conta;
 import model.Lembrete;
 import model.Movimentacao;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -252,8 +251,32 @@ public class TelaInTesoureiroMesController {
     }
 
     @FXML
-    void periodoAction(ActionEvent event) {
+    void periodoAction(ActionEvent event) throws IOException {
+        //abre a tela de seleção do período
+        //carregamento do fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaSelecionarPeriodo.fxml"));
+        Parent root = fxmlLoader.load();
 
+        SelecionarPeriodoController controller = fxmlLoader.getController();
+
+        Stage telaExibicao = new Stage();
+        telaExibicao.setTitle("Selecionar Período");
+        telaExibicao.setScene(new Scene(root));
+
+        //proibe que o usuario possa alterar o tamanho da tela
+        telaExibicao.setResizable(false);
+
+        //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+        telaExibicao.initModality(Modality.WINDOW_MODAL);
+        telaExibicao.initOwner(tabelaDespesas.getScene().getWindow());
+
+        //abre a tela e aguarda o usuário fechar
+        telaExibicao.showAndWait();
+        
+        //verifica se o usuário apertou em confirmar
+        if(controller.confirmaConsulta == true) {
+            App.trocarTela("TelaInTesoureiroPeriodo");
+        }
     }
 
     @FXML
@@ -272,7 +295,6 @@ public class TelaInTesoureiroMesController {
         App.trocarTela("TelaInTesoureiroSemana");
     }
 
-    //MÉTODOS
     //MÉTODOS
     //inicializa a tela
     public void initialize() {

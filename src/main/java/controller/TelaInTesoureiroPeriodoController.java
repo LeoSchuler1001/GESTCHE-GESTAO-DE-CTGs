@@ -14,11 +14,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.Optional;
 import app.App;
 
 public class TelaInTesoureiroPeriodoController {
     //ATRIBUTOS
+    Date dataInicio;
+    Date dataFim;
+    
     @FXML
     private Button botaoAdicionarDespesa;
 
