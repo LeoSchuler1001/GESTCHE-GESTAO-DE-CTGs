@@ -282,7 +282,7 @@ public class TelaInTesoureiroAnoController {
         tabelaLembretes.setFocusTraversable(false);
 
         //seleciona o ano atual para iniciar a tabela
-        anoSelecionado.setValue(2026);
+        anoSelecionado.setValue(LocalDate.now().getYear());
         
         //configura as colunas das tabelas
         this.colunaDescricaoDespesa.setCellValueFactory(cellData -> 

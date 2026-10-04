@@ -1,10 +1,12 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import model.Categoria;
@@ -170,6 +172,50 @@ public class MovimentacaoDAO {
         return despesasAno;
     }
 
+    public List<Movimentacao> buscarReceitasPorDia(LocalDate dataSelecionada) {
+        List<Movimentacao> receitas = new ArrayList<>();
+        
+        String sql = "SELECT * FROM movimentacao WHERE dataMovimentacao = ? AND LOWER(tipoMovimentacao) = 'receita' ORDER BY pk_idMovimentacao";
+
+        try (Connection conn = conexao.getConexao();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setDate(1, Date.valueOf(dataSelecionada));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    receitas.add(montarObjMovimentacao(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return receitas;
+    }
+
+    public List<Movimentacao> buscarDespesasPorDia(LocalDate dataSelecionada) {
+        List<Movimentacao> despesas = new ArrayList<>();
+
+        String sql = "SELECT * FROM movimentacao WHERE dataMovimentacao = ? AND LOWER(tipoMovimentacao) = 'despesa' ORDER BY pk_idMovimentacao";
+
+        try (Connection conn = conexao.getConexao();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setDate(1, Date.valueOf(dataSelecionada));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    despesas.add(montarObjMovimentacao(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return despesas;
+    }
+
     //busca todas as movimentacoes de um determinado periodo
     public List<Movimentacao> buscarPorPeriodo(Date dataInicio, Date dataFim) throws SQLException {
         List<Movimentacao> listaMovimentacoes = new ArrayList<>();
@@ -281,6 +327,32 @@ public class MovimentacaoDAO {
         }
         
         return anos;
+    }
+
+    //retorna uma lista com todos os dias com movimentações cadastradas
+    public List<LocalDate> buscarDiasComMovimentacoes() {
+        List<LocalDate> diasComMovimentacao = new ArrayList<>();
+        
+        String sql = "SELECT DISTINCT dataMovimentacao FROM movimentacao ORDER BY dataMovimentacao DESC";
+
+        try (Connection conn = conexao.getConexao();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                //converte para LocalDate
+                java.sql.Date sqlDate = rs.getDate("dataMovimentacao");
+                if (sqlDate != null) {
+                    LocalDate data = sqlDate.toLocalDate();
+                    diasComMovimentacao.add(data);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return diasComMovimentacao;
     }
 
     //método auxiliar, que vai montar o objeto departamento após a consulta sql
