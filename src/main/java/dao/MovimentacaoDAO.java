@@ -72,7 +72,7 @@ public class MovimentacaoDAO {
              "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
              "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
              "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
-             "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+             "    c.pk_idConta, c.nomeConta, c.saldo, c.corConta, c.iconeConta, " +
              "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
              "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
              "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
@@ -110,7 +110,7 @@ public class MovimentacaoDAO {
                      "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
                      "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
                      "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
-                     "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+                     "    c.pk_idConta, c.nomeConta, c.saldo, c.corConta, c.iconeConta, " +
                      "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
                      "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
                      "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
@@ -148,7 +148,7 @@ public class MovimentacaoDAO {
                      "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
                      "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
                      "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
-                     "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+                     "    c.pk_idConta, c.nomeConta, c.saldo, c.corConta, c.iconeConta, " +
                      "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
                      "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
                      "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
@@ -185,7 +185,7 @@ public class MovimentacaoDAO {
                      "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
                      "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
                      "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
-                     "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+                     "    c.pk_idConta, c.nomeConta, c.saldo, c.corConta, c.iconeConta, " +
                      "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
                      "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
                      "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
@@ -221,7 +221,7 @@ public class MovimentacaoDAO {
                      "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
                      "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
                      "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
-                     "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+                     "    c.pk_idConta, c.nomeConta, c.saldo, c.corConta, c.iconeConta, " +
                      "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
                      "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
                      "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
@@ -278,7 +278,7 @@ public class MovimentacaoDAO {
                         "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
                         "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
                         "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
-                        "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+                        "    c.pk_idConta, c.nomeConta, c.saldo, c.corConta, c.iconeConta, " +
                         "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
                         "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
                         "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
@@ -325,7 +325,7 @@ public class MovimentacaoDAO {
                         "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
                         "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
                         "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
-                        "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+                        "    c.pk_idConta, c.nomeConta, c.saldo, c.corConta, c.iconeConta, " +
                         "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
                         "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
                         "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
@@ -369,7 +369,7 @@ public class MovimentacaoDAO {
                         "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
                         "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
                         "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
-                        "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+                        "    c.pk_idConta, c.nomeConta, c.saldo, c.corConta, c.iconeConta, " +
                         "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
                         "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
                         "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
@@ -413,7 +413,7 @@ public class MovimentacaoDAO {
                         "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
                         "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
                         "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
-                        "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+                        "    c.pk_idConta, c.nomeConta, c.saldo, c.corConta, c.iconeConta, " +
                         "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
                         "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
                         "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
@@ -457,7 +457,7 @@ public class MovimentacaoDAO {
                         "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
                         "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
                         "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
-                        "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+                        "    c.pk_idConta, c.nomeConta, c.saldo, c.corConta, c.iconeConta, " +
                         "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
                         "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
                         "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
@@ -496,7 +496,7 @@ public class MovimentacaoDAO {
                     "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
                     "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
                     "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
-                    "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+                    "    c.pk_idConta, c.nomeConta, c.saldo, c.corConta, c.iconeConta, " +
                     "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
                     "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
                     "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
@@ -742,6 +742,7 @@ public class MovimentacaoDAO {
             conta.setNomeConta(rs.getString("nomeConta"));
             conta.setCorConta(rs.getString("corConta"));
             conta.setIconeConta(rs.getString("iconeConta"));
+            conta.setSaldo(rs.getDouble("saldo"));
         }
 
         //atribui os valores ao objeto lembrete, caso houver

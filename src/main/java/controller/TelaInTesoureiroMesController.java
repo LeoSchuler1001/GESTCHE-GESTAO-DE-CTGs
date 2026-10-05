@@ -239,13 +239,79 @@ public class TelaInTesoureiroMesController {
     }
 
     @FXML
-    void detalharDespesaAction(ActionEvent event) {
+    void detalharDespesaAction(ActionEvent event) throws IOException {
+        //verifica qual foi o sócio selecionado
+        Movimentacao movimentacaoSelecionada = tabelaDespesas.getSelectionModel().getSelectedItem();
+        
+        //verifica se uma movimentação foi selecionada
+        if(movimentacaoSelecionada != null) {
+            //abre a tela de exibição dos dados da movimentação
+            //carregamento do fxml
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaDetalheMovimentacao.fxml"));
+            Parent root = fxmlLoader.load();
 
+            //obtem o controller da tela
+            DetalheMovimentacaoController controller = fxmlLoader.getController();
+            controller.carregarDadosEmSegundoPlano(movimentacaoSelecionada);
+
+            //cria e exibe a tela de alteração
+            Stage telaExibicao = new Stage();
+            telaExibicao.setTitle("Dados da movimentação");
+            telaExibicao.setScene(new Scene(root));
+
+            //proibe que o usuario possa alterar o tamanho da tela
+            telaExibicao.setResizable(false);
+
+            //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+            telaExibicao.initModality(Modality.WINDOW_MODAL);
+            telaExibicao.initOwner(tabelaDespesas.getScene().getWindow());
+
+            //abre a tela e aguarda o usuário fechar
+            telaExibicao.showAndWait();
+
+            carregarTabelas();
+        } else {
+            emitirAlerta("Selecione uma Despesa!", AlertType.ERROR);
+            return;
+        }
     }
 
     @FXML
-    void detalharReceitaAction(ActionEvent event) {
+    void detalharReceitaAction(ActionEvent event) throws IOException {
+        //verifica qual foi o sócio selecionado
+        Movimentacao movimentacaoSelecionada = tabelaReceitas.getSelectionModel().getSelectedItem();
+        
+        //verifica se uma movimentação foi selecionada
+        if(movimentacaoSelecionada != null) {
+            //abre a tela de exibição dos dados da movimentação
+            //carregamento do fxml
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaDetalheMovimentacao.fxml"));
+            Parent root = fxmlLoader.load();
 
+            //obtem o controller da tela
+            DetalheMovimentacaoController controller = fxmlLoader.getController();
+            controller.carregarDadosEmSegundoPlano(movimentacaoSelecionada);
+
+            //cria e exibe a tela de alteração
+            Stage telaExibicao = new Stage();
+            telaExibicao.setTitle("Dados da movimentação");
+            telaExibicao.setScene(new Scene(root));
+
+            //proibe que o usuario possa alterar o tamanho da tela
+            telaExibicao.setResizable(false);
+
+            //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+            telaExibicao.initModality(Modality.WINDOW_MODAL);
+            telaExibicao.initOwner(tabelaDespesas.getScene().getWindow());
+
+            //abre a tela e aguarda o usuário fechar
+            telaExibicao.showAndWait();
+
+            carregarTabelas();
+        } else {
+            emitirAlerta("Selecione uma Receita!", AlertType.ERROR);
+            return;
+        }
     }
 
     @FXML
