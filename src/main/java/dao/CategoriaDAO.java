@@ -64,6 +64,29 @@ public class CategoriaDAO {
         return null;
     }
 
+    public Categoria buscarPorNome(String nome) throws SQLException {
+        //cria o comando sql
+        String sql = "SELECT * FROM categoria WHERE nomeCategoria = ?";
+        
+        //verifica a conexão com o banco de dados
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //atribui o id à consulta sql
+            stmt.setString(1, nome);
+
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há alguma categoria com esse id
+                if (rs.next()) {
+                    //retorna o objeto conta que foi encontrado
+                    return montarObjCategoria(rs);
+                }
+            }
+        }
+
+        //retorna null caso não haja nenhuma categoria
+        return null;
+    }
+
     //lista todas as categorias
     public List<Categoria> listarCategorias() throws SQLException {
         String sql = "SELECT * FROM categoria";

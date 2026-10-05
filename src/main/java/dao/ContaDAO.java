@@ -65,6 +65,29 @@ public class ContaDAO {
         return null;
     }
 
+    public Conta buscarPorNome(String nome) throws SQLException {
+        //cria o comando sql
+        String sql = "SELECT * FROM conta WHERE nomeConta = ?";
+        
+        //verifica a conexão com o banco de dados
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            //atribui o id à consulta sql
+            stmt.setString(1, nome);
+
+            //cria um ResultSet para armazenar as informações buscadas
+            try (ResultSet rs = stmt.executeQuery()) {
+                //verifica se há alguma conta com esse id
+                if (rs.next()) {
+                    //retorna o objeto conta que foi encontrado
+                    return montarObjConta(rs);
+                }
+            }
+        }
+
+        //retorna null caso não haja nenhuma conta
+        return null;
+    }
+
     //lista todas as contas
     public List<Conta> listarContas() throws SQLException {
         String sql = "SELECT * FROM conta";
