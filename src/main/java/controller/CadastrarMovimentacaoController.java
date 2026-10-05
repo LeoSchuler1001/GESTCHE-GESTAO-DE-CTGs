@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+
+import app.App;
 import dao.CategoriaDAO;
 import dao.ConexaoBanco;
 import dao.ContaDAO;
@@ -114,6 +116,8 @@ public class CadastrarMovimentacaoController {
             movimentacao.setTipoMovimentacao(tipoMovimentacao);
 
             movimentacao.setCategoria(categoriaDAO.buscarPorNome(campoCategoriaMovimentacao.getValue()));
+
+            movimentacao.setUsuario(App.usuarioLogado);
             
             Conta conta = contaDAO.buscarPorNome(campoContaMovimentacao.getValue());
             movimentacao.setConta(conta);

@@ -167,13 +167,53 @@ public class TelaInTesoureiroPeriodoController {
 
     //BOTÕES
     @FXML
-    void adicionarDespesaAction(ActionEvent event) {
+    void adicionarDespesaAction(ActionEvent event) throws IOException {
+        //carregamento do fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaCadastroMovimentacao.fxml"));
+        Parent root = fxmlLoader.load();
 
+        //cria e exibe a tela de alteração
+        Stage telaExibicao = new Stage();
+        telaExibicao.setTitle("Cadastrar Movimentação");
+        telaExibicao.setScene(new Scene(root));
+
+        //proibe que o usuario possa alterar o tamanho da tela
+        telaExibicao.setResizable(false);
+
+        //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+        telaExibicao.initModality(Modality.WINDOW_MODAL);
+        telaExibicao.initOwner(tabelaDespesas.getScene().getWindow());
+
+        //abre a tela e aguarda o usuário fechar
+        telaExibicao.showAndWait();
+
+        //atualiza a tabela depois da alteração
+        carregarTabelas();
     }
 
     @FXML
-    void adicionarReceitaAction(ActionEvent event) {
+    void adicionarReceitaAction(ActionEvent event) throws IOException {
+        //carregamento do fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaCadastroMovimentacao.fxml"));
+        Parent root = fxmlLoader.load();
 
+        //cria e exibe a tela de alteração
+        Stage telaExibicao = new Stage();
+        telaExibicao.setTitle("Cadastrar Movimentação");
+        telaExibicao.setScene(new Scene(root));
+
+        //proibe que o usuario possa alterar o tamanho da tela
+        telaExibicao.setResizable(false);
+
+        //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+        telaExibicao.initModality(Modality.WINDOW_MODAL);
+        telaExibicao.initOwner(tabelaDespesas.getScene().getWindow());
+
+        //abre a tela e aguarda o usuário fechar
+        telaExibicao.showAndWait();
+
+        //atualiza a tabela depois da alteração
+        carregarTabelas();
     }
 
     @FXML
@@ -410,10 +450,16 @@ public class TelaInTesoureiroPeriodoController {
                     tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretes));
 
                     campoSaldoTotal.setText("R$" + saldoTotal);
-                    nomeConta1.setText(listaContas.get(0).getNomeConta());
-                    nomeConta2.setText(listaContas.get(1).getNomeConta());
-                    saldoConta1.setText("R$" + listaContas.get(0).getSaldo());
-                    saldoConta2.setText("R$" + listaContas.get(1).getSaldo());
+
+                    if(listaContas.size() >= 1) {
+                        nomeConta1.setText(listaContas.get(0).getNomeConta());
+                        saldoConta1.setText("R$" + listaContas.get(0).getSaldo());
+                    }
+
+                    if (listaContas.size() >= 2) {
+                        nomeConta2.setText(listaContas.get(1).getNomeConta());
+                        saldoConta2.setText("R$" + listaContas.get(1).getSaldo());
+                    }
 
                     if (listaLembretes.isEmpty()) {
                         tabelaLembretes.setPlaceholder(new javafx.scene.control.Label("Sem lembretes."));
@@ -443,6 +489,77 @@ public class TelaInTesoureiroPeriodoController {
         saldoConta2.visibleProperty().bind(task.runningProperty().not());
         nomeConta1.visibleProperty().bind(task.runningProperty().not());
         nomeConta2.visibleProperty().bind(task.runningProperty().not());
+
+        //mostra um aviso caso os dados não possam ser carregados
+        task.setOnFailed(e -> {
+            Throwable ex = task.getException();
+            ex.printStackTrace();
+            Platform.runLater(() -> emitirAlerta("Erro ao carregar os dados.", AlertType.ERROR));
+        });
+
+        //cria uma nova Thread para rodar a tarefa de carregamento em segundo plano
+        new Thread(task).start();
+    }
+
+    private void carregarTabelas() {
+        tabelaReceitas.getItems().clear();
+        tabelaDespesas.getItems().clear();
+
+        //coloca os ícones de carregamento nas tabelas enquanto os dados não são carregados
+        tabelaReceitas.setPlaceholder(criarIndicator());
+        tabelaDespesas.setPlaceholder(criarIndicator());
+
+        //cria uma tarefa que irá carregar os dados em segundo plano
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                //cria a conexão com o banco de dados
+                ConexaoBanco conexao = new ConexaoBanco();
+                MovimentacaoDAO movimentacaoDAO = new MovimentacaoDAO(conexao);
+                ContaDAO contaDAO = new ContaDAO(conexao);
+
+                //cria as listas que irão armazenar os dados para preencher as tabelas
+                List<Movimentacao> listaReceitas = movimentacaoDAO.buscarReceitasPeriodo(periodoSelecionado.getText());
+                List<Movimentacao> listaDespesas = movimentacaoDAO.buscarDespesasPeriodo(periodoSelecionado.getText());
+
+                //armazena as contas cadastradas
+                listaContas = contaDAO.listarContas();
+
+                saldoTotal = 0.0;
+                //calcula o total de saldo em todas as contas
+                for (Conta conta : listaContas) {
+                    saldoTotal += conta.getSaldo();
+                }
+
+                // Atualiza as tabelas
+                Platform.runLater(() -> {
+                    tabelaReceitas.setItems(FXCollections.observableArrayList(listaReceitas));
+                    tabelaDespesas.setItems(FXCollections.observableArrayList(listaDespesas));
+
+                    campoSaldoTotal.setText("R$" + saldoTotal);
+
+                    if(listaContas.size() >= 1) {
+                        nomeConta1.setText(listaContas.get(0).getNomeConta());
+                        saldoConta1.setText("R$" + listaContas.get(0).getSaldo());
+                    }
+
+                    if (listaContas.size() >= 2) {
+                        nomeConta2.setText(listaContas.get(1).getNomeConta());
+                        saldoConta2.setText("R$" + listaContas.get(1).getSaldo());
+                    }
+
+                    if (listaReceitas.isEmpty()) {
+                        tabelaReceitas.setPlaceholder(new javafx.scene.control.Label("Sem movimentações no período."));
+                    }
+
+                    if (listaDespesas.isEmpty()) {
+                        tabelaDespesas.setPlaceholder(new javafx.scene.control.Label("Sem movimentações no período."));
+                    }
+                });
+
+                return null;
+            }
+        };
 
         //mostra um aviso caso os dados não possam ser carregados
         task.setOnFailed(e -> {

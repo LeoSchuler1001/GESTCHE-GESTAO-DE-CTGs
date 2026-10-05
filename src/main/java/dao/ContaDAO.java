@@ -90,7 +90,7 @@ public class ContaDAO {
 
     //lista todas as contas
     public List<Conta> listarContas() throws SQLException {
-        String sql = "SELECT * FROM conta";
+        String sql = "SELECT * FROM conta ORDER BY nomeConta";
 
         List<Conta> listaContas = new ArrayList<>();
 

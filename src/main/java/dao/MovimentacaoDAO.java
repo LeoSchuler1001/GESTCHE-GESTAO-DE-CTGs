@@ -49,6 +49,8 @@ public class MovimentacaoDAO {
 
             if(movimentacao.getLembrete() != null) {
                 stmt.setInt(8, movimentacao.getUsuario().getIdUsuario());
+            } else {
+                stmt.setNull(8, java.sql.Types.INTEGER);
             }
 
             //executa o comando sql no banco de dados
