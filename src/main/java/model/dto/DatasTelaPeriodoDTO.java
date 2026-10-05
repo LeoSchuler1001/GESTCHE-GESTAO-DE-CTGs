@@ -4,20 +4,15 @@ import java.sql.Date;
 
 public class DatasTelaPeriodoDTO {
     //ATRIBUTOS
-    private Date dataInicial;
-    private Date dataFinal;
+    public static Date dataInicial;
+    public static Date dataFinal;
     
     //GETERS E SETERS
-    public Date getDataInicial() {
+    public static Date getDataInicial() {
         return dataInicial;
     }
-    public void setDataInicial(Date dataInicial) {
-        this.dataInicial = dataInicial;
-    }
-    public Date getDataFinal() {
+    
+    public static Date getDataFinal() {
         return dataFinal;
-    }
-    public void setDataFinal(Date dataFinal) {
-        this.dataFinal = dataFinal;
-    }   
+    } 
 }

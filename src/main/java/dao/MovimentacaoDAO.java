@@ -398,6 +398,94 @@ public class MovimentacaoDAO {
         return despesas;
     }
 
+    public List<Movimentacao> buscarReceitasPeriodo(String periodo) {
+        List<Movimentacao> receitas = new ArrayList<>();
+        
+        String[] partes = periodo.split(" até ");
+        DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        
+        LocalDate dataInicio = LocalDate.parse(partes[0].trim(), formatoData);
+        LocalDate dataFim = LocalDate.parse(partes[1].trim(), formatoData);
+
+        String sql = "SELECT " +
+                        "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
+                        "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
+                        "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
+                        "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+                        "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
+                        "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
+                        "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
+                        "FROM movimentacao m " +
+                        "LEFT JOIN usuario u ON m.fk_idUsuario = u.pk_idUsuario " +
+                        "LEFT JOIN conta c ON m.fk_idConta = c.pk_idConta " +
+                        "LEFT JOIN categoria cat ON m.fk_idCategoria = cat.pk_idCategoria " +
+                        "LEFT JOIN lembrete l ON m.fk_idLembrete = l.pk_idLembrete " +
+                        "WHERE m.dataMovimentacao BETWEEN ? AND ? " +
+                        "AND LOWER(m.tipoMovimentacao) = 'receita' " +
+                        "ORDER BY m.dataMovimentacao DESC";
+
+        try (Connection conn = conexao.getConexao();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setObject(1, dataInicio);
+            stmt.setObject(2, dataFim);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    receitas.add(montarObjMovimentacao(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return receitas;
+    }
+
+    public List<Movimentacao> buscarDespesasPeriodo(String periodo) {
+        List<Movimentacao> despesas = new ArrayList<>();
+        
+        String[] partes = periodo.split(" até ");
+        DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        
+        LocalDate dataInicio = LocalDate.parse(partes[0].trim(), formatoData);
+        LocalDate dataFim = LocalDate.parse(partes[1].trim(), formatoData);
+
+        String sql = "SELECT " +
+                        "    m.pk_idMovimentacao, m.valorMovimentacao, m.dataMovimentacao, " +
+                        "    m.comentarioMovimentacao, m.tipoMovimentacao, " +
+                        "    u.pk_idUsuario, u.cpfUsuario, u.nomeUsuario, u.cargoUsuario, " +
+                        "    c.pk_idConta, c.nomeConta, c.corConta, c.iconeConta, " +
+                        "    cat.pk_idCategoria, cat.nomeCategoria, cat.corCategoria, cat.iconeCategoria, " +
+                        "    l.pk_idLembrete, l.nomeLembrete, l.dataInicioLembrete, l.periodicidadeLembrete, " +
+                        "    l.descricaoLembrete, l.horarioLembrete, l.ativoLembrete " +
+                        "FROM movimentacao m " +
+                        "LEFT JOIN usuario u ON m.fk_idUsuario = u.pk_idUsuario " +
+                        "LEFT JOIN conta c ON m.fk_idConta = c.pk_idConta " +
+                        "LEFT JOIN categoria cat ON m.fk_idCategoria = cat.pk_idCategoria " +
+                        "LEFT JOIN lembrete l ON m.fk_idLembrete = l.pk_idLembrete " +
+                        "WHERE m.dataMovimentacao BETWEEN ? AND ? " +
+                        "AND LOWER(m.tipoMovimentacao) = 'despesa' " +
+                        "ORDER BY m.dataMovimentacao DESC";
+
+        try (Connection conn = conexao.getConexao();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setObject(1, dataInicio);
+            stmt.setObject(2, dataFim);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    despesas.add(montarObjMovimentacao(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return despesas;
+    }
+
     //busca todas as movimentacoes de um determinado periodo
     public List<Movimentacao> buscarPorPeriodo(Date dataInicio, Date dataFim) throws SQLException {
         List<Movimentacao> listaMovimentacoes = new ArrayList<>();

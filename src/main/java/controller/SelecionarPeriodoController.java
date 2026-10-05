@@ -21,7 +21,6 @@ import model.dto.DatasTelaPeriodoDTO;
 public class SelecionarPeriodoController {
     //ATRIBUTOS
     private final DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    static DatasTelaPeriodoDTO datasTelaPeriodoDTO;
     boolean confirmaConsulta = false;
 
     @FXML
@@ -47,9 +46,8 @@ public class SelecionarPeriodoController {
     void consultarAction(ActionEvent event) {
         if(!verificaFormulario()) { return; }
 
-        datasTelaPeriodoDTO = new DatasTelaPeriodoDTO();
-        datasTelaPeriodoDTO.setDataInicial(Date.valueOf(dataInicio.getValue()));
-        datasTelaPeriodoDTO.setDataFinal(Date.valueOf(dataFinal.getValue()));
+        DatasTelaPeriodoDTO.dataInicial = Date.valueOf(dataInicio.getValue());
+        DatasTelaPeriodoDTO.dataFinal = Date.valueOf(dataFinal.getValue());
 
         this.confirmaConsulta = true;
         
@@ -119,7 +117,7 @@ public class SelecionarPeriodoController {
             return false;
         }
 
-        if(dtFinal.isAfter(inicio)) {
+        if(inicio.isAfter(dtFinal)) {
             emitirAlertaSimples("A data final não pode ser anterios à data inicial!");
             return false;
         }

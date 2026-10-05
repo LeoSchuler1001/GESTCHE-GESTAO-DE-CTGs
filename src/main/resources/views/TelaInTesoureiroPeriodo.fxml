@@ -276,7 +276,7 @@
                         <Insets right="20.0" />
                      </HBox.margin>
                   </Hyperlink>
-                  <Hyperlink fx:id="linkPeriodo" styleClass="linkMenuLateral" text="PERÍODO">
+                  <Hyperlink fx:id="linkPeriodo" onAction="#periodoAction" styleClass="linkMenuLateral" text="PERÍODO">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font></Hyperlink>
@@ -296,7 +296,7 @@
                         </VBox>
                         <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="54.0" prefWidth="350.0">
                            <children>
-                              <TextField fx:id="periodoSelecionado" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="265.0" styleClass="campoPreenchimento" />
+                              <TextField fx:id="periodoSelecionado" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="270.0" styleClass="campoPreenchimento" />
                            </children>
                         </VBox>
                         <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="465.0">
