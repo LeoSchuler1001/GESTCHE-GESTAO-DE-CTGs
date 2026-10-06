@@ -209,7 +209,7 @@ public class TelaLembretesTesoureiroController {
     void criarNovoAction(ActionEvent event) throws IOException {
         //abre a tela de cadastro de lembretes
         //carregamento do fxml
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaCadastrarLembrete.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaCadastrarLembreteTesoureiro.fxml"));
         Parent root = fxmlLoader.load();
 
         //cria e exibe a tela de alteração

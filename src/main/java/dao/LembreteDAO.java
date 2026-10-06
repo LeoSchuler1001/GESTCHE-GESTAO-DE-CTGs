@@ -130,6 +130,31 @@ public class LembreteDAO {
         }
     }
 
+    //cadastra um lembrete
+    public void cadastrarLembreteTesoureiro(Lembrete lembrete) throws SQLException {
+        String sql = "INSERT INTO lembrete (nomeLembrete, dataInicioLembrete, periodicidadeLembrete, descricaoLembrete, horarioLembrete, fk_idUsuario, valorLembrete) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    
+        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, lembrete.getNomeLembrete());
+            stmt.setDate(2, new java.sql.Date(lembrete.getDataInicioLembrete().getTime()));
+            stmt.setString(3, lembrete.getPeriodicidadeLembrete());
+            stmt.setString(4, lembrete.getDescricaoLembrete());
+            stmt.setTime(5, lembrete.getHorarioLembrete());
+            stmt.setInt(6, lembrete.getUsuario().getIdUsuario());
+            stmt.setDouble(7,lembrete.getValorLembrete());
+
+            //executa o comando sql no banco de dados
+            stmt.executeUpdate();
+
+            // Atribui o ID gerado pelo SERIAL de volta ao objeto Usuario
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    lembrete.setIdLembrete(rs.getInt(1));
+                }
+            }
+        }
+    }
+
     //atualiza um lembrete
     public void atualizarLembreteSecretario(Lembrete lembrete) throws SQLException {
         String sql = "UPDATE lembrete SET nomeLembrete = ?, dataInicioLembrete = ?, periodicidadeLembrete = ?, descricaoLembrete = ?, horarioLembrete = ?, fk_idUsuario = ? WHERE pk_idLembrete = ?";

@@ -2,18 +2,15 @@ package controller;
 
 import java.sql.Date;
 import java.sql.SQLException;
-import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Optional;
 import enums.PeriodicidadeLembretes;
-import app.App;
 import dao.ConexaoBanco;
 import dao.LembreteDAO;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -28,15 +25,14 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import model.Lembrete;
+import app.App;
 
-public class AlterarLembreteTesoureiroController {
+public class CadastrarLembreteTesoureiroController {
     //ATRIBUTOS
     private final DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    Locale localBrasil = Locale.of("pt", "BR");
+    Locale localBrasil = Locale.of("pt", "BR");    
     ConexaoBanco conexaoBanco = new ConexaoBanco();
     LembreteDAO lembreteDAO = new LembreteDAO(conexaoBanco);
-    private Lembrete lembreteSelecionado;
-    NumberFormat formatoMoeda = NumberFormat.getCurrencyInstance(localBrasil);
 
     @FXML
     private Button botaoFechar;
@@ -76,21 +72,24 @@ public class AlterarLembreteTesoureiroController {
         if(!verificaFormulario()) { return; }
 
         //faz a confirmação com o usuário
-        boolean confirmaCadastro = emitirAlertaConfirmacao("Deseja realmente alterar?", AlertType.CONFIRMATION);
+        boolean confirmaCadastro = emitirAlertaConfirmacao("Deseja realmente cadastrar?", AlertType.CONFIRMATION);
 
         if(confirmaCadastro) {
+            //cria um objeto lembrete
+            Lembrete lembrete = new Lembrete();
+
             //atribui as informações ao objeto lembrete
-            lembreteSelecionado.setNomeLembrete(campoNomeLembrete.getText());
-            lembreteSelecionado.setDescricaoLembrete(campoDescricaoLembrete.getText());
+            lembrete.setNomeLembrete(campoNomeLembrete.getText());
+            lembrete.setDescricaoLembrete(campoDescricaoLembrete.getText());
             
-            lembreteSelecionado.setDataInicioLembrete(Date.valueOf(campoInicioLembrete.getValue()));
-            lembreteSelecionado.setUsuario(App.usuarioLogado);
+            lembrete.setDataInicioLembrete(Date.valueOf(campoInicioLembrete.getValue()));
+            lembrete.setUsuario(App.usuarioLogado);
 
             //recupera a hora do sistema
             LocalTime horarioAtual = LocalTime.now();
-            lembreteSelecionado.setHorarioLembrete(java.sql.Time.valueOf(horarioAtual));
+            lembrete.setHorarioLembrete(java.sql.Time.valueOf(horarioAtual));
 
-            lembreteSelecionado.setPeriodicidadeLembrete(campoPeriodicidadeLembrete.getValue());
+            lembrete.setPeriodicidadeLembrete(campoPeriodicidadeLembrete.getValue());
 
             //altera o valor do lembrete
             String valorDigitado = campoValorLembrete.getText();
@@ -99,15 +98,15 @@ public class AlterarLembreteTesoureiroController {
             valorPuro = valorPuro.replace(",", ".");
             //converte para double
             try {
-                lembreteSelecionado.setValorLembrete(Double.parseDouble(valorPuro));
+                lembrete.setValorLembrete(Double.parseDouble(valorPuro));
             } catch (NumberFormatException e) {
                 emitirAlerta("O campo valor está incorreto!", AlertType.ERROR);
                 return;
             }
 
-            lembreteDAO.atualizarLembreteTesoureiro(lembreteSelecionado);
+            lembreteDAO.cadastrarLembreteTesoureiro(lembrete);
 
-            emitirAlerta("lembrete alterado com sucesso", AlertType.INFORMATION);
+            emitirAlerta("Lembrete cadastrado com sucesso", AlertType.INFORMATION);
             
             Stage stage = (Stage) painelFundo.getScene().getWindow();
             stage.close();
@@ -144,45 +143,6 @@ public class AlterarLembreteTesoureiroController {
         for (PeriodicidadeLembretes periodicidade : PeriodicidadeLembretes.values()) {
             campoPeriodicidadeLembrete.getItems().add(periodicidade.getDescricao());
         }
-    }
-
-    public void carregarDadosEmSegundoPlano(Lembrete lembreteSelecionado) {
-        this.lembreteSelecionado = lembreteSelecionado;
-
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() throws Exception {
-                buscarDadosLembrete();
-                return null;
-            }
-        };
-
-        //mostra um aviso caso os dados não possam ser carregados
-        task.setOnFailed(e -> {
-            Throwable ex = task.getException();
-            ex.printStackTrace();
-            Platform.runLater(() -> emitirAlerta("Erro ao carregar os dados.", AlertType.ERROR));
-        });
-
-        new Thread(task).start(); 
-    }
-
-    //preenche os dados nos labels
-    private void buscarDadosLembrete() throws SQLException {
-        //preenche os campos com os dados do departamento
-        campoNomeLembrete.setText(lembreteSelecionado.getNomeLembrete());
-        campoDescricaoLembrete.setText(lembreteSelecionado.getDescricaoLembrete());
-
-        //preenche o campo da data de inicio do lembrete
-        LocalDate localDate = ((java.sql.Date) lembreteSelecionado.getDataInicioLembrete()).toLocalDate();        
-        campoInicioLembrete.setValue(localDate);
-
-        //preenche o campo do valor do lembrete
-        Double valorLembrete = lembreteSelecionado.getValorLembrete();
-        String valor = formatoMoeda.format(valorLembrete);
-        campoValorLembrete.setText(valor);
-
-        campoPeriodicidadeLembrete.setValue(lembreteSelecionado.getPeriodicidadeLembrete());
     }
 
     //método auxiliar para emitir alertas
@@ -249,7 +209,7 @@ public class AlterarLembreteTesoureiroController {
 
         return true;
     }
-    
+
     private void emitirAlertaSimples(String mensagem) {
         Alert alerta = new Alert(AlertType.ERROR);
         alerta.setTitle("Aviso");
