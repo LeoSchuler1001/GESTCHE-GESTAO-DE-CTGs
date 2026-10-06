@@ -156,6 +156,33 @@ public class LembreteDAO {
         }
     }
 
+    //atualiza um lembrete
+    public void atualizarLembreteTesoureiro(Lembrete lembrete) throws SQLException {
+        String sql = "UPDATE lembrete SET nomeLembrete = ?, valorLembrete = ?, dataInicioLembrete = ?, periodicidadeLembrete = ?, descricaoLembrete = ?, horarioLembrete = ?, fk_idUsuario = ? WHERE pk_idLembrete = ?";
+    
+        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, lembrete.getNomeLembrete());
+            stmt.setDouble(2, lembrete.getValorLembrete());
+            stmt.setDate(3, new java.sql.Date(lembrete.getDataInicioLembrete().getTime()));
+            stmt.setString(4, lembrete.getPeriodicidadeLembrete());
+            stmt.setString(5, lembrete.getDescricaoLembrete());
+            stmt.setTime(6, lembrete.getHorarioLembrete());
+            stmt.setInt(7, lembrete.getUsuario().getIdUsuario());
+
+            stmt.setInt(8, lembrete.getIdLembrete());
+            
+            //executa o comando sql no banco de dados
+            stmt.executeUpdate();
+
+            // Atribui o ID gerado pelo SERIAL de volta ao objeto lembrete
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    lembrete.setIdLembrete(rs.getInt(1));
+                }
+            }
+        }
+    }
+
     //método auxiliar, que vai montar o objeto lembrete após a consulta sql
     private Lembrete montarObjLembrete(ResultSet rs) throws SQLException {
         //cria o objeto

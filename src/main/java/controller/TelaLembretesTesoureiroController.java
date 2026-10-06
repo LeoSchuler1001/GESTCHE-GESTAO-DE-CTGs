@@ -69,6 +69,9 @@ public class TelaLembretesTesoureiroController {
     private TableColumn<Lembrete, String> colunaPeriodicidade;
 
     @FXML
+    private TableColumn<Lembrete, String> colunaValor;
+
+    @FXML
     private TableView<Lembrete> tabelaInformacoesLembretes;
 
     @FXML
@@ -110,11 +113,11 @@ public class TelaLembretesTesoureiroController {
         if(lembreteSelecionado != null) {
             //abre a tela de cadastro de lembretes
             //carregamento do fxml
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaAlteracaoLembrete.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaAlterarLembreteTesoureiro.fxml"));
             Parent root = fxmlLoader.load();
     
             //obtem o controller da tela de alteração
-            AlterarLembreteController controller = fxmlLoader.getController();
+            AlterarLembreteTesoureiroController controller = fxmlLoader.getController();
             controller.carregarDadosEmSegundoPlano(lembreteSelecionado);
     
             //cria e exibe a tela de alteração
@@ -314,6 +317,12 @@ public class TelaLembretesTesoureiroController {
         this.colunaNome.setCellValueFactory(cellData -> 
             new SimpleStringProperty(cellData.getValue().getNomeLembrete())
         );
+
+        this.colunaValor.setCellValueFactory(cellData -> {
+            double valor = cellData.getValue().getValorLembrete();
+            String formatado = String.format("R$ %.2f", valor);
+            return new SimpleStringProperty(formatado);
+        });
 
         this.colunaInicio.setCellValueFactory(cellData -> cellData.getValue().dataInicioFormatada());
 
