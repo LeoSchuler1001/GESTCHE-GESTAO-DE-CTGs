@@ -90,7 +90,7 @@ public class CadastrarLembreteController {
 
             lembreteDAO.cadastrarLembreteSecretario(lembrete);
 
-            emitirAlerta("Débito cadastrado com sucesso", AlertType.INFORMATION);
+            emitirAlerta("Lembrete cadastrado com sucesso", AlertType.INFORMATION);
             
             Stage stage = (Stage) painelFundo.getScene().getWindow();
             stage.close();

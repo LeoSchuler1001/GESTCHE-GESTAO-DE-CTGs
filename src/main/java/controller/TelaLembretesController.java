@@ -140,7 +140,7 @@ public class TelaLembretesController {
 
     @FXML
     void alterarAction(ActionEvent event) throws IOException {
-        //verifica qual foi o sócio selecionado
+        //verifica qual foi o lembrete selecionado
         Lembrete lembreteSelecionado = tabelaInformacoesLembretes.getSelectionModel().getSelectedItem();
 
         if(lembreteSelecionado != null) {

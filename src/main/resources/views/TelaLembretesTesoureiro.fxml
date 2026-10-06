@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -16,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="800.0" minWidth="1200.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TelaLembretesTesoureiroController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="800.0" minWidth="1200.0" style="-fx-background-color: #D9D9D9;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TelaLembretesTesoureiroController">
    <left>
       <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="220.0" style="-fx-background-color: #5D8A66;" BorderPane.alignment="CENTER">
          <children>
@@ -177,6 +178,46 @@
       </VBox>
    </left>
    <center>
-      <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: D9D9D9;" BorderPane.alignment="CENTER" />
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="TOP_CENTER">
+         <children>
+            <TableView fx:id="tabelaInformacoesLembretes" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="900.0">
+              <columns>
+                <TableColumn fx:id="colunaNome" maxWidth="230.0" minWidth="230.0" prefWidth="230.0" text="NOME" />
+                <TableColumn fx:id="colunaInicio" maxWidth="80.0" minWidth="80.0" text="INÍCIO" />
+                  <TableColumn fx:id="colunaPeriodicidade" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="PERIODICIDADE" />
+                  <TableColumn fx:id="colunaDescricao" maxWidth="340.0" minWidth="340.0" prefWidth="340.0" text="DESCRIÇÃO" />
+                  <TableColumn fx:id="colunaAtivo" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="ATIVO" />
+              </columns>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </TableView>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="botaoAlterar" mnemonicParsing="false" onAction="#alterarAction" styleClass="botoes" text="ALTERAR" />
+                  <Button fx:id="botaoAtivar" mnemonicParsing="false" onAction="#ativarAction" styleClass="botoes" text="ATIVAR">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="botaoDesativar" mnemonicParsing="false" onAction="#desativarAction" styleClass="botoes" text="DESATIVAR">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="botaoExcluir" mnemonicParsing="false" onAction="#excluirAction" styleClass="botoes" text="EXCLUIR">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="botaoCriarNovo" mnemonicParsing="false" onAction="#criarNovoAction" styleClass="botoes" text="CRIAR NOVO">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
    </center>
 </BorderPane>
