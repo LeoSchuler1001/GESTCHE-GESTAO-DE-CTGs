@@ -1,7 +1,15 @@
 package controller;
 
 import javafx.event.ActionEvent;
+
+import java.io.IOException;
+import java.util.Optional;
+
+import app.App;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -40,39 +48,57 @@ public class TelaDebitosSociosController {
 
     //BOTÕES
     @FXML
-    void categoriasAction(ActionEvent event) {
-
+    void categoriasAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaCategorias");
     }
 
     @FXML
-    void configuracoesAction(ActionEvent event) {
-
+    void configuracoesAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaConfiguracoesTesoureiro");
     }
 
     @FXML
-    void contasAction(ActionEvent event) {
-
+    void contasAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaContas");
     }
 
     @FXML
-    void graficosRelatoriosAction(ActionEvent event) {
-
+    void graficosRelatoriosAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaGraficosRelatoriosTesoureiro");
     }
 
     @FXML
-    void inicioAction(ActionEvent event) {
-
+    void inicioAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaInTesoureiroMes");
     }
 
     @FXML
-    void lembretesAction(ActionEvent event) {
-
+    void lembretesAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaLembretesTesoureiro");
     }
 
     @FXML
-    void sairAction(ActionEvent event) {
+    void sairAction(ActionEvent event) throws IOException {
+        boolean confirmaSaida = emitirAlerta("Deseja realmente sair?", AlertType.CONFIRMATION);
 
+        if (confirmaSaida) {
+            App.trocarTela("TelaLogin");
+        } else {
+            System.out.println("Ação cancelada pelo usuário.");
+        }
     }
 
     //MÉTODOS
+    //método auxiliar para emitir alertas
+    private boolean emitirAlerta(String mensagem, AlertType tipoAlerta) {
+        Alert alerta = new Alert(tipoAlerta);
+        alerta.setTitle("Confirmação");
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensagem);
+
+        Optional<ButtonType> resultado = alerta.showAndWait();
+
+        // Verifica se o usuário clicou no botão OK
+        return resultado.isPresent() && resultado.get() == ButtonType.OK;
+    }
 }

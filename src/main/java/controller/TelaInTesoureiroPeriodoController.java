@@ -222,23 +222,23 @@ public class TelaInTesoureiroPeriodoController {
     }
 
     @FXML
-    void categoriasAction(ActionEvent event) {
-
+    void categoriasAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaCategorias");
     }
 
     @FXML
-    void configuracoesAction(ActionEvent event) {
-
+    void configuracoesAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaConfiguracoesTesoureiro");
     }
 
     @FXML
-    void contasAction(ActionEvent event) {
-
+    void contasAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaContas");
     }
 
     @FXML
-    void debitosSociosAction(ActionEvent event) {
-
+    void debitosSociosAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaDebitosSocios");
     }
 
     @FXML
@@ -323,13 +323,13 @@ public class TelaInTesoureiroPeriodoController {
     }
 
     @FXML
-    void graficosRelatoriosAction(ActionEvent event) {
-
+    void graficosRelatoriosAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaGraficosRelatoriosTesoureiro");
     }
 
     @FXML
-    void lembretesAction(ActionEvent event) {
-
+    void lembretesAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaLembretesTesoureiro");
     }
 
     @FXML

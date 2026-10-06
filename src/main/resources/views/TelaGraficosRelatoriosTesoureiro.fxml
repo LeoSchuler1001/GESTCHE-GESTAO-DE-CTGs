@@ -96,7 +96,7 @@
                         <Image url="@../img/iconeConfiguracoes.png" />
                      </image>
                   </ImageView>
-                  <Hyperlink fx:id="linkDebitosSocios" onAction="#graficosRelatoriosAction" styleClass="linkMenuLateral" text="Debitos de Sócios" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <Hyperlink fx:id="linkDebitosSocios" onAction="#debitosSociosAction" styleClass="linkMenuLateral" text="Debitos de Sócios" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <font>
                         <Font name="Gadugi" size="18.0" />
                      </font>
