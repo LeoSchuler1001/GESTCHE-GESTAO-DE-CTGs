@@ -16,6 +16,9 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -27,6 +30,8 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.Conta;
 import model.Lembrete;
@@ -126,8 +131,29 @@ public class TelaContasController {
     }
 
     @FXML
-    void criarNovoAction(ActionEvent event) {
+    void criarNovoAction(ActionEvent event) throws IOException {
+        //abre a tela de cadastro de contas
+        //carregamento do fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaCadastrarConta.fxml"));
+        Parent root = fxmlLoader.load();
 
+        //cria e exibe a tela de alteração
+        Stage telaExibicao = new Stage();
+        telaExibicao.setTitle("Cadastrar Conta");
+        telaExibicao.setScene(new Scene(root));
+
+        //proibe que o usuario possa alterar o tamanho da tela
+        telaExibicao.setResizable(false);
+
+        //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+        telaExibicao.initModality(Modality.WINDOW_MODAL);
+        telaExibicao.initOwner(tabelaContas.getScene().getWindow());
+
+        //abre a tela e aguarda o usuário fechar
+        telaExibicao.showAndWait();
+
+        //atualiza a tabela depois do cadastro
+        carregarDadosSegundoPlano();
     }
 
     @FXML
@@ -228,7 +254,8 @@ public class TelaContasController {
                 listaContas = contaDAO.listarContas();
                 List<Lembrete> listaLembretesHoje = lembreteDAO.listarLembretesHoje(App.usuarioLogado.getIdUsuario());
 
-
+                saldoTotal = 0.0;
+                
                 //calcula o total de saldo em todas as contas
                 for (Conta conta : listaContas) {
                     saldoTotal += conta.getSaldo();

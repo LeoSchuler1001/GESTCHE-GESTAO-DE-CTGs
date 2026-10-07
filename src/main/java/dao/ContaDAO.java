@@ -24,14 +24,14 @@ public class ContaDAO {
     //cadastrar uma nova conta
     public void cadastrarConta(Conta conta) throws SQLException {
         //cria o comando sql
-        String sql = "INSERT INTO conta (nomeConta, saldo, corConta, iconeConta) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO conta (nomeConta, saldo) VALUES (?, ?)";
 
         try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, conta.getNomeConta());
             stmt.setDouble(2, conta.getSaldo());
-            stmt.setString(3, conta.getCorConta());
-            stmt.setString(4, conta.getIconeConta());
 
+            stmt.executeUpdate();
+        
             // Atribui o ID gerado pelo SERIAL de volta ao objeto conta
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
