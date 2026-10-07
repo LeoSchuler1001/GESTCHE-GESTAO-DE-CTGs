@@ -106,7 +106,7 @@ public class ContaDAO {
 
     //atualiza uma conta
     public void atualizarConta(Conta conta) throws SQLException {
-        String sql = "UPDATE conta SET nomeConta = ?, saldo = ?,  WHERE pk_idConta = ?";
+        String sql = "UPDATE conta SET nomeConta = ?, saldo = ?  WHERE pk_idConta = ?";
         
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
             stmt.setString(1, conta.getNomeConta());

@@ -100,8 +100,41 @@ public class TelaContasController {
 
     //BOTÕES
     @FXML
-    void alterarAction(ActionEvent event) {
+    void alterarAction(ActionEvent event) throws IOException {
+        //verifica qual foi a conta selecionada
+        Conta contaSelecionada = tabelaContas.getSelectionModel().getSelectedItem();
 
+        //verifica se uma conta foi selecionara
+        if(contaSelecionada != null) {
+            //abre a tela de alteração de conta
+            //carregamento do fxml
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaAlterarConta.fxml"));
+            Parent root = fxmlLoader.load();
+
+            //obtem o controller da tela de alteração
+            AlterarContaController controller = fxmlLoader.getController();
+            controller.carregarDadosEmSegundoPlano(contaSelecionada);
+
+            //cria e exibe a tela de alteração
+            Stage telaAlteracao = new Stage();
+            telaAlteracao.setTitle("Alterar conta");
+            telaAlteracao.setScene(new Scene(root));
+
+            //proibe que o usuario possa alterar o tamanho da tela
+            telaAlteracao.setResizable(false);
+
+            //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+            telaAlteracao.initModality(Modality.WINDOW_MODAL);
+            telaAlteracao.initOwner(tabelaContas.getScene().getWindow());
+
+            //abre a tela e aguarda o usuário fechar
+            telaAlteracao.showAndWait();
+
+            //atualiza a tabela depois da alteração
+            carregarDadosSegundoPlano();
+        } else {
+            emitirAlerta("Selecione uma conta", AlertType.ERROR);
+        }
     }
 
     @FXML
