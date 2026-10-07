@@ -145,6 +145,24 @@ public class ContaDAO {
         return saldoTotal;
     }
 
+    public boolean contaPossuiMovimentacao(int idConta) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM movimentacao WHERE fk_idConta = ?)";
+        
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, idConta);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean(1);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao verificar movimentações da conta: " + e.getMessage(), e);
+        }
+        
+        return false;
+    }
+
     //método auxiliar, que vai montar o objeto categoria após a consulta sql
     private Conta montarObjConta(ResultSet rs) throws SQLException {
         //cria o objeto

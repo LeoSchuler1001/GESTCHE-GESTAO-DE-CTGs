@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import app.App;
 import dao.ConexaoBanco;
 import dao.ContaDAO;
 import dao.LembreteDAO;
+import dao.MovimentacaoDAO;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -37,6 +39,7 @@ public class TelaContasController {
     ConexaoBanco conexao = new ConexaoBanco();
     ContaDAO contaDAO = new ContaDAO(conexao);
     LembreteDAO lembreteDAO = new LembreteDAO(conexao);
+    MovimentacaoDAO movimentacaoDAO = new MovimentacaoDAO(conexao);
 
     @FXML
     private Button botaoAlterar;
@@ -97,15 +100,28 @@ public class TelaContasController {
     }
 
     @FXML
-    void excluirAction(ActionEvent event) {
+    void excluirAction(ActionEvent event) throws SQLException {
         //verifica qual foi a conta selecionado
         Conta contaSelecionada = tabelaContas.getSelectionModel().getSelectedItem();
 
         //verifica se uma conta foi selecionada
         if(contaSelecionada != null) {
+            //verifica se a conta pode ser excluída
+            if(contaDAO.contaPossuiMovimentacao(contaSelecionada.getIdConta())) {
+                emitirAlerta("A conta não pode ser excluída, pois possui movimentações cadastradas!", AlertType.ERROR);
+                return;
+            }
             
+            Boolean confirmaExclusao = emitirAlertaConfirmacao("Deseja realmente excluir?", AlertType.CONFIRMATION);
+            if(confirmaExclusao) {
+                contaDAO.excluirConta(contaSelecionada);
+
+                emitirAlerta("Conta excluída com sucesso!", AlertType.INFORMATION);
+            
+                carregarDadosSegundoPlano();
+            }
         } else {
-            emitirAlerta("Selecione um lembrete!", AlertType.ERROR);
+            emitirAlerta("Selecione uma conta!", AlertType.ERROR);
         }
     }
 
