@@ -104,16 +104,12 @@ CREATE TABLE debito(
 CREATE TABLE conta(
     pk_idConta SERIAL PRIMARY KEY,
     saldo NUMERIC(10,2) NOT NULL DEFAULT 0.00,
-    nomeConta VARCHAR(100) NOT NULL,
-    corConta VARCHAR(7) NOT NULL,
-    iconeConta VARCHAR(100) NOT NULL
+    nomeConta VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE categoria(
     pk_idCategoria SERIAL PRIMARY KEY,
-    nomeCategoria VARCHAR(100) NOT NULL,
-    corCategoria VARCHAR(7) NOT NULL,
-    iconeCategoria VARCHAR(100) NOT NULL
+    nomeCategoria VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE lembrete(

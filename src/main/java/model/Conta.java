@@ -5,23 +5,16 @@ public class Conta {
     private int idConta;
     private String nomeConta;
     private Double saldo;
-    private String corConta;
-    private String iconeConta;
-
     //CONSTRUTORES
-    public Conta(int idConta, String nomeConta, Double saldo, String corConta, String iconeConta) {
+    public Conta(int idConta, String nomeConta, Double saldo) {
         this.idConta = idConta;
         this.nomeConta = nomeConta;
         this.saldo = saldo;
-        this.corConta = corConta;
-        this.iconeConta = iconeConta;
     }
 
-    public Conta(String nomeConta, Double saldo, String corConta, String iconeConta) {
+    public Conta(String nomeConta, Double saldo) {
         this.nomeConta = nomeConta;
         this.saldo = saldo;
-        this.corConta = corConta;
-        this.iconeConta = iconeConta;
     }
 
     public Conta() {
@@ -42,22 +35,6 @@ public class Conta {
 
     public void setNomeConta(String nomeConta) {
         this.nomeConta = nomeConta;
-    }
-
-    public String getCorConta() {
-        return corConta;
-    }
-
-    public void setCorConta(String corConta) {
-        this.corConta = corConta;
-    }
-
-    public String getIconeConta() {
-        return iconeConta;
-    }
-
-    public void setIconeConta(String iconeConta) {
-        this.iconeConta = iconeConta;
     }
 
     public Double getSaldo() {

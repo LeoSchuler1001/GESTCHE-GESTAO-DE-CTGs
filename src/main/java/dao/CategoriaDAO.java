@@ -24,12 +24,10 @@ public class CategoriaDAO {
     //cadastrar uma nova categoria
     public void cadastrarCategoria(Categoria categoria) throws SQLException {
         //cria o comando sql
-        String sql = "INSERT INTO categoria (nomeCategoria, corCategoria, iconeCategoria) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO categoria (nomeCategoria) VALUES (?)";
 
         try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, categoria.getNomeCategoria());
-            stmt.setString(2, categoria.getCorCategoria());
-            stmt.setString(3, categoria.getIconeCategoria());
 
             //atribui o ID gerado pelo SERIAL de volta ao objeto categoria
             try (ResultSet rs = stmt.getGeneratedKeys()) {
@@ -105,13 +103,11 @@ public class CategoriaDAO {
 
     //atualiza uma categoria
     public void atualizarCategoria(Categoria categoria) throws SQLException {
-        String sql = "UPDATE categoria SET nomeCategoria = ?, corCategoria = ?, iconeCategoria = ?  WHERE pk_idCategoria = ?";
+        String sql = "UPDATE categoria SET nomeCategoria = ?  WHERE pk_idCategoria = ?";
         
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
             stmt.setString(1, categoria.getNomeCategoria());
-            stmt.setString(2, categoria.getCorCategoria());
-            stmt.setString(3, categoria.getIconeCategoria());
-            stmt.setInt(4, categoria.getIdCategoria());
+            stmt.setInt(2, categoria.getIdCategoria());
             
             //executa o comando sql
             stmt.executeUpdate();
@@ -136,8 +132,6 @@ public class CategoriaDAO {
         //atribui os valores
         categoria.setIdCategoria(rs.getInt("pk_idCategoria"));
         categoria.setNomeCategoria(rs.getString("nomeCategoria"));
-        categoria.setCorCategoria(rs.getString("corCategoria"));
-        categoria.setIconeCategoria(rs.getString("iconeCategoria"));
 
         //retorna a conta
         return categoria;

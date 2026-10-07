@@ -106,14 +106,12 @@ public class ContaDAO {
 
     //atualiza uma conta
     public void atualizarConta(Conta conta) throws SQLException {
-        String sql = "UPDATE conta SET nomeConta = ?, saldo = ?, corConta = ?, iconeConta = ?  WHERE pk_idConta = ?";
+        String sql = "UPDATE conta SET nomeConta = ?, saldo = ?,  WHERE pk_idConta = ?";
         
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
             stmt.setString(1, conta.getNomeConta());
             stmt.setDouble(2, conta.getSaldo());
-            stmt.setString(3, conta.getCorConta());
-            stmt.setString(4, conta.getIconeConta());
-            stmt.setInt(5, conta.getIdConta());
+            stmt.setInt(3, conta.getIdConta());
             
             //executa o comando sql
             stmt.executeUpdate();
@@ -172,8 +170,6 @@ public class ContaDAO {
         conta.setIdConta(rs.getInt("pk_idConta"));
         conta.setSaldo(rs.getDouble("saldo"));
         conta.setNomeConta(rs.getString("nomeConta"));
-        conta.setCorConta(rs.getString("corConta"));
-        conta.setIconeConta(rs.getString("iconeConta"));
 
         //retorna a conta
         return conta;

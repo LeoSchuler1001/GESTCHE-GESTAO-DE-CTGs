@@ -4,21 +4,15 @@ public class Categoria {
     //ATRIBUTOS
     private int idCategoria;
     private String nomeCategoria;
-    private String corCategoria;
-    private String iconeCategoria;
 
     //CONSTRUTORES
-    public Categoria(int idCategoria, String nomeCategoria, String corCategoria, String iconeCategoria) {
+    public Categoria(int idCategoria, String nomeCategoria) {
         this.idCategoria = idCategoria;
         this.nomeCategoria = nomeCategoria;
-        this.corCategoria = corCategoria;
-        this.iconeCategoria = iconeCategoria;
     }
     
-    public Categoria(String nomeCategoria, String corCategoria, String iconeCategoria) {
+    public Categoria(String nomeCategoria) {
         this.nomeCategoria = nomeCategoria;
-        this.corCategoria = corCategoria;
-        this.iconeCategoria = iconeCategoria;
     }
     
     public Categoria() {
@@ -39,21 +33,5 @@ public class Categoria {
 
     public void setNomeCategoria(String nomeCategoria) {
         this.nomeCategoria = nomeCategoria;
-    }
-
-    public String getCorCategoria() {
-        return corCategoria;
-    }
-
-    public void setCorCategoria(String corCategoria) {
-        this.corCategoria = corCategoria;
-    }
-
-    public String getIconeCategoria() {
-        return iconeCategoria;
-    }
-
-    public void setIconeCategoria(String iconeCategoria) {
-        this.iconeCategoria = iconeCategoria;
     }
 }
