@@ -2,9 +2,8 @@ package controller;
 
 import java.sql.SQLException;
 import java.util.Optional;
-
+import dao.CategoriaDAO;
 import dao.ConexaoBanco;
-import dao.ContaDAO;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -17,13 +16,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.Conta;
+import model.Categoria;
 
-public class AlterarContaController {
+public class AlterarCategoriaController {
     //ATRIBUTOS
     ConexaoBanco conexaoBanco = new ConexaoBanco();
-    ContaDAO contaDAO = new ContaDAO(conexaoBanco);
-    Conta contaSelecionada;
+    CategoriaDAO categoriaDAO = new CategoriaDAO(conexaoBanco);
+    Categoria categoriaSelecionada;
 
     @FXML
     private Button botaoFechar;
@@ -36,9 +35,6 @@ public class AlterarContaController {
 
     @FXML
     private TextField campoNomeConta;
-
-    @FXML
-    private TextField campoSaldoConta;
 
     @FXML
     private VBox painelFundo;
@@ -58,22 +54,9 @@ public class AlterarContaController {
         boolean confirmaCadastro = emitirAlertaConfirmacao("Deseja realmente alterar?", AlertType.CONFIRMATION);
 
         if(confirmaCadastro) {
-            contaSelecionada.setNomeConta(campoNomeConta.getText());
+            categoriaSelecionada.setNomeCategoria(campoNomeConta.getText());
 
-            //salva o valor do débito
-            String valorDigitado = campoSaldoConta.getText();
-            //ajusta a string para salvar em um double
-            String valorPuro = valorDigitado.replaceAll("[^0-9.,]", "");
-            valorPuro = valorPuro.replace(",", ".");
-            //converte para double
-            try {
-                contaSelecionada.setSaldo(Double.parseDouble(valorPuro));
-            } catch (NumberFormatException e) {
-                emitirAlerta("O campo valor está incorreto!", AlertType.ERROR);
-                return;
-            }
-
-            contaDAO.atualizarConta(contaSelecionada);
+            categoriaDAO.atualizarCategoria(categoriaSelecionada);
 
             emitirAlerta("Atualização realizada com sucesso!", AlertType.INFORMATION);
 
@@ -89,13 +72,13 @@ public class AlterarContaController {
         Platform.runLater(() -> painelFundo.requestFocus());
     }
 
-    public void carregarDadosEmSegundoPlano(Conta contaSelecionada) {
-        this.contaSelecionada = contaSelecionada;
+    public void carregarDadosEmSegundoPlano(Categoria categoriaSelecionada) {
+        this.categoriaSelecionada = categoriaSelecionada;
 
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                buscarDadosConta();
+                buscarDadosCategoria();
                 return null;
             }
         };
@@ -111,10 +94,9 @@ public class AlterarContaController {
     }
 
     //preenche os dados nos labels
-    private void buscarDadosConta() throws SQLException {
-        //preenche os campos com os dados da conta
-        campoNomeConta.setText(contaSelecionada.getNomeConta());
-        campoSaldoConta.setText("R$" + contaSelecionada.getSaldo());
+    private void buscarDadosCategoria() throws SQLException {
+        //preenche os campos com os dados da categoria
+        campoNomeConta.setText(categoriaSelecionada.getNomeCategoria());
     }
 
     //método auxiliar para emitir alertas
@@ -132,23 +114,9 @@ public class AlterarContaController {
 
     public boolean verificaFormulario() {
         //verifica os campos de texto
-        if (campoNomeConta.getText() == null || campoNomeConta.getText().trim().isEmpty() ||
-            campoSaldoConta.getText() == null || campoSaldoConta.getText().trim().isEmpty()) {
+        if (campoNomeConta.getText() == null || campoNomeConta.getText().trim().isEmpty()) {
             
             emitirAlerta("Preencha todos os campos!", AlertType.ERROR);
-            return false;
-        }
-
-        //valida se o valor do débito é válido
-        String valorDigitado = campoSaldoConta.getText();
-        String valorPuro = valorDigitado.replaceAll("[^0-9.,]", "").replace(",", ".");
-        try {
-            double valor = Double.parseDouble(valorPuro);
-            if(valor < 0) {
-
-            }
-        } catch (NumberFormatException e) {
-            emitirAlerta("O campo valor está incorreto! Insira um número válido.", AlertType.ERROR);
             return false;
         }
 

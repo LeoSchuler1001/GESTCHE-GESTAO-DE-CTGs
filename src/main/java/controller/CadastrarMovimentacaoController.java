@@ -135,7 +135,7 @@ public class CadastrarMovimentacaoController {
             //atualiza a conta no banco de dados
             contaDAO.atualizarConta(conta);
 
-            emitirAlerta("Débito cadastrado com sucesso", AlertType.INFORMATION);
+            emitirAlerta("Movimentação cadastrada com sucesso", AlertType.INFORMATION);
             
             Stage stage = (Stage) painelFundo.getScene().getWindow();
             stage.close();

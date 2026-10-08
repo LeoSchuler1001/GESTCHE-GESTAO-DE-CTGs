@@ -29,6 +29,8 @@ public class CategoriaDAO {
         try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, categoria.getNomeCategoria());
 
+            stmt.executeUpdate();
+
             //atribui o ID gerado pelo SERIAL de volta ao objeto categoria
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
@@ -122,6 +124,24 @@ public class CategoriaDAO {
             stmt.setInt(1, categoria.getIdCategoria());
             stmt.executeUpdate();
         }
+    }
+
+    public boolean categoriaPossuiMovimentacao(int idCategoria) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM movimentacao WHERE fk_idCategoria = ?)";
+        
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, idCategoria);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean(1);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao verificar movimentações da categoria: " + e.getMessage(), e);
+        }
+        
+        return false;
     }
 
     //método auxiliar, que vai montar o objeto categoria após a consulta sql
