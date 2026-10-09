@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import app.App;
 import dao.ConexaoBanco;
 import dao.DebitoDAO;
 import dao.DepartamentoDAO;
@@ -199,17 +201,30 @@ public class VerDadosSocioController {
     @FXML
     void detalharDependenteAction(ActionEvent event) throws SQLException, IOException {
         dependenteSelecionado = dependenteDAO.buscarPorNome(campoDependentesSocio.getSelectionModel().getSelectedItem());
-
+        Parent root;
         //verifica se um dependente foi selecionado
         if (dependenteSelecionado != null) {
-            //abre a tela de exibição dos dados do dependente
-            //carregamento do fxml
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaDetalheDependente.fxml"));
-            Parent root = fxmlLoader.load();
+            //verifica se o uauário é um secretário ou tesoureiro
+            if(App.usuarioLogado.getCargoUsuario().equals("Secretário")) {
+                //abre a tela de exibição dos dados do dependente
+                //carregamento do fxml
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaDetalheDependente.fxml"));
+                root = fxmlLoader.load();
+    
+                //obtem o controller da tela de alteração
+                DetalheDependenteController controller = fxmlLoader.getController();
+                controller.carregarDadosEmSegundoPlano(dependenteSelecionado);
+            } else {
+                //abre a tela de exibição dos dados do dependente
+                //carregamento do fxml
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaDetalheDependenteTesoureiro.fxml"));
+                root = fxmlLoader.load();
+    
+                //obtem o controller da tela de alteração
+                DetalheDependenteTesoureiroController controller = fxmlLoader.getController();
+                controller.carregarDadosEmSegundoPlano(dependenteSelecionado);
+            }
 
-            //obtem o controller da tela de alteração
-            DetalheDependenteController controller = fxmlLoader.getController();
-            controller.carregarDadosEmSegundoPlano(dependenteSelecionado);
             
             //cria e exibe a tela de alteração
             Stage telaExibicao = new Stage();
