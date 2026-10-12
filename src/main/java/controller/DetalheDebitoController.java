@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.NumberFormat;
@@ -16,6 +17,9 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -24,6 +28,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import model.Debito;
@@ -145,7 +150,7 @@ public class DetalheDebitoController {
     }
 
     @FXML
-    void registrarPagamentoAction(ActionEvent event) throws SQLException {
+    void registrarPagamentoAction(ActionEvent event) throws SQLException, IOException {
         //verifica se já não foi passado para a tesouraria
         if(recebimento_pendenteDAO.debitoPossuiRecebimentoPendente(debitoSelecionado.getIdDebito())) {
             emitirAlerta("Este débito já possui um registo de pagamento.", AlertType.ERROR);
@@ -153,7 +158,37 @@ public class DetalheDebitoController {
         }
         
         if(App.usuarioLogado.getCargoUsuario().equals("Tesoureiro")) {
-            
+            //verifica se um debito foi selecionado
+            if (debitoSelecionado != null) {
+                //abre a tela de exibição dos dados do debito
+                //carregamento do fxml
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaRecebimentoDebito.fxml"));
+                Parent root = fxmlLoader.load();
+
+                //obtem o controller da tela de alteração
+                RecebimentoDebitoController controller = fxmlLoader.getController();
+                controller.carregarDadosEmSegundoPlano(debitoSelecionado, socioSelecionado);
+                
+                //cria e exibe a tela de alteração
+                Stage telaExibicao = new Stage();
+                telaExibicao.setTitle("Cadastro de recebimento");
+                telaExibicao.setScene(new Scene(root));
+
+                //proibe que o usuario possa alterar o tamanho da tela
+                telaExibicao.setResizable(false);
+
+                //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+                telaExibicao.initModality(Modality.WINDOW_MODAL);
+                telaExibicao.initOwner(campoTipoDebito.getScene().getWindow());
+
+                //abre a tela e aguarda o usuário fechar
+                telaExibicao.showAndWait();
+
+                emitirAlerta("Pagamento registrado.", AlertType.INFORMATION);
+
+                Stage stage = (Stage) painelFundo.getScene().getWindow();
+                stage.close();
+            }
         } else {
             if(recebimento_pendenteDAO.registrarPagamentoPendente(debitoSelecionado.getIdDebito(), App.usuarioLogado.getIdUsuario())) {
                 emitirAlerta("Pagamento aguardando confirmação da tesouraria!", AlertType.INFORMATION);
@@ -247,7 +282,7 @@ public class DetalheDebitoController {
 
     //preenche os dados nos labels
     private void buscarDadosDebito() throws SQLException {
-        //preenche os campos com os dados do departamento
+        //preenche os campos com os dados do debito
         campoTipoDebito.setText(debitoSelecionado.getTipoDebito());
 
         //preenche o campo do valor do débito

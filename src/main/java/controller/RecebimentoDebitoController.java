@@ -14,9 +14,11 @@ import app.App;
 import dao.CategoriaDAO;
 import dao.ConexaoBanco;
 import dao.ContaDAO;
+import dao.DebitoDAO;
 import dao.MovimentacaoDAO;
 import enums.TiposMovimentacoes;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -34,6 +36,7 @@ import model.Categoria;
 import model.Conta;
 import model.Debito;
 import model.Movimentacao;
+import model.Socio;
 
 public class RecebimentoDebitoController {
     //ATRIBUTOS
@@ -44,7 +47,9 @@ public class RecebimentoDebitoController {
     MovimentacaoDAO movimentacaoDAO = new MovimentacaoDAO(conexaoBanco);
     CategoriaDAO categoriaDAO = new CategoriaDAO(conexaoBanco);
     ContaDAO contaDAO = new ContaDAO(conexaoBanco);
+    DebitoDAO debitoDAO = new DebitoDAO(conexaoBanco);
     Debito debitoSelecionado;
+    Socio sociioSelecionado;
 
     @FXML
     private Button botaoFechar;
@@ -124,8 +129,14 @@ public class RecebimentoDebitoController {
             Conta conta = contaDAO.buscarPorNome(campoContaMovimentacao.getValue());
             movimentacao.setConta(conta);
 
+            //registra a data de pagamento do debito
+            debitoSelecionado.setDtPgmtDebito(Date.valueOf(campoDataMovimentacao.getValue()));
+
             //cadastra a movimentação
             movimentacaoDAO.cadastrarMovimentacao(movimentacao);
+
+            //atualiza o debito para ser registrado como pago
+            debitoDAO.atualizarDebito(debitoSelecionado);
 
             //atualiza o saldo da conta
             if(tipoMovimentacao.equals("Receita")) {
@@ -190,10 +201,42 @@ public class RecebimentoDebitoController {
         campoCategoriaMovimentacao.getItems().setAll(nomeCategorias);
     }
 
-    public void carregarDadosEmSegundoPlano(Debito debitoSelecionado) {
+    public void carregarDadosEmSegundoPlano(Debito debitoSelecionado, Socio socioSelecionado) {
         this.debitoSelecionado = debitoSelecionado;
+        this.sociioSelecionado = socioSelecionado;
 
-        
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                buscarDadosDebito();
+                return null;
+            }
+        };
+
+        //mostra um aviso caso os dados não possam ser carregados
+        task.setOnFailed(e -> {
+            Throwable ex = task.getException();
+            ex.printStackTrace();
+            Platform.runLater(() -> emitirAlerta("Erro ao carregar os dados.", AlertType.ERROR));
+        });
+
+        new Thread(task).start(); 
+    }
+
+    //preenche os dados nos labels
+    private void buscarDadosDebito() throws SQLException {
+        //preenche os campos com os dados do departamento
+        String textoDebito = debitoSelecionado.getTipoDebito();
+        textoDebito = textoDebito.replace(" (Aguardando confirmação)", "");
+        textoDebito = textoDebito + " - " + sociioSelecionado.getNomeSocio();
+        campoDescricaoMovimentacao.setText(textoDebito);
+
+        //preenche o campo do valor do débito
+        Double valorDebito = debitoSelecionado.getValorDebito();
+        String valor = formatoMoeda.format(valorDebito);
+        campoValorMovimentacao.setText(valor);
+
+        campoTipoMovimentacao.setValue(TiposMovimentacoes.Receita);
     }
     
     public boolean verificaFormulario() {
