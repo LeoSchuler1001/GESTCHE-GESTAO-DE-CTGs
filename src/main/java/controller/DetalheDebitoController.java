@@ -10,6 +10,7 @@ import java.util.Optional;
 import dao.DebitoDAO;
 import dao.ConexaoBanco;
 import dao.LogAuditoriaDAO;
+import dao.Recebimento_pendenteDAO;
 import app.App;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -39,6 +40,7 @@ public class DetalheDebitoController {
     ConexaoBanco conexaoBanco = new ConexaoBanco();
     DebitoDAO debitoDAO = new DebitoDAO(conexaoBanco);
     LogAuditoriaDAO logAuditoriaDAO = new LogAuditoriaDAO(conexaoBanco);
+    Recebimento_pendenteDAO recebimento_pendenteDAO = new Recebimento_pendenteDAO(conexaoBanco);
 
     @FXML
     private Button botaoAlterar;
@@ -67,6 +69,12 @@ public class DetalheDebitoController {
     //BOTÕES
     @FXML
     void alterarAction(ActionEvent event) throws SQLException {
+        //verifica se já não foi passado para a resouraria
+        if(recebimento_pendenteDAO.debitoPossuiRecebimentoPendente(debitoSelecionado.getIdDebito())) {
+            emitirAlerta("Este débito não pode mais ser alterado, pois está aguardando uma confirmação de recebimento da tesouraria", AlertType.ERROR);
+            return;
+        }
+
         if(!verificaFormulario()) { return; }
         
         //faz a confirmação com o usuário
@@ -105,6 +113,12 @@ public class DetalheDebitoController {
     
     @FXML
     void excluirDebitoAction(ActionEvent event) throws SQLException {
+        //verifica se já não foi passado para a resouraria
+        if(recebimento_pendenteDAO.debitoPossuiRecebimentoPendente(debitoSelecionado.getIdDebito())) {
+            emitirAlerta("Este débito não pode mais ser excluído, pois está aguardando uma confirmação de recebimento da tesouraria", AlertType.ERROR);
+            return;
+        }
+
         //faz a confirmação com o usuário
         boolean confirmaExclusao = emitirAlertaConfirmacao("Deseja realmente excluir?", AlertType.CONFIRMATION);
 
@@ -131,8 +145,31 @@ public class DetalheDebitoController {
     }
 
     @FXML
-    void registrarPagamentoAction(ActionEvent event) {
+    void registrarPagamentoAction(ActionEvent event) throws SQLException {
+        //verifica se já não foi passado para a resouraria
+        if(recebimento_pendenteDAO.debitoPossuiRecebimentoPendente(debitoSelecionado.getIdDebito())) {
+            emitirAlerta("Este débito já possui um registo de pagamento.", AlertType.ERROR);
+            return;
+        }
+        
+        if(App.usuarioLogado.getCargoUsuario().equals("Tesoureiro")) {
+            
+        } else {
+            if(recebimento_pendenteDAO.registrarPagamentoPendente(debitoSelecionado.getIdDebito(), App.usuarioLogado.getIdUsuario())) {
+                emitirAlerta("Pagamento aguardando confirmação da tesouraria!", AlertType.INFORMATION);
 
+                debitoSelecionado.setTipoDebito(debitoSelecionado.getTipoDebito() + " (Aguardando confirmação)");
+                debitoDAO.atualizarDebito(debitoSelecionado);
+
+                Stage stage = (Stage) painelFundo.getScene().getWindow();
+                stage.close();
+            } else {
+                emitirAlerta("Erro no registro do pagamento! Tente novamente mais tarde.", AlertType.ERROR);
+
+                Stage stage = (Stage) painelFundo.getScene().getWindow();
+                stage.close();
+            }
+        }
     }
     
     //FUNÇÕES

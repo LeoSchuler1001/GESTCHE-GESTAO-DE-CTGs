@@ -101,6 +101,28 @@ CREATE TABLE debito(
     CONSTRAINT fk_debito_socio FOREIGN KEY(fk_idSocio) REFERENCES socio(pk_idSocio) ON DELETE SET NULL
 );
 
+CREATE TABLE recebimento_pendente (
+    pk_idRecebimento SERIAL PRIMARY KEY,
+    dataRecebimento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dataConfirmacao TIMESTAMP,
+    statusRecebimento VARCHAR(20) NOT NULL DEFAULT 'PENDENTE',
+    fk_idDebito INT NOT NULL,
+    fk_idSecretario INT NOT NULL,              
+    fk_idTesoureiro INT, 
+    fk_idConta INT, 
+    fk_idCategoria INT,
+    fk_idMovimentacao INT, 
+
+    CONSTRAINT fk_rec_debito FOREIGN KEY(fk_idDebito) REFERENCES debito(pk_idDebito) ON DELETE CASCADE,
+    CONSTRAINT fk_rec_secretario FOREIGN KEY(fk_idSecretario) REFERENCES usuario(pk_idUsuario) ON DELETE RESTRICT,
+    CONSTRAINT fk_rec_tesoureiro FOREIGN KEY(fk_idTesoureiro) REFERENCES usuario(pk_idUsuario) ON DELETE SET NULL,
+    CONSTRAINT fk_rec_conta FOREIGN KEY(fk_idConta) REFERENCES conta(pk_idConta) ON DELETE SET NULL,
+    CONSTRAINT fk_rec_categoria FOREIGN KEY(fk_idCategoria) REFERENCES categoria(pk_idCategoria) ON DELETE SET NULL,
+    CONSTRAINT fk_rec_movimentacao FOREIGN KEY(fk_idMovimentacao) REFERENCES movimentacao(pk_idMovimentacao) ON DELETE SET NULL,
+    
+    CONSTRAINT status_recebimento_ck CHECK (statusRecebimento IN ('PENDENTE', 'CONFIRMADO', 'REJEITADO'))
+);
+
 CREATE TABLE conta(
     pk_idConta SERIAL PRIMARY KEY,
     saldo NUMERIC(10,2) NOT NULL DEFAULT 0.00,
