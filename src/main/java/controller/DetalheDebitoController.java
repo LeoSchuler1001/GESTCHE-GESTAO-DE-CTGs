@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Optional;
@@ -74,38 +75,105 @@ public class DetalheDebitoController {
     //BOTÕES
     @FXML
     void alterarAction(ActionEvent event) throws SQLException {
-        //verifica se já não foi passado para a resouraria
-        if(recebimento_pendenteDAO.debitoPossuiRecebimentoPendente(debitoSelecionado.getIdDebito())) {
+        //verifica se já não foi passado para a tesouraria
+        if (recebimento_pendenteDAO.debitoPossuiRecebimentoPendente(debitoSelecionado.getIdDebito())) {
             emitirAlerta("Este débito não pode mais ser alterado, pois está aguardando uma confirmação de recebimento da tesouraria", AlertType.ERROR);
             return;
         }
 
-        if(!verificaFormulario()) { return; }
+        if (!verificaFormulario()) { return; }
         
         //faz a confirmação com o usuário
         boolean confirmaAlteracao = emitirAlertaConfirmacao("Deseja realmente alterar?", AlertType.CONFIRMATION);
 
-        if(confirmaAlteracao) {
-            //altera as informações no objeto debito
-            debitoSelecionado.setTipoDebito(campoTipoDebito.getText());
+        if (confirmaAlteracao) {
+            //salva os valores antigos para criar um log de auditoria
+            String tipoAntigo = debitoSelecionado.getTipoDebito();
+            double valorAntigo = debitoSelecionado.getValorDebito();
+            LocalDate vencimentoAntigo = debitoSelecionado.getVencimentoDebito().toLocalDate();
 
-            //altera o valor do débito
+            //altera as informações no objeto debito
+            String novoTipo = campoTipoDebito.getText();
+            debitoSelecionado.setTipoDebito(novoTipo);
+
+            //ajusta a string digitada para salvar em um double
             String valorDigitado = campoValorDebito.getText();
-            //ajusta a string para salvar em um double
             String valorPuro = valorDigitado.replaceAll("[^0-9.,]", "");
             valorPuro = valorPuro.replace(",", ".");
-            //converte para double
-            debitoSelecionado.setValorDebito(Double.parseDouble(valorPuro));
+            
+            double novoValor;
             try {
-                debitoSelecionado.setValorDebito(Double.parseDouble(valorPuro));
+                novoValor = Double.parseDouble(valorPuro);
+                debitoSelecionado.setValorDebito(novoValor);
             } catch (NumberFormatException e) {
                 emitirAlerta("O campo valor está incorreto!", AlertType.ERROR);
                 return;
             }
 
-            debitoSelecionado.setVencimentoDebito(Date.valueOf(campoVencimentoDebito.getValue()));
+            LocalDate novoVencimento = campoVencimentoDebito.getValue();
+            debitoSelecionado.setVencimentoDebito(Date.valueOf(novoVencimento));
             
+            //atualiza o débito no banco de dados
             debitoDAO.atualizarDebito(debitoSelecionado);
+            
+            boolean houveMudanca = false;
+
+            if (!tipoAntigo.equals(novoTipo)) {
+                //constroi a string do log de auditoria
+                StringBuilder descricaoLog = new StringBuilder();
+                descricaoLog.append("Alteração no débito do sócio ").append(debitoSelecionado.getSocio().getNomeSocio()).append(". ");
+                descricaoLog.append("Descrição: mudou de ").append(tipoAntigo).append(" para ").append(novoTipo.trim()).append(". ");
+                houveMudanca = true;
+
+                //verifica se houve alguma mudança na alteração
+                if (houveMudanca) {
+                    LogAuditoria log = new LogAuditoria();
+                    log.setDescricaoLog(descricaoLog.toString());
+                    log.setDataHoraLog(LocalDateTime.now());
+                    log.setUsuario(App.usuarioLogado);
+                    log.setNomeUsuario(App.usuarioLogado.getNomeUsuario());
+                    
+                    logAuditoriaDAO.cadastrarLog(log, App.usuarioLogado);
+                }
+            }
+
+            if (valorAntigo != novoValor) {
+                //constroi a string do log de auditoria
+                StringBuilder descricaoLog = new StringBuilder();
+                descricaoLog.append("Alteração no débito do sócio ").append(debitoSelecionado.getSocio().getNomeSocio()).append(". ");
+                descricaoLog.append("Valor: mudou de ").append(valorAntigo).append(" para ").append(novoValor).append(". ");
+                houveMudanca = true;
+
+                //verifica se houve alguma mudança na alteração
+                if (houveMudanca) {
+                    LogAuditoria log = new LogAuditoria();
+                    log.setDescricaoLog(descricaoLog.toString());
+                    log.setDataHoraLog(LocalDateTime.now());
+                    log.setUsuario(App.usuarioLogado);
+                    log.setNomeUsuario(App.usuarioLogado.getNomeUsuario());
+                    
+                    logAuditoriaDAO.cadastrarLog(log, App.usuarioLogado);
+                }
+            }
+
+            if (!vencimentoAntigo.equals(novoVencimento)) {
+                //constroi a string do log de auditoria
+                StringBuilder descricaoLog = new StringBuilder();
+                descricaoLog.append("Alteração no débito do sócio ").append(debitoSelecionado.getSocio().getNomeSocio()).append(". ");
+                descricaoLog.append("Vencimento: mudou de ").append(vencimentoAntigo).append(" para ").append(novoVencimento).append(". ");
+                houveMudanca = true;
+
+                //verifica se houve alguma mudança na alteração
+                if (houveMudanca) {
+                    LogAuditoria log = new LogAuditoria();
+                    log.setDescricaoLog(descricaoLog.toString());
+                    log.setDataHoraLog(LocalDateTime.now());
+                    log.setUsuario(App.usuarioLogado);
+                    log.setNomeUsuario(App.usuarioLogado.getNomeUsuario());
+                    
+                    logAuditoriaDAO.cadastrarLog(log, App.usuarioLogado);
+                }
+            }
 
             emitirAlerta("Débito alterado com sucesso", AlertType.INFORMATION);
             

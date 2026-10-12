@@ -173,8 +173,8 @@
               <columns>
                 <TableColumn fx:id="dataLog" maxWidth="80.0" minWidth="80.0" text="Data" />
                 <TableColumn fx:id="horaLog" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" text="Hora" />
-                  <TableColumn fx:id="descricaoLog" maxWidth="620.0" minWidth="620.0" prefWidth="620.0" text="Descrição" />
-                  <TableColumn fx:id="usuarioLog" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" text="Usuário" />
+                  <TableColumn fx:id="descricaoLog" maxWidth="640.0" minWidth="640.0" prefWidth="640.0" text="Descrição" />
+                  <TableColumn fx:id="usuarioLog" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="Usuário" />
               </columns>
                <VBox.margin>
                   <Insets top="20.0" />
