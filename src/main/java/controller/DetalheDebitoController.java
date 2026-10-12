@@ -146,7 +146,7 @@ public class DetalheDebitoController {
 
     @FXML
     void registrarPagamentoAction(ActionEvent event) throws SQLException {
-        //verifica se já não foi passado para a resouraria
+        //verifica se já não foi passado para a tesouraria
         if(recebimento_pendenteDAO.debitoPossuiRecebimentoPendente(debitoSelecionado.getIdDebito())) {
             emitirAlerta("Este débito já possui um registo de pagamento.", AlertType.ERROR);
             return;
