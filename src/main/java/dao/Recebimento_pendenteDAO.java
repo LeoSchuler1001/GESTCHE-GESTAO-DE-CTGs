@@ -1,8 +1,11 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,5 +111,38 @@ public class Recebimento_pendenteDAO {
         }
 
         return listaPendentes;
+    }
+
+    public boolean atualizarStatusRecebimento(int idRecebimento, String novoStatus, int idTesoureiro, Integer idMovimentacao) {
+        String sql = "UPDATE recebimento_pendente " +
+                     "SET statusRecebimento = ?, " +
+                     "    fk_idTesoureiro = ?, " +
+                     "    dataConfirmacao = ?, " +
+                     "    fk_idMovimentacao = ? " +
+                     "WHERE pk_idRecebimento = ?";
+
+        try (PreparedStatement pstmt = conexao.getConexao().prepareStatement(sql)) {
+            
+            pstmt.setString(1, novoStatus);
+            pstmt.setInt(2, idTesoureiro);
+            pstmt.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+            
+            //se o pagamento for rejeitado, a movimentação vai ser nula
+            if (idMovimentacao != null) {
+                pstmt.setInt(4, idMovimentacao);
+            } else {
+                pstmt.setNull(4, java.sql.Types.INTEGER);
+            }
+            
+            pstmt.setInt(5, idRecebimento);
+
+            int linhasAfetadas = pstmt.executeUpdate();
+            return linhasAfetadas > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao atualizar status do recebimento pendente: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 }

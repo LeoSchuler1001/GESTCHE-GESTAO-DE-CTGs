@@ -11,15 +11,18 @@ import java.util.List;
 import java.util.Optional;
 import app.App;
 import dao.ConexaoBanco;
+import dao.DebitoDAO;
 import dao.LembreteDAO;
 import dao.Recebimento_pendenteDAO;
 import dao.SocioDAO;
+import enums.StatusRecebimentos;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import model.Debito;
 import model.Lembrete;
 import model.dto.RecebimentoPendenteDTO;
 import model.dto.SocioResumoDTO;
@@ -42,6 +45,7 @@ public class TelaDebitosSociosController {
     LembreteDAO lembreteDAO = new LembreteDAO(conexao);
     SocioDAO socioDAO = new SocioDAO(conexao);
     Recebimento_pendenteDAO recebimento_pendenteDAO = new Recebimento_pendenteDAO(conexao);
+    DebitoDAO debitoDAO = new DebitoDAO(conexao);
     
     @FXML
     private Button botaoAprovar;
@@ -168,8 +172,43 @@ public class TelaDebitosSociosController {
     }
 
     @FXML
-    void recusarAction(ActionEvent event) {
-        
+    void recusarAction(ActionEvent event) throws SQLException {
+        //verifica qual foi o recebimento selecionado
+        RecebimentoPendenteDTO recebimentoSelecionado = tabelaAguardandoAprovacao.getSelectionModel().getSelectedItem();
+
+        //verifica se um recebimento foi selecionado
+        if (recebimentoSelecionado != null) {
+            //pega o id do recebimento
+            int idRecebimento = recebimentoSelecionado.getIdRecebimento();
+            
+            //busca o débito que está ligado a essa movimentação
+            Debito debitoSelecionado = debitoDAO.buscarPorId(recebimentoSelecionado.getIdDebito());
+
+            //confirma com o usuário
+            Boolean confirmacao = emitirAlertaConfirmacao("Deseja realmente recusar?", AlertType.CONFIRMATION);
+
+            if(confirmacao) {
+                boolean recusa = recebimento_pendenteDAO.atualizarStatusRecebimento(idRecebimento, StatusRecebimentos.REJEITADO.name(), App.usuarioLogado.getIdUsuario(), null);
+                
+                if(recusa) {
+                    //atualiza o tipo do débito para tirar a informação de aguardando confirmação
+                    String tipo = debitoSelecionado.getTipoDebito();
+                    tipo = tipo.replace(" (Aguardando confirmação)", "").trim();
+                    debitoSelecionado.setTipoDebito(tipo);
+
+                    debitoDAO.atualizarDebito(debitoSelecionado);
+
+                    emitirAlerta("Movimentação recusada com sucesso.", AlertType.INFORMATION);
+                } else {
+                    emitirAlerta("Erro! Tente novamente mais tarde.", AlertType.ERROR);
+                }
+            }
+
+            carregarDadosSegundoPlano();
+        } else {
+            emitirAlerta("Selecione um recebimento.", AlertType.ERROR);
+            return;
+        }
     }
 
     @FXML
@@ -399,5 +438,17 @@ public class TelaDebitosSociosController {
         ProgressIndicator indicador = new ProgressIndicator();
         indicador.setMaxSize(40, 40);
         return indicador;
+    }
+
+    private boolean emitirAlertaConfirmacao(String mensagem, AlertType tipoAlerta) {
+        Alert alerta = new Alert(tipoAlerta);
+        alerta.setTitle("Confirmação");
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensagem);
+
+        Optional<ButtonType> resultado = alerta.showAndWait();
+
+        // Verifica se o usuário clicou no botão OK
+        return resultado.isPresent() && resultado.get() == ButtonType.OK;
     }
 }
