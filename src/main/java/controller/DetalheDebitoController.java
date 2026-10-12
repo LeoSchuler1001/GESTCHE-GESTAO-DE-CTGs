@@ -153,7 +153,7 @@ public class DetalheDebitoController {
     void registrarPagamentoAction(ActionEvent event) throws SQLException, IOException {
         //verifica se já não foi passado para a tesouraria
         if(recebimento_pendenteDAO.debitoPossuiRecebimentoPendente(debitoSelecionado.getIdDebito())) {
-            emitirAlerta("Este débito já possui um registo de pagamento.", AlertType.ERROR);
+            emitirAlerta("Este débito já possui um registo de pagamento que está aguardando a aprovação da tesouraria.", AlertType.ERROR);
             return;
         }
         

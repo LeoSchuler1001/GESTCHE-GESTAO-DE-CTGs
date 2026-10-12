@@ -212,10 +212,11 @@
             </Label>
             <TableView fx:id="tabelaAguardandoAprovacao" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="900.0">
               <columns>
-                <TableColumn fx:id="colunaSocio" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" text="SÓCIO" />
-                <TableColumn fx:id="colunaDescricao" maxWidth="320.0" minWidth="320.0" prefWidth="320.0" text="DESCRIÇÃO" />
-                  <TableColumn fx:id="colunaData" maxWidth="80.0" minWidth="80.0" text="DATA" />
-                  <TableColumn fx:id="colunaResponsavel" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="RESPONSÁVEL" />
+                <TableColumn fx:id="colunaSocio" maxWidth="260.0" minWidth="260.0" prefWidth="260.0" text="SÓCIO" />
+                <TableColumn fx:id="colunaDescricao" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" text="DESCRIÇÃO" />
+                  <TableColumn fx:id="colunaValor" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="VALOR" />
+                  <TableColumn fx:id="colunaData" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" text="DATA" />
+                  <TableColumn fx:id="colunaResponsavel" maxWidth="180.0" minWidth="180.0" prefWidth="180.0" text="RESPONSÁVEL" />
               </columns>
             </TableView>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">

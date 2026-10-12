@@ -12,6 +12,7 @@ import java.util.Optional;
 import app.App;
 import dao.ConexaoBanco;
 import dao.LembreteDAO;
+import dao.Recebimento_pendenteDAO;
 import dao.SocioDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import model.Lembrete;
+import model.dto.RecebimentoPendenteDTO;
 import model.dto.SocioResumoDTO;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -39,6 +41,7 @@ public class TelaDebitosSociosController {
     ConexaoBanco conexao = new ConexaoBanco();
     LembreteDAO lembreteDAO = new LembreteDAO(conexao);
     SocioDAO socioDAO = new SocioDAO(conexao);
+    Recebimento_pendenteDAO recebimento_pendenteDAO = new Recebimento_pendenteDAO(conexao);
     
     @FXML
     private Button botaoAprovar;
@@ -53,7 +56,10 @@ public class TelaDebitosSociosController {
     private Button botaoVerDados;
 
     @FXML
-    private TableColumn<?, ?> colunaData;
+    private TableColumn<RecebimentoPendenteDTO, String> colunaData;
+
+    @FXML
+    private TableColumn<RecebimentoPendenteDTO, String> colunaValor;
 
     @FXML
     private TableColumn<SocioResumoDTO, String> colunaDepartamento;
@@ -62,26 +68,26 @@ public class TelaDebitosSociosController {
     private TableColumn<SocioResumoDTO, String> colunaDependentes;
 
     @FXML
-    private TableColumn<?, ?> colunaDescricao;
+    private TableColumn<RecebimentoPendenteDTO, String> colunaDescricao;
 
     @FXML
     private TableColumn<SocioResumoDTO, String> colunaNomeSocio;
 
     @FXML
-    private TableColumn<?, ?> colunaResponsavel;
+    private TableColumn<RecebimentoPendenteDTO, String> colunaResponsavel;
 
     @FXML
     private TableColumn<SocioResumoDTO, String> colunaSituacao;
 
     @FXML
-    private TableColumn<?, ?> colunaSocio;
+    private TableColumn<RecebimentoPendenteDTO, String> colunaSocio;
 
     
     @FXML
     private TableView<SocioResumoDTO> tabelaResumoSocios;
 
     @FXML
-    private TableView<?> tabelaAguardandoAprovacao;
+    private TableView<RecebimentoPendenteDTO> tabelaAguardandoAprovacao;
 
     @FXML
     private Hyperlink linkCategorias;
@@ -163,7 +169,7 @@ public class TelaDebitosSociosController {
 
     @FXML
     void recusarAction(ActionEvent event) {
-
+        
     }
 
     @FXML
@@ -290,6 +296,34 @@ public class TelaDebitosSociosController {
             return new SimpleStringProperty(formatado);
         });
 
+        this.colunaSocio.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getNomeSocio())
+        );
+
+        this.colunaDescricao.setCellValueFactory(cellData -> {
+            String tipo = cellData.getValue().getTipoDebito();
+            
+            if (tipo != null) {
+                tipo = tipo.replace(" (Aguardando confirmação)", "").trim();
+            }
+            
+            return new SimpleStringProperty(tipo);
+        });
+
+        this.colunaValor.setCellValueFactory(cellData -> {
+            double valor = cellData.getValue().getValorDebito();
+            String formatado = String.format("R$ %.2f", valor);
+            return new SimpleStringProperty(formatado);
+        });
+
+        this.colunaData.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getDataRecebimentoFormatada())
+        );
+
+        this.colunaResponsavel.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getNomeSecretario())
+        );
+
         carregarDadosSegundoPlano();
     }
     
@@ -297,10 +331,12 @@ public class TelaDebitosSociosController {
     private void carregarDadosSegundoPlano() {
         tabelaLembretes.getItems().clear();
         tabelaResumoSocios.getItems().clear();
+        tabelaAguardandoAprovacao.getItems().clear();
 
         //coloca os ícones de carregamento nas tabelas enquanto os dados não são carregados
         tabelaLembretes.setPlaceholder(criarIndicator());
         tabelaResumoSocios.setPlaceholder(criarIndicator());
+        tabelaAguardandoAprovacao.setPlaceholder(criarIndicator());
 
         //cria uma tarefa que irá carregar os dados em segundo plano
         Task<Void> task = new Task<>() {
@@ -309,11 +345,13 @@ public class TelaDebitosSociosController {
                 //cria as listas que irão armazenar os dados para preencher as tabelas
                 List<SocioResumoDTO> listalistaResumoSocios = socioDAO.listarResumoSocios();
                 List<Lembrete> listaLembretesHoje = lembreteDAO.listarLembretesHoje(App.usuarioLogado.getIdUsuario());
+                List<RecebimentoPendenteDTO> listaPendenteAprovacao = recebimento_pendenteDAO.listarPendentes();
 
                 // Atualiza as tabelas e os mostradores
                 Platform.runLater(() -> {
                     tabelaResumoSocios.setItems(FXCollections.observableArrayList(listalistaResumoSocios));
                     tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretesHoje));
+                    tabelaAguardandoAprovacao.setItems(FXCollections.observableArrayList(listaPendenteAprovacao));
 
                     if (listaLembretesHoje.isEmpty()) {
                         tabelaLembretes.setPlaceholder(new javafx.scene.control.Label("Sem lembretes."));
@@ -321,6 +359,10 @@ public class TelaDebitosSociosController {
 
                     if (listalistaResumoSocios.isEmpty()) {
                         tabelaResumoSocios.setPlaceholder(new javafx.scene.control.Label("Sem sócios cadastrados."));
+                    }
+
+                    if (listaPendenteAprovacao.isEmpty()) {
+                        tabelaAguardandoAprovacao.setPlaceholder(new javafx.scene.control.Label("Sem recebimentos pendentes de aprovação."));
                     }
                 });
 

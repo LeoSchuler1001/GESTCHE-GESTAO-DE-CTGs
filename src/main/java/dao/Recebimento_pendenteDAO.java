@@ -3,6 +3,10 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import model.dto.RecebimentoPendenteDTO;
 
 public class Recebimento_pendenteDAO {
     //ATRIBUTOS
@@ -56,5 +60,53 @@ public class Recebimento_pendenteDAO {
         }
 
         return false; 
+    }
+
+    public List<RecebimentoPendenteDTO> listarPendentes() {
+        String sql = "SELECT rp.pk_idrecebimento, rp.datarecebimento, rp.statusrecebimento, " +
+                    "       d.pk_iddebito, d.tipodebito, d.valordebito, d.vencimentodebito, " +
+                    "       u.pk_idusuario, u.nomeusuario, " +
+                    "       s.nomesocio " +
+                    "FROM recebimento_pendente rp " +
+                    "JOIN debito d ON rp.fk_iddebito = d.pk_iddebito " +
+                    "JOIN usuario u ON rp.fk_idsecretario = u.pk_idusuario " +
+                    "JOIN socio s ON d.fk_idSocio = s.pk_idsocio " +
+                    "WHERE rp.statusrecebimento = 'PENDENTE' " +
+                    "ORDER BY rp.datarecebimento ASC";
+
+        List<RecebimentoPendenteDTO> listaPendentes = new ArrayList<>();
+
+        try (PreparedStatement pstmt = conexao.getConexao().prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                RecebimentoPendenteDTO dto = new RecebimentoPendenteDTO();
+                
+                dto.setIdRecebimento(rs.getInt("pk_idrecebimento"));
+                dto.setDataRecebimento(rs.getTimestamp("datarecebimento").toLocalDateTime());
+                dto.setStatusRecebimento(rs.getString("statusrecebimento"));
+                dto.setIdDebito(rs.getInt("pk_iddebito"));
+                dto.setTipoDebito(rs.getString("tipodebito"));
+                dto.setValorDebito(rs.getDouble("valordebito"));
+                
+                if (rs.getDate("vencimentodebito") != null) {
+                    dto.setVencimentoDebito(rs.getDate("vencimentodebito").toLocalDate());
+                }
+                
+                dto.setIdSecretario(rs.getInt("pk_idusuario"));
+                dto.setNomeSecretario(rs.getString("nomeusuario"));
+                
+                // Atribuindo o nome do sócio recuperado do banco
+                dto.setNomeSocio(rs.getString("nomesocio"));
+
+                listaPendentes.add(dto);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar pagamentos pendentes com sócio: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return listaPendentes;
     }
 }
