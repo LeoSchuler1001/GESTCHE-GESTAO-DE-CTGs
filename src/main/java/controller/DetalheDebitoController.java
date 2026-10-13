@@ -199,7 +199,7 @@ public class DetalheDebitoController {
             debitoDAO.excluirDebito(debitoSelecionado);
             
             //cadastra um log de auditoria no banco de dados
-            String descricaoLog = "Exlusão do debito " + debitoSelecionado.getTipoDebito() + ", do sócio: " + socioSelecionado.getNomeSocio();
+            String descricaoLog = "Exclusão do debito " + debitoSelecionado.getTipoDebito() + ", do sócio: " + socioSelecionado.getNomeSocio();
             LogAuditoria logAuditoria = new LogAuditoria(descricaoLog, App.usuarioLogado, App.usuarioLogado.getNomeUsuario());
             logAuditoriaDAO.cadastrarLog(logAuditoria, App.usuarioLogado);
 
@@ -235,7 +235,7 @@ public class DetalheDebitoController {
 
                 //obtem o controller da tela de alteração
                 RecebimentoDebitoController controller = fxmlLoader.getController();
-                controller.carregarDadosEmSegundoPlano(debitoSelecionado, socioSelecionado);
+                controller.carregarDadosEmSegundoPlano(debitoSelecionado, socioSelecionado, null);
                 
                 //cria e exibe a tela de alteração
                 Stage telaExibicao = new Stage();

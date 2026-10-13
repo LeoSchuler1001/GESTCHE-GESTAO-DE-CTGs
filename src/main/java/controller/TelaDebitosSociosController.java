@@ -24,6 +24,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import model.Debito;
 import model.Lembrete;
+import model.Socio;
 import model.dto.RecebimentoPendenteDTO;
 import model.dto.SocioResumoDTO;
 import javafx.scene.control.Button;
@@ -125,8 +126,52 @@ public class TelaDebitosSociosController {
 
     //BOTÕES
     @FXML
-    void aprovarAction(ActionEvent event) {
+    void aprovarAction(ActionEvent event) throws SQLException, IOException {
+        //verifica qual foi o recebimento selecionado
+        RecebimentoPendenteDTO recebimentoSelecionado = tabelaAguardandoAprovacao.getSelectionModel().getSelectedItem();
 
+        //verifica se um recebimento foi selecionado
+        if (recebimentoSelecionado != null) {
+            //pega o id do recebimento
+            int idRecebimento = recebimentoSelecionado.getIdRecebimento();
+            
+            //busca o débito e o socio que está ligado a essa movimentação
+            Debito debitoSelecionado = debitoDAO.buscarPorId(recebimentoSelecionado.getIdDebito());
+            Socio socioSelecionado = socioDAO.buscarPorId(recebimentoSelecionado.getIdSocio());
+
+            //abre a tela de exibição de cadastro de movimentação
+            //carregamento do fxml
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaRecebimentoDebito.fxml"));
+            Parent root = fxmlLoader.load();
+
+            //obtem o controller da tela de alteração
+            RecebimentoDebitoController controller = fxmlLoader.getController();
+            controller.carregarDadosEmSegundoPlano(debitoSelecionado, socioSelecionado, recebimentoSelecionado);
+                
+            //cria e exibe a tela de alteração
+            Stage telaExibicao = new Stage();
+            telaExibicao.setTitle("Cadastro de recebimento");
+            telaExibicao.setScene(new Scene(root));
+
+            //proibe que o usuario possa alterar o tamanho da tela
+            telaExibicao.setResizable(false);
+
+            //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+            telaExibicao.initModality(Modality.WINDOW_MODAL);
+            telaExibicao.initOwner(tabelaAguardandoAprovacao.getScene().getWindow());
+
+            //abre a tela e aguarda o usuário fechar
+            telaExibicao.showAndWait();
+
+            recebimento_pendenteDAO.atualizarStatusRecebimento(idRecebimento, StatusRecebimentos.CONFIRMADO.name(), App.usuarioLogado.getIdUsuario(), recebimentoSelecionado.getIdMovimentacao());
+
+            emitirAlerta("Pagamento registrado.", AlertType.INFORMATION);          
+
+            carregarDadosSegundoPlano();
+        } else {
+            emitirAlerta("Selecione um recebimento.", AlertType.ERROR);
+            return;
+        }
     }
 
     @FXML

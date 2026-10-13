@@ -66,15 +66,16 @@ public class Recebimento_pendenteDAO {
 
     public List<RecebimentoPendenteDTO> listarPendentes() {
         String sql = "SELECT rp.pk_idrecebimento, rp.datarecebimento, rp.statusrecebimento, " +
-                    "       d.pk_iddebito, d.tipodebito, d.valordebito, d.vencimentodebito, " +
-                    "       u.pk_idusuario, u.nomeusuario, " +
-                    "       s.nomesocio " +
-                    "FROM recebimento_pendente rp " +
-                    "JOIN debito d ON rp.fk_iddebito = d.pk_iddebito " +
-                    "JOIN usuario u ON rp.fk_idsecretario = u.pk_idusuario " +
-                    "JOIN socio s ON d.fk_idSocio = s.pk_idsocio " +
-                    "WHERE rp.statusrecebimento = 'PENDENTE' " +
-                    "ORDER BY rp.datarecebimento ASC";
+                 "       d.pk_iddebito, d.tipodebito, d.valordebito, d.vencimentodebito, " +
+                 "       u.pk_idusuario, u.nomeusuario, " +
+                 "       s.nomesocio, " +
+                 "       s.pk_idsocio " + 
+                 "FROM recebimento_pendente rp " +
+                 "JOIN debito d ON rp.fk_iddebito = d.pk_iddebito " +
+                 "JOIN usuario u ON rp.fk_idsecretario = u.pk_idusuario " +
+                 "JOIN socio s ON d.fk_idSocio = s.pk_idSocio " +
+                 "WHERE rp.statusrecebimento = 'PENDENTE' " +
+                 "ORDER BY rp.datarecebimento ASC";
 
         List<RecebimentoPendenteDTO> listaPendentes = new ArrayList<>();
 
@@ -100,6 +101,7 @@ public class Recebimento_pendenteDAO {
                 
                 // Atribuindo o nome do sócio recuperado do banco
                 dto.setNomeSocio(rs.getString("nomesocio"));
+                dto.setIdSocio(rs.getInt("pk_idSocio"));
 
                 listaPendentes.add(dto);
             }

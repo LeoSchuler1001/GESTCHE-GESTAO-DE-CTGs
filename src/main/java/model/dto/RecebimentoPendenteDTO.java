@@ -16,6 +16,8 @@ public class RecebimentoPendenteDTO {
     private int idSecretario;
     private String nomeSecretario;
     private String nomeSocio;
+    private int idSocio;
+    private int idMovimentacao;
 
     //GETERS E SETERS
     public String getNomeSocio() { return nomeSocio; }
@@ -47,6 +49,20 @@ public class RecebimentoPendenteDTO {
 
     public String getNomeSecretario() { return nomeSecretario; }
     public void setNomeSecretario(String nomeSecretario) { this.nomeSecretario = nomeSecretario; }
+
+    public int getIdSocio() {
+        return idSocio;
+    }
+    public void setIdSocio(int idSocio) {
+        this.idSocio = idSocio;
+    }
+    
+    public int getIdMovimentacao() {
+        return idMovimentacao;
+    }
+    public void setIdMovimentacao(int idMovimentacao) {
+        this.idMovimentacao = idMovimentacao;
+    }
 
     public String getDataRecebimentoFormatada() {
         if (this.dataRecebimento != null) {

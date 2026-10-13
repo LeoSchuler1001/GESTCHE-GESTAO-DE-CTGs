@@ -37,6 +37,7 @@ import model.Conta;
 import model.Debito;
 import model.Movimentacao;
 import model.Socio;
+import model.dto.RecebimentoPendenteDTO;
 
 public class RecebimentoDebitoController {
     //ATRIBUTOS
@@ -50,6 +51,7 @@ public class RecebimentoDebitoController {
     DebitoDAO debitoDAO = new DebitoDAO(conexaoBanco);
     Debito debitoSelecionado;
     Socio sociioSelecionado;
+    RecebimentoPendenteDTO recebimentoPendenteDTO;
 
     @FXML
     private Button botaoFechar;
@@ -135,6 +137,9 @@ public class RecebimentoDebitoController {
             //cadastra a movimentação
             movimentacaoDAO.cadastrarMovimentacao(movimentacao);
 
+            //atribui a movimentação criada ao objeto recebimento selecionado
+            recebimentoPendenteDTO.setIdMovimentacao(movimentacao.getIdMovimentacao());
+
             //atualiza o debito para ser registrado como pago
             debitoDAO.atualizarDebito(debitoSelecionado);
 
@@ -201,9 +206,10 @@ public class RecebimentoDebitoController {
         campoCategoriaMovimentacao.getItems().setAll(nomeCategorias);
     }
 
-    public void carregarDadosEmSegundoPlano(Debito debitoSelecionado, Socio socioSelecionado) {
+    public void carregarDadosEmSegundoPlano(Debito debitoSelecionado, Socio socioSelecionado, RecebimentoPendenteDTO recebimentoSelecionado) {
         this.debitoSelecionado = debitoSelecionado;
         this.sociioSelecionado = socioSelecionado;
+        this.recebimentoPendenteDTO = recebimentoSelecionado;
 
         Task<Void> task = new Task<>() {
             @Override
