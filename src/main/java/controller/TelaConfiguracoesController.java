@@ -190,7 +190,7 @@ public class TelaConfiguracoesController {
                     }
 
                     if (listaLogs.isEmpty()) {
-                        tabelaLembretes.setPlaceholder(new javafx.scene.control.Label("Sem dados."));
+                        tabelaLogsAuditoria.setPlaceholder(new javafx.scene.control.Label("Sem dados."));
                     }
                 });
 
