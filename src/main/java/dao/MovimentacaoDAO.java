@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.chart.PieChart;
 import model.Categoria;
 import model.Conta;
 import model.Lembrete;
@@ -695,6 +698,46 @@ public class MovimentacaoDAO {
         }
 
         return diasComMovimentacao;
+    }
+
+    //busca os dados para preencher os gráficos
+    private ObservableList<PieChart.Data> buscarDadosGraficoPorTipo(String tipoMovimentacao, LocalDate dataInicial, LocalDate dataFinal) throws SQLException {
+        ObservableList<PieChart.Data> dadosGrafico = FXCollections.observableArrayList();
+        
+        String sql = "SELECT c.nomeCategoria, SUM(m.valorMovimentacao) AS total " +
+                     "FROM movimentacao m " +
+                     "JOIN categoria c ON m.fk_idCategoria = c.pk_idCategoria " +
+                     "WHERE m.tipoMovimentacao = ? " +
+                     "AND m.dataMovimentacao >= ? AND m.dataMovimentacao <= ? " +
+                     "GROUP BY c.nomeCategoria";
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setString(1, tipoMovimentacao);
+            stmt.setDate(2, java.sql.Date.valueOf(dataInicial));
+            stmt.setDate(3, java.sql.Date.valueOf(dataFinal));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String nomeCategoria = rs.getString("nomeCategoria");
+                    double total = rs.getDouble("total");
+                    
+                    // Formata o texto para exibir o nome e o valor entre parênteses (ex: "Salário (R$ 1500,00)")
+                    String rotuloFormatado = String.format("%s (R$ %.2f)", nomeCategoria, total);
+                    
+                    // Adiciona usando o rótulo formatado
+                    dadosGrafico.add(new PieChart.Data(rotuloFormatado, total));
+                }
+            }
+        }
+        return dadosGrafico;
+    }
+
+    public ObservableList<PieChart.Data> buscarDadosReceitasCategorias(LocalDate dataInicial, LocalDate dataFinal) throws SQLException {
+        return buscarDadosGraficoPorTipo("Receita", dataInicial, dataFinal);
+    }
+
+    public ObservableList<PieChart.Data> buscarDadosDespesasCategorias(LocalDate dataInicial, LocalDate dataFinal) throws SQLException {
+        return buscarDadosGraficoPorTipo("Despesa", dataInicial, dataFinal);
     }
 
     //método auxiliar, que vai montar o objeto departamento após a consulta sql
