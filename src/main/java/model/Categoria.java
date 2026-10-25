@@ -4,15 +4,18 @@ public class Categoria {
     //ATRIBUTOS
     private int idCategoria;
     private String nomeCategoria;
+    private String tipoCategoria;
 
     //CONSTRUTORES
-    public Categoria(int idCategoria, String nomeCategoria) {
+    public Categoria(int idCategoria, String nomeCategoria, String tipoCategoria) {
         this.idCategoria = idCategoria;
         this.nomeCategoria = nomeCategoria;
+        this.tipoCategoria = tipoCategoria;
     }
     
-    public Categoria(String nomeCategoria) {
+    public Categoria(String nomeCategoria, String tipoCategoria) {
         this.nomeCategoria = nomeCategoria;
+        this.tipoCategoria = tipoCategoria;
     }
     
     public Categoria() {
@@ -33,5 +36,13 @@ public class Categoria {
 
     public void setNomeCategoria(String nomeCategoria) {
         this.nomeCategoria = nomeCategoria;
+    }
+
+    public String getTipoCategoria() {
+        return tipoCategoria;
+    }
+
+    public void setTipoCategoria(String tipoCategoria) {
+        this.tipoCategoria = tipoCategoria;
     }
 }

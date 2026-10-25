@@ -180,7 +180,8 @@ public class CadastrarMovimentacaoController {
         campoContaMovimentacao.getItems().setAll(nomeContas);
 
         //preenche o combobox das categorias cadastradas
-        List<Categoria> listaCategorias = categoriaDAO.listarCategorias();
+        List<Categoria> listaCategorias = categoriaDAO.listarCategoriasReceita();
+        listaCategorias.addAll(categoriaDAO.listarCategoriasDespesa());
         List<String> nomeCategorias = new ArrayList<>();
         for (Categoria categoria : listaCategorias) {
             nomeCategorias.add(categoria.getNomeCategoria());

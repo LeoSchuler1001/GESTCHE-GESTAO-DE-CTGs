@@ -24,10 +24,12 @@ public class CategoriaDAO {
     //cadastrar uma nova categoria
     public void cadastrarCategoria(Categoria categoria) throws SQLException {
         //cria o comando sql
-        String sql = "INSERT INTO categoria (nomeCategoria) VALUES (?)";
+        String sql = "INSERT INTO categoria (nomeCategoria, tipoCategoria) VALUES (?, ?)";
 
         try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, categoria.getNomeCategoria());
+            stmt.setString(2, categoria.getTipoCategoria());
+            
 
             stmt.executeUpdate();
 
@@ -87,29 +89,52 @@ public class CategoriaDAO {
         return null;
     }
 
-    //lista todas as categorias
-    public List<Categoria> listarCategorias() throws SQLException {
-        String sql = "SELECT * FROM categoria";
+    // Lista apenas as categorias de Receita
+    public List<Categoria> listarCategoriasReceita() throws SQLException {
+        String sql = "SELECT * FROM categoria WHERE tipoCategoria = ?";
 
-        List<Categoria> listaCategorias = new ArrayList<>();
+        List<Categoria> listaReceitas = new ArrayList<>();
 
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            // Define o parâmetro da consulta como "RECEITA"
+            stmt.setString(1, "Receita");
+            
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    listaCategorias.add(montarObjCategoria(rs));
+                    listaReceitas.add(montarObjCategoria(rs));
                 }
             }
         }
-        return listaCategorias;
+        return listaReceitas;
+    }
+
+    // Lista apenas as categorias de Despesa
+    public List<Categoria> listarCategoriasDespesa() throws SQLException {
+        String sql = "SELECT * FROM categoria WHERE tipoCategoria = ?";
+
+        List<Categoria> listaDespesas = new ArrayList<>();
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            // Define o parâmetro da consulta como "DESPESA"
+            stmt.setString(1, "Despesa");
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    listaDespesas.add(montarObjCategoria(rs));
+                }
+            }
+        }
+        return listaDespesas;
     }
 
     //atualiza uma categoria
     public void atualizarCategoria(Categoria categoria) throws SQLException {
-        String sql = "UPDATE categoria SET nomeCategoria = ?  WHERE pk_idCategoria = ?";
+        String sql = "UPDATE categoria SET nomeCategoria = ?, tipoCategoria = ?  WHERE pk_idCategoria = ?";
         
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
             stmt.setString(1, categoria.getNomeCategoria());
-            stmt.setInt(2, categoria.getIdCategoria());
+            stmt.setString(2, categoria.getTipoCategoria());
+            stmt.setInt(3, categoria.getIdCategoria());
             
             //executa o comando sql
             stmt.executeUpdate();
@@ -152,6 +177,7 @@ public class CategoriaDAO {
         //atribui os valores
         categoria.setIdCategoria(rs.getInt("pk_idCategoria"));
         categoria.setNomeCategoria(rs.getString("nomeCategoria"));
+        categoria.setTipoCategoria(rs.getString("tipoCategoria"));
 
         //retorna a conta
         return categoria;

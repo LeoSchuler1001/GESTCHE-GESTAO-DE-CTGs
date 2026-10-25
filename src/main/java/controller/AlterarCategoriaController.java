@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 import dao.CategoriaDAO;
 import dao.ConexaoBanco;
+import enums.TiposMovimentacoes;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -12,6 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -38,6 +40,9 @@ public class AlterarCategoriaController {
 
     @FXML
     private VBox painelFundo;
+    
+    @FXML
+    private ComboBox<TiposMovimentacoes> campoTipoCategoria;
 
     //BOTÕES
     @FXML
@@ -56,6 +61,9 @@ public class AlterarCategoriaController {
         if(confirmaCadastro) {
             categoriaSelecionada.setNomeCategoria(campoNomeConta.getText());
 
+            String tipoCategoria = campoTipoCategoria.getValue().getDescricao();
+            categoriaSelecionada.setTipoCategoria(tipoCategoria);
+
             categoriaDAO.atualizarCategoria(categoriaSelecionada);
 
             emitirAlerta("Atualização realizada com sucesso!", AlertType.INFORMATION);
@@ -70,6 +78,9 @@ public class AlterarCategoriaController {
     public void initialize() {
         //tira o foco dos campos, para o cursos não ficar em nenhum deles
         Platform.runLater(() -> painelFundo.requestFocus());
+
+        //preenche o combobox de tipos de movimentações
+        campoTipoCategoria.getItems().setAll(TiposMovimentacoes.values());
     }
 
     public void carregarDadosEmSegundoPlano(Categoria categoriaSelecionada) {
@@ -97,6 +108,7 @@ public class AlterarCategoriaController {
     private void buscarDadosCategoria() throws SQLException {
         //preenche os campos com os dados da categoria
         campoNomeConta.setText(categoriaSelecionada.getNomeCategoria());
+        campoTipoCategoria.setValue(TiposMovimentacoes.valueOf(categoriaSelecionada.getTipoCategoria()));
     }
 
     //método auxiliar para emitir alertas
@@ -116,6 +128,11 @@ public class AlterarCategoriaController {
         //verifica os campos de texto
         if (campoNomeConta.getText() == null || campoNomeConta.getText().trim().isEmpty()) {
             
+            emitirAlerta("Preencha todos os campos!", AlertType.ERROR);
+            return false;
+        }
+
+        if (campoTipoCategoria.getValue() == null) {
             emitirAlerta("Preencha todos os campos!", AlertType.ERROR);
             return false;
         }

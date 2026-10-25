@@ -131,7 +131,8 @@ CREATE TABLE conta(
 
 CREATE TABLE categoria(
     pk_idCategoria SERIAL PRIMARY KEY,
-    nomeCategoria VARCHAR(100) NOT NULL
+    nomeCategoria VARCHAR(100) NOT NULL,
+    tipoCategoria VARCHAR(10) NOT NULL
 );
 
 CREATE TABLE lembrete(

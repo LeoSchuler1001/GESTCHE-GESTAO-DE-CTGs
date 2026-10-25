@@ -198,7 +198,7 @@ public class RecebimentoDebitoController {
         campoContaMovimentacao.getItems().setAll(nomeContas);
 
         //preenche o combobox das categorias cadastradas
-        List<Categoria> listaCategorias = categoriaDAO.listarCategorias();
+        List<Categoria> listaCategorias = categoriaDAO.listarCategoriasReceita();
         List<String> nomeCategorias = new ArrayList<>();
         for (Categoria categoria : listaCategorias) {
             nomeCategorias.add(categoria.getNomeCategoria());

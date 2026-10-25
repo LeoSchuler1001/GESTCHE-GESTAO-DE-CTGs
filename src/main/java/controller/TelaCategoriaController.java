@@ -35,23 +35,39 @@ import javafx.util.Callback;
 import model.Categoria;
 import model.Lembrete;
 
-public class TelaCategoriasController {
+public class TelaCategoriaController {
     //ATRIBUTOS
     //cria a conexão com o banco de dados
     ConexaoBanco conexao = new ConexaoBanco();
     LembreteDAO lembreteDAO = new LembreteDAO(conexao);
     MovimentacaoDAO movimentacaoDAO = new MovimentacaoDAO(conexao);
     CategoriaDAO categoriaDAO = new CategoriaDAO(conexao);
-    List<Categoria> listaCategorias = new ArrayList<>();
+    List<Categoria> listaCategoriasReceita = new ArrayList<>();
+    List<Categoria> listaCategoriasDespesa = new ArrayList<>();
 
     @FXML
-    private Button botaoAlterar;
+    private Button botaoAlterarDespesa;
 
     @FXML
-    private Button botaoCriarNovo;
+    private Button botaoAlterarReceita;
 
     @FXML
-    private Button botaoExcluir;
+    private Button botaoCriarNovoDespesa;
+
+    @FXML
+    private Button botaoCriarNovoReceita;
+
+    @FXML
+    private Button botaoExcluirDespesa;
+
+    @FXML
+    private Button botaoExcluirReceita;
+
+    @FXML
+    private TableColumn<Categoria, String> colunaCategoriasDespesas;
+
+    @FXML
+    private TableColumn<Categoria, String> colunaCategoriasReceitas;
 
     @FXML
     private Hyperlink linkConfiguracoes;
@@ -78,22 +94,22 @@ public class TelaCategoriasController {
     private TableColumn<Lembrete, String> nomeLembrete;
 
     @FXML
-    private TableColumn<Categoria, String> colunaNomeCategorias;
+    private TableView<Categoria> tabelaCategoriasDespesas;
+
+    @FXML
+    private TableView<Categoria> tabelaCategoriasReceitas;
 
     @FXML
     private TableView<Lembrete> tabelaLembretes;
-    
-    @FXML
-    private TableView<Categoria> tabelaCategorias;
 
     @FXML
     private TableColumn<Lembrete, String> valorLembrete;
 
     //BOTÕES
     @FXML
-    void alterarAction(ActionEvent event) throws IOException {
+    void alterarDespesaAction(ActionEvent event) throws IOException {
         //verifica qual foi a categoria selecionada
-        Categoria categoriaSelecionada = tabelaCategorias.getSelectionModel().getSelectedItem();
+        Categoria categoriaSelecionada = tabelaCategoriasDespesas.getSelectionModel().getSelectedItem();
 
         //verifica se uma categoria foi selecionada
         if(categoriaSelecionada != null) {
@@ -116,7 +132,7 @@ public class TelaCategoriasController {
 
             //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
             telaAlteracao.initModality(Modality.WINDOW_MODAL);
-            telaAlteracao.initOwner(tabelaCategorias.getScene().getWindow());
+            telaAlteracao.initOwner(tabelaCategoriasDespesas.getScene().getWindow());
 
             //abre a tela e aguarda o usuário fechar
             telaAlteracao.showAndWait();
@@ -129,7 +145,55 @@ public class TelaCategoriasController {
     }
 
     @FXML
-    void criarNovoAction(ActionEvent event) throws IOException {
+    void alterarReceitaAction(ActionEvent event) throws IOException {
+        //verifica qual foi a categoria selecionada
+        Categoria categoriaSelecionada = tabelaCategoriasReceitas.getSelectionModel().getSelectedItem();
+
+        //verifica se uma categoria foi selecionada
+        if(categoriaSelecionada != null) {
+            //abre a tela de alteração de categoria
+            //carregamento do fxml
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaAlterarCategoria.fxml"));
+            Parent root = fxmlLoader.load();
+
+            //obtem o controller da tela de alteração
+            AlterarCategoriaController controller = fxmlLoader.getController();
+            controller.carregarDadosEmSegundoPlano(categoriaSelecionada);
+
+            //cria e exibe a tela de alteração
+            Stage telaAlteracao = new Stage();
+            telaAlteracao.setTitle("Alterar categoria");
+            telaAlteracao.setScene(new Scene(root));
+
+            //proibe que o usuario possa alterar o tamanho da tela
+            telaAlteracao.setResizable(false);
+
+            //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+            telaAlteracao.initModality(Modality.WINDOW_MODAL);
+            telaAlteracao.initOwner(tabelaCategoriasReceitas.getScene().getWindow());
+
+            //abre a tela e aguarda o usuário fechar
+            telaAlteracao.showAndWait();
+
+            //atualiza a tabela depois da alteração
+            carregarDadosSegundoPlano();
+        } else {
+            emitirAlerta("Selecione uma categoria", AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    void configuracoesAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaConfiguracoesTesoureiro");
+    }
+
+    @FXML
+    void contasAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaContas");
+    }
+
+    @FXML
+    void criarNovoDespesaAction(ActionEvent event) throws IOException {
         //abre a tela de cadastro de categorias
         //carregamento do fxml
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaCadastrarCategoria.fxml"));
@@ -145,7 +209,7 @@ public class TelaCategoriasController {
 
         //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
         telaExibicao.initModality(Modality.WINDOW_MODAL);
-        telaExibicao.initOwner(tabelaCategorias.getScene().getWindow());
+        telaExibicao.initOwner(tabelaCategoriasDespesas.getScene().getWindow());
 
         //abre a tela e aguarda o usuário fechar
         telaExibicao.showAndWait();
@@ -155,9 +219,40 @@ public class TelaCategoriasController {
     }
 
     @FXML
-    void excluirAction(ActionEvent event) throws SQLException {
+    void criarNovoReceitaAction(ActionEvent event) throws IOException {
+        //abre a tela de cadastro de categorias
+        //carregamento do fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaCadastrarCategoria.fxml"));
+        Parent root = fxmlLoader.load();
+
+        //cria e exibe a tela de alteração
+        Stage telaExibicao = new Stage();
+        telaExibicao.setTitle("Cadastrar categoria");
+        telaExibicao.setScene(new Scene(root));
+
+        //proibe que o usuario possa alterar o tamanho da tela
+        telaExibicao.setResizable(false);
+
+        //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+        telaExibicao.initModality(Modality.WINDOW_MODAL);
+        telaExibicao.initOwner(tabelaCategoriasReceitas.getScene().getWindow());
+
+        //abre a tela e aguarda o usuário fechar
+        telaExibicao.showAndWait();
+
+        //atualiza a tabela depois do cadastro
+        carregarDadosSegundoPlano();
+    }
+
+    @FXML
+    void debitosSociosAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaDebitosSocios");
+    }
+
+    @FXML
+    void excluirDespesaAction(ActionEvent event) throws SQLException {
         //verifica qual foi a categoria selecionado
-        Categoria categoriaSelecionada = tabelaCategorias.getSelectionModel().getSelectedItem();
+        Categoria categoriaSelecionada = tabelaCategoriasDespesas.getSelectionModel().getSelectedItem();
 
         //verifica se uma categoria foi selecionada
         if(categoriaSelecionada != null) {
@@ -181,18 +276,29 @@ public class TelaCategoriasController {
     }
 
     @FXML
-    void configuracoesAction(ActionEvent event) throws IOException {
-        App.trocarTela("TelaConfiguracoesTesoureiro");
-    }
+    void excluirReceitaAction(ActionEvent event) throws SQLException {
+        //verifica qual foi a categoria selecionado
+        Categoria categoriaSelecionada = tabelaCategoriasReceitas.getSelectionModel().getSelectedItem();
 
-    @FXML
-    void contasAction(ActionEvent event) throws IOException {
-        App.trocarTela("TelaContas");
-    }
+        //verifica se uma categoria foi selecionada
+        if(categoriaSelecionada != null) {
+            //verifica se a categoria pode ser excluída
+            if(categoriaDAO.categoriaPossuiMovimentacao(categoriaSelecionada.getIdCategoria())) {
+                emitirAlerta("A categoria não pode ser excluída, pois possui movimentações cadastradas!", AlertType.ERROR);
+                return;
+            }
+            
+            Boolean confirmaExclusao = emitirAlertaConfirmacao("Deseja realmente excluir?", AlertType.CONFIRMATION);
+            if(confirmaExclusao) {
+                categoriaDAO.excluirCategoria(categoriaSelecionada);
 
-    @FXML
-    void debitosSociosAction(ActionEvent event) throws IOException {
-        App.trocarTela("TelaDebitosSocios");
+                emitirAlerta("Categoria excluída com sucesso!", AlertType.INFORMATION);
+            
+                carregarDadosSegundoPlano();
+            }
+        } else {
+            emitirAlerta("Selecione uma categoria!", AlertType.ERROR);
+        }
     }
 
     @FXML
@@ -236,7 +342,11 @@ public class TelaCategoriasController {
         tabelaLembretes.setFocusTraversable(false);
         
         //configura as colunas das tabelas
-        this.colunaNomeCategorias.setCellValueFactory(cellData -> 
+        this.colunaCategoriasDespesas.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getNomeCategoria())
+        );
+        
+        this.colunaCategoriasReceitas.setCellValueFactory(cellData -> 
             new SimpleStringProperty(cellData.getValue().getNomeCategoria())
         );
 
@@ -255,11 +365,13 @@ public class TelaCategoriasController {
 
     //carrega os dados em segundo plano
     private void carregarDadosSegundoPlano() {
-        tabelaCategorias.getItems().clear();
+        tabelaCategoriasDespesas.getItems().clear();
+        tabelaCategoriasReceitas.getItems().clear();
         tabelaLembretes.getItems().clear();
 
         //coloca os ícones de carregamento nas tabelas enquanto os dados não são carregados
-        tabelaCategorias.setPlaceholder(criarIndicator());
+        tabelaCategoriasDespesas.setPlaceholder(criarIndicator());
+        tabelaCategoriasReceitas.setPlaceholder(criarIndicator());
         tabelaLembretes.setPlaceholder(criarIndicator());
 
         //cria uma tarefa que irá carregar os dados em segundo plano
@@ -267,16 +379,22 @@ public class TelaCategoriasController {
             @Override
             protected Void call() throws Exception {
                 //armazena as contas cadastradas
-                listaCategorias = categoriaDAO.listarCategorias();
+                listaCategoriasDespesa = categoriaDAO.listarCategoriasDespesa();
+                listaCategoriasReceita = categoriaDAO.listarCategoriasReceita();
                 List<Lembrete> listaLembretesHoje = lembreteDAO.listarLembretesHoje(App.usuarioLogado.getIdUsuario());
 
                 // Atualiza as tabelas e os mostradores
                 Platform.runLater(() -> {
-                    tabelaCategorias.setItems(FXCollections.observableArrayList(listaCategorias));
+                    tabelaCategoriasDespesas.setItems(FXCollections.observableArrayList(listaCategoriasDespesa));
+                    tabelaCategoriasReceitas.setItems(FXCollections.observableArrayList(listaCategoriasReceita));
                     tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretesHoje));
 
-                    if (listaCategorias.isEmpty()) {
-                        tabelaCategorias.setPlaceholder(new javafx.scene.control.Label("Sem Contas cadastradas."));
+                    if (listaCategoriasDespesa.isEmpty()) {
+                        tabelaCategoriasDespesas.setPlaceholder(new javafx.scene.control.Label("Sem Categorias cadastradas."));
+                    }
+                    
+                    if (listaCategoriasReceita.isEmpty()) {
+                        tabelaCategoriasReceitas.setPlaceholder(new javafx.scene.control.Label("Sem Categorias cadastradas."));
                     }
 
                     if (listaLembretesHoje.isEmpty()) {
