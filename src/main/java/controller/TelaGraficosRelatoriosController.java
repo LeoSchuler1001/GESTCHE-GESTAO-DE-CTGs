@@ -128,7 +128,7 @@ public class TelaGraficosRelatoriosController {
         //abre uma janela para o usuário escolher onde salvar o arquivo
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Salvar Relatório de Gráficos");
-        fileChooser.setInitialFileName("relatorio_graficos.pdf");
+        fileChooser.setInitialFileName("Relatório_Societário.pdf");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
         Stage stage = (Stage) tabelaLembretes.getScene().getWindow(); 
         File arquivoDestino = fileChooser.showSaveDialog(stage);
@@ -163,7 +163,7 @@ public class TelaGraficosRelatoriosController {
 
                 //chama o método de gerar pdfs
                 gerarPdf.gerarRelatorioGeralSocios(imagensGraficos, arquivoDestino, quantidadeSociosAtivos, quantidadeDependentesAtivos);
-
+                emitirAlerta("Relatório gerado com sucesso!", AlertType.INFORMATION);
             } catch (IOException e) {
                 emitirAlerta("Selecione um local válido para salvar o pdf", AlertType.ERROR);
             }

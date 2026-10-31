@@ -137,33 +137,28 @@ public class TelaGraficosRelatoriosTesoureiroController {
 
     @FXML
     void gerarPdfAction(ActionEvent event) {
-
         FileChooser seletorArquivo = new FileChooser();
 
-        // Configura o título da janela
         seletorArquivo.setTitle("Salvar Relatório Financeiro");
 
-        // Define o nome inicial do arquivo
+        //define o nome inicial do arquivo
         seletorArquivo.setInitialFileName("Relatorio_Financeiro.pdf");
 
-        // Define o formato PDF
+        //define o formato do arquivo
         seletorArquivo.getExtensionFilters().add(
             new FileChooser.ExtensionFilter(
                 "Arquivo PDF (*.pdf)", "*.pdf"
             )
         );
 
-        // Abre a janela para escolher onde salvar
+        //abre a janela para escolher onde salvar
         File arquivoDestino = seletorArquivo.showSaveDialog(
             botaoGerarPdf.getScene().getWindow()
         );
 
-        // Verifica se o usuário escolheu um destino
+        //verifica se o usuário escolheu um destino
         if (arquivoDestino != null) {
-
             try {
-
-                // Gera o relatório financeiro
                 gerarPdf.gerarRelatorioFinanceiro(
                     graficoReceitaCategorias,
                     graficoDespesasCategoria,
@@ -174,13 +169,7 @@ public class TelaGraficosRelatoriosTesoureiroController {
                     totalDespesasRelatorio
                 );
 
-                Alert alerta = new Alert(AlertType.INFORMATION);
-                alerta.setTitle("Relatório Financeiro");
-                alerta.setHeaderText(null);
-                alerta.setContentText(
-                    "Relatório PDF gerado com sucesso!"
-                );
-                alerta.showAndWait();
+                emitirAlerta("Relatório gerado com sucesso!", AlertType.INFORMATION);
 
             } catch (IOException e) {
 
