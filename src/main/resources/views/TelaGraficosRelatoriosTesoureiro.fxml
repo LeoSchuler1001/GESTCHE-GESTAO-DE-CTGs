@@ -266,6 +266,7 @@
                                           <Label styleClass="textos" text="RECEITAS POR CATEGORIAS" />
                                           <PieChart fx:id="graficoReceitaCategorias" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="550.0" GridPane.rowIndex="1" />
                                           <ProgressIndicator fx:id="carregamentoGrafico1" GridPane.rowIndex="1" />
+                                          <Label fx:id="semInf1" styleClass="textos" text="SEM INFORMAÇÕES" GridPane.rowIndex="1" />
                                        </children>
                                     </GridPane>
                                     <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="410.0" prefWidth="980.0">
@@ -280,6 +281,7 @@
                                           <Label styleClass="textos" text="DESPESAS POR CATEGORIA" />
                                           <PieChart fx:id="graficoDespesasCategoria" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="550.0" GridPane.rowIndex="1" />
                                           <ProgressIndicator fx:id="carregamentoGrafico2" GridPane.rowIndex="1" />
+                                          <Label fx:id="semInf2" styleClass="textos" text="SEM INFORMAÇÕES" GridPane.rowIndex="1" />
                                        </children>
                                     </GridPane>
                                  </children>

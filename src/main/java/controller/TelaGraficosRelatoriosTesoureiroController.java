@@ -1,8 +1,11 @@
 package controller;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import app.App;
 import dao.ConexaoBanco;
@@ -15,6 +18,9 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -28,9 +34,14 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
+import java.io.File;
+import javafx.stage.FileChooser;
 import model.Lembrete;
-import util.GerarPdf;
+import model.dto.DatasTelaPeriodoDTO;
+import util.GerarPdfFinanceiro;
 
 public class TelaGraficosRelatoriosTesoureiroController {
     //ATRIBUTOS
@@ -38,7 +49,10 @@ public class TelaGraficosRelatoriosTesoureiroController {
     ConexaoBanco conexao = new ConexaoBanco();
     LembreteDAO lembreteDAO = new LembreteDAO(conexao);
     MovimentacaoDAO movimentacaoDAO = new MovimentacaoDAO(conexao);
-    GerarPdf gerarPdf = new GerarPdf();
+    GerarPdfFinanceiro gerarPdf = new GerarPdfFinanceiro();
+
+    private double totalReceitasRelatorio;
+    private double totalDespesasRelatorio;
 
     LocalDate dataInicio;
     LocalDate dataFim;
@@ -104,6 +118,13 @@ public class TelaGraficosRelatoriosTesoureiroController {
     private Hyperlink linkSair;
 
     @FXML
+    private Label semInf1;
+
+    @FXML
+    private Label semInf2;
+
+
+    @FXML
     private TableColumn<Lembrete, String> nomeLembrete;
 
     @FXML
@@ -117,11 +138,88 @@ public class TelaGraficosRelatoriosTesoureiroController {
     @FXML
     void gerarPdfAction(ActionEvent event) {
 
+        FileChooser seletorArquivo = new FileChooser();
+
+        // Configura o título da janela
+        seletorArquivo.setTitle("Salvar Relatório Financeiro");
+
+        // Define o nome inicial do arquivo
+        seletorArquivo.setInitialFileName("Relatorio_Financeiro.pdf");
+
+        // Define o formato PDF
+        seletorArquivo.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter(
+                "Arquivo PDF (*.pdf)", "*.pdf"
+            )
+        );
+
+        // Abre a janela para escolher onde salvar
+        File arquivoDestino = seletorArquivo.showSaveDialog(
+            botaoGerarPdf.getScene().getWindow()
+        );
+
+        // Verifica se o usuário escolheu um destino
+        if (arquivoDestino != null) {
+
+            try {
+
+                // Gera o relatório financeiro
+                gerarPdf.gerarRelatorioFinanceiro(
+                    graficoReceitaCategorias,
+                    graficoDespesasCategoria,
+                    arquivoDestino,
+                    dataInicio,
+                    dataFim,
+                    totalReceitasRelatorio,
+                    totalDespesasRelatorio
+                );
+
+                Alert alerta = new Alert(AlertType.INFORMATION);
+                alerta.setTitle("Relatório Financeiro");
+                alerta.setHeaderText(null);
+                alerta.setContentText(
+                    "Relatório PDF gerado com sucesso!"
+                );
+                alerta.showAndWait();
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+
+                emitirAlerta(
+                    "Erro ao gerar o relatório PDF.",
+                    AlertType.ERROR
+                );
+            }
+        }
     }
 
     @FXML
-    void selecinarPeriodoAction(ActionEvent event) {
+    void selecinarPeriodoAction(ActionEvent event) throws IOException {
+        //abre a tela de seleção do período
+        //carregamento do fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaSelecionarPeriodo.fxml"));
+        Parent root = fxmlLoader.load();
 
+        Stage telaExibicao = new Stage();
+        telaExibicao.setTitle("Selecionar Período");
+        telaExibicao.setScene(new Scene(root));
+
+        //proibe que o usuario possa alterar o tamanho da tela
+        telaExibicao.setResizable(false);
+
+        //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+        telaExibicao.initModality(Modality.WINDOW_MODAL);
+        telaExibicao.initOwner(campoFechamento.getScene().getWindow());
+
+        //abre a tela e aguarda o usuário fechar
+        telaExibicao.showAndWait();
+        
+        //troca as datas pelas que o usuario escolheu
+        dataInicio = DatasTelaPeriodoDTO.getDataInicial().toLocalDate();
+        dataFim = DatasTelaPeriodoDTO.getDataFinal().toLocalDate();
+
+        carregarDadosEmSegundoPlano();
     }
 
     @FXML
@@ -194,14 +292,22 @@ public class TelaGraficosRelatoriosTesoureiroController {
             return new SimpleStringProperty(formatado);
         });
 
-        botaoGerarPdf.setDisable(true);
-
         carregarDadosEmSegundoPlano();
     }
 
     public void carregarDadosEmSegundoPlano() {
         tabelaLembretes.getItems().clear();
+
         botaoGerarPdf.setDisable(true);
+
+        campoPeriodo.setEditable(false);
+
+        campoFechamento.setVisible(false);
+        campoTotaReceitas.setVisible(false);
+        campoTotalDespesas.setVisible(false);
+
+        semInf1.setVisible(false);
+        semInf2.setVisible(false);
 
         //coloca os ícones de carregamento nas tabelas enquanto os dados não são carregados
         tabelaLembretes.setPlaceholder(criarIndicator());
@@ -211,37 +317,67 @@ public class TelaGraficosRelatoriosTesoureiroController {
             List<Lembrete> listaLembretesHoje;
             ObservableList<PieChart.Data> dadosReceitas;
             ObservableList<PieChart.Data> dadosDespesas;
+            double totalReceitasPeriodo;
+            double totalDespesasPeriodo;
+            double fechamento;
 
             @Override
             protected Void call() throws Exception {
-                // Busca tudo do banco em segundo plano
                 listaLembretesHoje = lembreteDAO.listarLembretesHoje(App.usuarioLogado.getIdUsuario());
                 
-                // Certifique-se de que os nomes aqui batem com os métodos criados no seu MovimentacaoDAO
                 dadosReceitas = movimentacaoDAO.buscarDadosReceitasCategorias(dataInicio, dataFim);
                 dadosDespesas = movimentacaoDAO.buscarDadosDespesasCategorias(dataInicio, dataFim);
-                
 
-                System.out.println("Qtd de Receitas para o gráfico: " + (dadosReceitas != null ? dadosReceitas.size() : "null"));
-    System.out.println("Qtd de Despesas para o gráfico: " + (dadosDespesas != null ? dadosDespesas.size() : "null"));
-    System.out.println("Período analisado: " + dataInicio + " até " + dataFim);
-    
+                totalDespesasPeriodo = movimentacaoDAO.calcularTotalDespesas(dataInicio, dataFim);
+                totalReceitasPeriodo = movimentacaoDAO.calcularTotalReceitas(dataInicio, dataFim);
+                fechamento = totalReceitasPeriodo - totalDespesasPeriodo;
+
                 return null;
             }
 
             @Override
             protected void succeeded() {
-                // Este método roda automaticamente na Thread Principal (UI Thread) quando o call() termina com sucesso!
                 tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretesHoje));
                 
                 graficoReceitaCategorias.setData(dadosReceitas);
                 graficoDespesasCategoria.setData(dadosDespesas);
 
-                if (listaLembretesHoje.isEmpty()) {
+                //preenche os campos de total com strings formatadas
+                Locale brasil = Locale.of("pt", "BR");
+                NumberFormat formatoMoeda = NumberFormat.getCurrencyInstance(brasil);
+                String totalReceitasFormatado = formatoMoeda.format(totalReceitasPeriodo);
+                String totalDespesasFormatado = formatoMoeda.format(totalDespesasPeriodo);
+                String fechamentoFormatado = formatoMoeda.format(fechamento);
+                campoTotaReceitas.setText(totalReceitasFormatado);
+                campoTotalDespesas.setText(totalDespesasFormatado);
+                campoFechamento.setText(fechamentoFormatado);
+
+                totalReceitasRelatorio = totalReceitasPeriodo;
+                totalDespesasRelatorio = totalDespesasPeriodo;  
+
+                if(listaLembretesHoje.isEmpty()) {
                     tabelaLembretes.setPlaceholder(new Label("Sem lembretes."));
                 }
 
+                if(dadosReceitas.isEmpty()) {
+                    semInf1.setVisible(true);
+                }
+
+                if(dadosDespesas.isEmpty()) {
+                    semInf2.setVisible(true);
+                }
+
                 botaoGerarPdf.setDisable(false);
+                campoFechamento.setVisible(true);
+                campoTotaReceitas.setVisible(true);
+                campoTotalDespesas.setVisible(true);
+
+                //apresenta a data de inicio e fim no campo de periodo
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                String textoInicio = dataInicio.format(formatter);
+                String textoFim = dataFim.format(formatter);
+
+                campoPeriodo.setText(textoInicio + " até " + textoFim);
             }
         };
 

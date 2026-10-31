@@ -740,6 +740,45 @@ public class MovimentacaoDAO {
         return buscarDadosGraficoPorTipo("Despesa", dataInicial, dataFinal);
     }
 
+    public double calcularTotalReceitas(LocalDate dataInicio, LocalDate dataFim) throws SQLException {
+        String sql = "SELECT COALESCE(SUM(valorMovimentacao), 0.00) AS total " +
+                 "FROM movimentacao " +
+                 "WHERE dataMovimentacao BETWEEN ? AND ? " +
+                 "AND UPPER(tipoMovimentacao) = 'RECEITA'";
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            // Converte os LocalDate para java.sql.Date
+            stmt.setDate(1, java.sql.Date.valueOf(dataInicio));
+            stmt.setDate(2, java.sql.Date.valueOf(dataFim));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("total");
+                }
+            }
+        }
+        return 0.00;
+    }
+
+    public double calcularTotalDespesas(LocalDate dataInicio, LocalDate dataFim) throws SQLException {
+        String sql = "SELECT COALESCE(SUM(valorMovimentacao), 0.00) AS total " +
+                 "FROM movimentacao " +
+                 "WHERE dataMovimentacao BETWEEN ? AND ? " +
+                 "AND UPPER(tipoMovimentacao) = 'DESPESA'";
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setDate(1, java.sql.Date.valueOf(dataInicio));
+            stmt.setDate(2, java.sql.Date.valueOf(dataFim));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("total");
+                }
+            }
+        }
+        return 0.00;
+    }
+
     //método auxiliar, que vai montar o objeto departamento após a consulta sql
     private Movimentacao montarObjMovimentacao(ResultSet rs) throws SQLException {
         //cria o movimentacao
