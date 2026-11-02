@@ -134,7 +134,6 @@ public class TelaGraficosRelatoriosTesoureiroController {
     private TableColumn<Lembrete, String> valorLembrete;
 
     //BOTÕES
-
     @FXML
     void gerarPdfAction(ActionEvent event) {
         FileChooser seletorArquivo = new FileChooser();

@@ -48,11 +48,15 @@ public class TelaLoginController {
             //atribui o usuario ao atributo estatico usuario logado
             App.usuarioLogado = usuarioLogin;
 
+            System.out.println("usuario logado: " + App.usuarioLogado.getIdUsuario());
+
             //verifica o cargo do usuário
             if(App.usuarioLogado.getCargoUsuario().equals("Secretário")) {
                 App.trocarTela("TelaInicialSecretario");
             } else if(App.usuarioLogado.getCargoUsuario().equals("Tesoureiro")) {
                 App.trocarTela("TelaInTesoureiroMes");
+            } else if(App.usuarioLogado.getCargoUsuario().equals("Diretor")) {
+                App.trocarTela("TelaInDiretor");
             }
         } else {
             //emite alerta de senha ou login errados
