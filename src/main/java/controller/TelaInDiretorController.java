@@ -212,8 +212,8 @@ public class TelaInDiretorController {
 
     //BOTÕES
     @FXML
-    void lembretesAction(ActionEvent event) {
-
+    void lembretesAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaLembretesDiretor");
     }
 
     @FXML
