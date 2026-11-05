@@ -47,6 +47,9 @@ public class TelaDebitosSociosController {
     SocioDAO socioDAO = new SocioDAO(conexao);
     Recebimento_pendenteDAO recebimento_pendenteDAO = new Recebimento_pendenteDAO(conexao);
     DebitoDAO debitoDAO = new DebitoDAO(conexao);
+
+    @FXML
+    private Button acessarDiretoria;
     
     @FXML
     private Button botaoAprovar;
@@ -125,6 +128,11 @@ public class TelaDebitosSociosController {
     private TableColumn<Lembrete, String> valorLembrete;
 
     //BOTÕES
+    @FXML
+    void acessarDiretoriaAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaInDiretor");
+    }
+
     @FXML
     void aprovarAction(ActionEvent event) throws SQLException, IOException {
         //verifica qual foi o recebimento selecionado
@@ -341,6 +349,11 @@ public class TelaDebitosSociosController {
 
     //MÉTODOS
     public void initialize() {
+        if (!"Diretor".equals(App.usuarioLogado.getCargoUsuario())) {
+            acessarDiretoria.setVisible(false);
+            acessarDiretoria.setManaged(false);
+        }
+        
         //desativa a seleção na tabela de lembretes, mas mantêm o scroll
         Callback<TableView<Lembrete>, TableRow<Lembrete>> desativarSelecaoLembrete = tv -> {
             TableRow<Lembrete> row = new TableRow<>();

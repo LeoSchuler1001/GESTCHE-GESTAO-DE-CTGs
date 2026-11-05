@@ -49,6 +49,9 @@ public class TelaInTesoureiroMesController {
     List<Conta> listaContas;
     
     @FXML
+    private Button acessarDiretoria;
+
+    @FXML
     private Button botaoAdicionarDespesa;
 
     @FXML
@@ -163,6 +166,11 @@ public class TelaInTesoureiroMesController {
     private TableColumn<Lembrete, String> valorLembrete;
 
     //BOTÕES
+    @FXML
+    void acessarDiretoriaAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaInDiretor");
+    }
+
     @FXML
     void adicionarDespesaAction(ActionEvent event) throws IOException {
         //carregamento do fxml
@@ -404,6 +412,11 @@ public class TelaInTesoureiroMesController {
     //MÉTODOS
     //inicializa a tela
     public void initialize() {
+        if (!"Diretor".equals(App.usuarioLogado.getCargoUsuario())) {
+            acessarDiretoria.setVisible(false);
+            acessarDiretoria.setManaged(false);
+        }
+        
         //desativa a seleção na tabela de lembretes, mas mantêm o scroll
         Callback<TableView<Lembrete>, TableRow<Lembrete>> desativarSelecaoLembrete = tv -> {
             TableRow<Lembrete> row = new TableRow<>();

@@ -142,7 +142,7 @@
                         </TableView>
                      </children>
                   </Pane>
-                  <HBox prefHeight="57.0" prefWidth="220.0">
+                  <HBox prefHeight="57.0" prefWidth="220.0" style="-fx-font-size: 11.5px;">
                      <children>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <HBox.margin>
@@ -160,6 +160,11 @@
                               <Insets />
                            </opaqueInsets>
                         </Hyperlink>
+                        <Button fx:id="acessarDiretoria" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#acessarDiretoriaAction" prefHeight="25.6" prefWidth="127.2" styleClass="botoes" text="ACESSAR DIRETORIA">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                        </Button>
                      </children>
                   </HBox>
                </children>

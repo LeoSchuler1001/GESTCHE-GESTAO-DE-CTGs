@@ -46,6 +46,9 @@ public class TelaCategoriaController {
     List<Categoria> listaCategoriasDespesa = new ArrayList<>();
 
     @FXML
+    private Button acessarDiretoria;
+
+    @FXML
     private Button botaoAlterarDespesa;
 
     @FXML
@@ -106,6 +109,11 @@ public class TelaCategoriaController {
     private TableColumn<Lembrete, String> valorLembrete;
 
     //BOTÕES
+    @FXML
+    void acessarDiretoriaAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaInDiretor");
+    }
+
     @FXML
     void alterarDespesaAction(ActionEvent event) throws IOException {
         //verifica qual foi a categoria selecionada
@@ -329,6 +337,11 @@ public class TelaCategoriaController {
 
     //MÉTODOS
     public void initialize() {
+        if (!"Diretor".equals(App.usuarioLogado.getCargoUsuario())) {
+            acessarDiretoria.setVisible(false);
+            acessarDiretoria.setManaged(false);
+        }
+        
         //desativa a seleção na tabela de lembretes, mas mantêm o scroll
         Callback<TableView<Lembrete>, TableRow<Lembrete>> desativarSelecaoLembrete = tv -> {
             TableRow<Lembrete> row = new TableRow<>();

@@ -218,12 +218,12 @@ public class TelaInDiretorController {
 
     @FXML
     void acessarSecretariaAction(ActionEvent event) throws IOException {
-        
+        App.trocarTela("TelaInicialSecretario");
     }
 
     @FXML
     void acessarTesourariaAction(ActionEvent event) throws IOException {
-        
+        App.trocarTela("TelaInTesoureiroMes");
     }
 
     @FXML

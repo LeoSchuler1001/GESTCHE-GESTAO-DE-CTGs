@@ -18,6 +18,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ProgressIndicator;
@@ -30,6 +31,9 @@ import model.LogAuditoria;
 
 public class TelaConfiguracoesController {
     //ATRIBUTOS
+    @FXML
+    private Button acessarDiretoria;
+
     @FXML
     private TableColumn<Lembrete, String> lembretes;
 
@@ -71,6 +75,11 @@ public class TelaConfiguracoesController {
 
     //BOTÕES
     @FXML
+    void acessarDiretoriaAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaInDiretor");
+    }
+
+    @FXML
     void departamentosAction(ActionEvent event) throws IOException {
         App.trocarTela("TelaDepartamentos");
     }
@@ -109,6 +118,11 @@ public class TelaConfiguracoesController {
     //MÉTODOS
     //inicializa a tela
     public void initialize() throws SQLException {
+        if (!"Diretor".equals(App.usuarioLogado.getCargoUsuario())) {
+            acessarDiretoria.setVisible(false);
+            acessarDiretoria.setManaged(false);
+        }
+        
         //desativa a seleção nas tabelas, mas mantêm o scroll
         Callback<TableView<LogAuditoria>, TableRow<LogAuditoria>> desativarSelecao = tv -> {
             TableRow<LogAuditoria> row = new TableRow<>();

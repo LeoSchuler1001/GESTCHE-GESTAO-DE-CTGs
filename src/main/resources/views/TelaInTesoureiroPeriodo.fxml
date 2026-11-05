@@ -173,6 +173,11 @@
                               <Insets />
                            </opaqueInsets>
                         </Hyperlink>
+                        <Button fx:id="acessarDiretoria" mnemonicParsing="false" onAction="#acessarDiretoriaAction" styleClass="botoes" text="ACESSAR DIRETORIA">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                        </Button>
                      </children>
                   </HBox>
                </children>

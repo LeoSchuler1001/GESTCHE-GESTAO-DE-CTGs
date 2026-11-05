@@ -44,6 +44,9 @@ public class TelaInTesoureiroAnoController {
     List<Conta> listaContas;
 
     @FXML
+    private Button acessarDiretoria;
+    
+    @FXML
     private ComboBox<Integer> anoSelecionado;
     
     @FXML
@@ -158,6 +161,11 @@ public class TelaInTesoureiroAnoController {
     private TableColumn<Lembrete, String> valorLembrete;
 
     //BOTÕES
+    @FXML
+    void acessarDiretoriaAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaInDiretor");
+    }
+
     @FXML
     void adicionarDespesaAction(ActionEvent event) throws IOException {
         //carregamento do fxml
@@ -399,6 +407,11 @@ public class TelaInTesoureiroAnoController {
     //MÉTODOS
     //inicializa a tela
     public void initialize() {
+        if (!"Diretor".equals(App.usuarioLogado.getCargoUsuario())) {
+            acessarDiretoria.setVisible(false);
+            acessarDiretoria.setManaged(false);
+        }
+
         //desativa a seleção na tabela de lembretes, mas mantêm o scroll
         Callback<TableView<Lembrete>, TableRow<Lembrete>> desativarSelecaoLembrete = tv -> {
             TableRow<Lembrete> row = new TableRow<>();

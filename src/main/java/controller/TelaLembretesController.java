@@ -39,6 +39,9 @@ public class TelaLembretesController {
     LembreteDAO lembreteDAO = new LembreteDAO(conexao);
     
     @FXML
+    private Button acessarDiretoria;
+
+    @FXML
     private Button botaoDetalhar;
     
     @FXML
@@ -102,6 +105,11 @@ public class TelaLembretesController {
     private TableView<Lembrete> tabelaInformacoesLembretes;
 
     //BOTÕES
+    @FXML
+    void acessarDiretoriaAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaInDiretor");
+    }
+
     @FXML
     void configuracoesAction(ActionEvent event) throws IOException {
         App.trocarTela("TelaConfiguracoes");
@@ -290,6 +298,11 @@ public class TelaLembretesController {
     //MÉTODOS
     //inicializa a tela
     public void initialize() {
+        if (!"Diretor".equals(App.usuarioLogado.getCargoUsuario())) {
+            acessarDiretoria.setVisible(false);
+            acessarDiretoria.setManaged(false);
+        }
+        
         //desativa a seleção na tabela de lembretes, mas mantêm o scroll
         Callback<TableView<Lembrete>, TableRow<Lembrete>> desativarSelecaoLembrete = tv -> {
             TableRow<Lembrete> row = new TableRow<>();

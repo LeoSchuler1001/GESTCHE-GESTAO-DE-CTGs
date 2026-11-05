@@ -58,6 +58,9 @@ public class TelaGraficosRelatoriosTesoureiroController {
     LocalDate dataFim;
 
     @FXML
+    private Button acessarDiretoria;
+
+    @FXML
     private Button botaoGerarPdf;
 
     @FXML
@@ -134,6 +137,11 @@ public class TelaGraficosRelatoriosTesoureiroController {
     private TableColumn<Lembrete, String> valorLembrete;
 
     //BOTÕES
+    @FXML
+    void acessarDiretoriaAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaInDiretor");
+    }
+
     @FXML
     void gerarPdfAction(ActionEvent event) {
         FileChooser seletorArquivo = new FileChooser();
@@ -253,6 +261,11 @@ public class TelaGraficosRelatoriosTesoureiroController {
 
     //MÉTODOS
     public void initialize() {
+        if (!"Diretor".equals(App.usuarioLogado.getCargoUsuario())) {
+            acessarDiretoria.setVisible(false);
+            acessarDiretoria.setManaged(false);
+        }
+        
         //define as datas que mostrarão os gráficos iniciais
         dataInicio = LocalDate.now().withDayOfMonth(1);
         dataFim = LocalDate.now();

@@ -16,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ProgressIndicator;
@@ -32,6 +33,9 @@ public class TelaConfiguracoesTesoureiroController {
     ConexaoBanco conexaoBanco = new ConexaoBanco();
     LembreteDAO lembreteDAO = new LembreteDAO(conexaoBanco);
     LogAuditoriaDAO logAuditoriaDAO = new LogAuditoriaDAO(conexaoBanco);
+    
+    @FXML
+    private Button acessarDiretoria;
 
     @FXML
     private Hyperlink linkCategorias;
@@ -80,6 +84,11 @@ public class TelaConfiguracoesTesoureiroController {
 
     //BOTÕES
     @FXML
+    void acessarDiretoriaAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaInDiretor");
+    }
+
+    @FXML
     void categoriasAction(ActionEvent event) throws IOException {
         App.trocarTela("TelaCategorias");
     }
@@ -122,6 +131,11 @@ public class TelaConfiguracoesTesoureiroController {
 
     //MÉTODOS
     public void initialize() {
+        if (!"Diretor".equals(App.usuarioLogado.getCargoUsuario())) {
+            acessarDiretoria.setVisible(false);
+            acessarDiretoria.setManaged(false);
+        }
+        
         //desativa a seleção na tabela de lembretes, mas mantêm o scroll
         Callback<TableView<Lembrete>, TableRow<Lembrete>> desativarSelecaoLembrete = tv -> {
             TableRow<Lembrete> row = new TableRow<>();

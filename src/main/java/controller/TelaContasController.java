@@ -47,6 +47,9 @@ public class TelaContasController {
     MovimentacaoDAO movimentacaoDAO = new MovimentacaoDAO(conexao);
 
     @FXML
+    private Button acessarDiretoria;
+
+    @FXML
     private Button botaoAlterar;
 
     @FXML
@@ -99,6 +102,11 @@ public class TelaContasController {
     private TableColumn<Lembrete, String> valorLembrete;
 
     //BOTÕES
+    @FXML
+    void acessarDiretoriaAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaInDiretor");
+    }
+
     @FXML
     void alterarAction(ActionEvent event) throws IOException {
         //verifica qual foi a conta selecionada
@@ -232,6 +240,11 @@ public class TelaContasController {
 
     //MÉTODOS
     public void initialize() {
+        if (!"Diretor".equals(App.usuarioLogado.getCargoUsuario())) {
+            acessarDiretoria.setVisible(false);
+            acessarDiretoria.setManaged(false);
+        }
+        
         //desativa a seleção na tabela de lembretes, mas mantêm o scroll
         Callback<TableView<Lembrete>, TableRow<Lembrete>> desativarSelecaoLembrete = tv -> {
             TableRow<Lembrete> row = new TableRow<>();
