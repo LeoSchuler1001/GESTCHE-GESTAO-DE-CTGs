@@ -53,7 +53,7 @@
                         <Insets left="5.0" />
                      </GridPane.margin>
                   </ImageView>
-                  <Hyperlink fx:id="linkConfiguracoes" onAction="#configuracoesAction" styleClass="linkMenuLateral" stylesheets="@style.css" text="Configurações" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <Hyperlink fx:id="linkConfiguracoes" onAction="#configuracoesAction" styleClass="linkMenuLateral" stylesheets="@style.css" text="Auditoria" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <font>
                         <Font name="Gadugi" size="18.0" />
                      </font>
@@ -325,7 +325,7 @@
                         </Pane>
                      </children>
                   </GridPane>
-                  <ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="510.0" prefWidth="480.0" styleClass="campoPreenchimento">
+                  <ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="510.0" prefWidth="480.0">
                      <content>
                         <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2230.0" prefWidth="480.0">
                            <children>

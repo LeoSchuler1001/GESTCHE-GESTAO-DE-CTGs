@@ -106,7 +106,7 @@
                         <Font name="Gadugi" size="18.0" />
                      </font>
                   </Hyperlink>
-                  <Hyperlink fx:id="linkConfiguracoes" onAction="#configuracoesAction" styleClass="linkMenuLateral" text="Configurações" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                  <Hyperlink fx:id="linkConfiguracoes" onAction="#configuracoesAction" styleClass="linkMenuLateral" text="Auditoria" GridPane.columnIndex="1" GridPane.rowIndex="5">
                      <font>
                         <Font name="Gadugi" size="18.0" />
                      </font>
