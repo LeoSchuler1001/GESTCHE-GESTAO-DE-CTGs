@@ -166,8 +166,8 @@ public class UsuarioDAO {
     }
 
     //lista todos os usuários ativos
-    public List<Usuario> listarTodosAtivos() throws SQLException {
-        String sql = "SELECT * FROM usuario WHERE ativoUsuario = TRUE ORDER BY nomeUsuario ASC";
+    public List<Usuario> listarTodos() throws SQLException {
+        String sql = "SELECT * FROM usuario ORDER BY nomeUsuario ASC";
 
         List<Usuario> listaUsuarios = new ArrayList<>();
 

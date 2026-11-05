@@ -115,6 +115,11 @@ public class Usuario {
         this.ativoUsuario = ativoUsuario;
     }
 
+    public String getSituacaoUsuario() {
+        if(ativoUsuario == true) { return "Ativo"; }
+        else { return "Inativo";}
+    }
+
     //MÉTODOS
     public String exibirDados() {
         String mensagem = "";
@@ -125,5 +130,16 @@ public class Usuario {
         mensagem += "\nCargo: " + this.cargoUsuario;
 
         return mensagem;
+    }
+
+    public String getEnderecoString() {
+        if(this.endereco == null) {return "Sem endereço cadastrado";}
+
+        String endereco = "";
+        endereco += "Rua " + this.endereco.getRua();
+        endereco += ", " + this.endereco.getNumero();
+        endereco += " - " + this.endereco.getBairro();
+
+        return endereco;
     }
 }
