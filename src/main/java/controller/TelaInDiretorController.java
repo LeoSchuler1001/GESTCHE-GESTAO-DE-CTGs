@@ -227,13 +227,13 @@ public class TelaInDiretorController {
     }
 
     @FXML
-    void configuracoesAction(ActionEvent event) {
-
+    void configuracoesAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaConfiguracoesDiretor");
     }
 
     @FXML
-    void gestaoAcessoAction(ActionEvent event) {
-
+    void gestaoAcessoAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaGestaoAcesso");
     }
 
     @FXML
