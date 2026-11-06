@@ -68,7 +68,11 @@ public class Usuario {
     }
 
     public String getTelefoneUsuario() {
-        return telefoneUsuario;
+        if(telefoneUsuario != null) {
+            return telefoneUsuario;
+        } else {
+            return "";
+        }
     }
 
     public void setTelefoneUsuario(String telefoneUsuario) {

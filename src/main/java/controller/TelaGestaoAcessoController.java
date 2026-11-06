@@ -1,5 +1,7 @@
 package controller;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import app.App;
@@ -12,6 +14,9 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -22,6 +27,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.Lembrete;
 import model.Usuario;
@@ -32,6 +39,7 @@ public class TelaGestaoAcessoController {
     ConexaoBanco conexao = new ConexaoBanco();
     UsuarioDAO UsuarioDAO = new UsuarioDAO(conexao);
     LembreteDAO lembreteDAO = new LembreteDAO(conexao);
+    UsuarioDAO usuarioDAO = new UsuarioDAO(conexao);
 
     @FXML
     private Button botaoAlterarDados;
@@ -85,48 +93,209 @@ public class TelaGestaoAcessoController {
     private TableView<Usuario> tabelaUsuarios;
 
     @FXML
-    void alterarDadosAction(ActionEvent event) {
+    void alterarDadosAction(ActionEvent event) throws IOException, SQLException{
+        //verifica qual foi o usuario selecionado
+        Usuario usuarioSelecionado = tabelaUsuarios.getSelectionModel().getSelectedItem();
 
+        //verifica se um usuario foi selecionado
+        if (usuarioSelecionado != null) {
+            //pega o id so usuario selecionado
+            int idUsuarioSelecionado = usuarioSelecionado.getIdUsuario();
+
+            //abre a tela de exibição dos dados do usuario
+            //carregamento do fxml
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaAlteracaoUsuario.fxml"));
+            Parent root = fxmlLoader.load();
+
+            //obtem o controller da tela de alteração
+            AlteracaoUsuarioController controller = fxmlLoader.getController();
+            controller.setIdUsuarioSelecionado(idUsuarioSelecionado);
+
+            //cria e exibe a tela de alteração
+            Stage telaExibicao = new Stage();
+            telaExibicao.setTitle("Alterar dados do Usuário");
+            telaExibicao.setScene(new Scene(root));
+
+            //proibe que o usuario possa alterar o tamanho da tela
+            telaExibicao.setResizable(false);
+
+            //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+            telaExibicao.initModality(Modality.WINDOW_MODAL);
+            telaExibicao.initOwner(tabelaUsuarios.getScene().getWindow());
+
+            //abre a tela e aguarda o usuário fechar
+            telaExibicao.showAndWait();
+
+            //atualiza a tabela depois da alteração
+            carregarDadosSegundoPlano();
+        } else {
+            emitirAlerta("Selecione um usuario!", AlertType.ERROR);
+            return;
+        }
     }
 
     @FXML
-    void ativarUsuarioAction(ActionEvent event) {
+    void ativarUsuarioAction(ActionEvent event) throws SQLException {
+        //verifica qual foi o sócio selecionado
+        Usuario usuarioSelecionado = tabelaUsuarios.getSelectionModel().getSelectedItem();
 
+        //verifica se um sócio foi selecionado
+        if (usuarioSelecionado != null) {
+            //verifica se o sócio já está ativo
+            if(usuarioSelecionado.isAtivoUsuario()) {
+                emitirAlerta("Este usuário já está ativo!", AlertType.ERROR);
+                return;
+            }
+
+            //faz a confirmação com o usuário
+            boolean confirmaAtivacao = emitirAlertaConfirmacao("Deseja prosseguir com a ativação?", AlertType.CONFIRMATION);
+            if(confirmaAtivacao) {
+                //pega o id so sócio selecionado
+                int idUsuarioSelecionado = usuarioSelecionado.getIdUsuario();
+
+                //ativa o socio
+                usuarioDAO.ativarUsuario(idUsuarioSelecionado);
+
+                //cadastra um log de auditoria
+                String descricao = "Usuario " + usuarioSelecionado.getNomeUsuario() + " ativado com o cargo de " + usuarioSelecionado.getCargoUsuario();
+                usuarioDAO.cadastrarLogUsuario(descricao, App.usuarioLogado);
+                
+                //atualiza a tabela depois da alteração
+                carregarDadosSegundoPlano();
+            }
+        } else {
+            emitirAlerta("Selecione um usuário!", AlertType.ERROR);
+            return;
+        }
     }
 
     @FXML
-    void cadastrarUsuarioAction(ActionEvent event) {
+    void cadastrarUsuarioAction(ActionEvent event) throws IOException {
+        //abre a tela de cadastro de usuarios
+        //carregamento do fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaCadastrarUsuario.fxml"));
+        Parent root = fxmlLoader.load();
 
+        //cria e exibe a tela de alteração
+        Stage telaExibicao = new Stage();
+        telaExibicao.setTitle("Cadastrar Usuário");
+        telaExibicao.setScene(new Scene(root));
+
+        //proibe que o usuario possa alterar o tamanho da tela
+        telaExibicao.setResizable(false);
+
+        //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+        telaExibicao.initModality(Modality.WINDOW_MODAL);
+        telaExibicao.initOwner(tabelaUsuarios.getScene().getWindow());
+
+        //abre a tela e aguarda o usuário fechar
+        telaExibicao.showAndWait();
+
+        //atualiza a tabela depois da alteração
+        carregarDadosSegundoPlano();
     }
 
     @FXML
-    void configuracoesAction(ActionEvent event) {
-
+    void configuracoesAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaConfiguracoesDiretor");
     }
 
     @FXML
-    void inativarUsuarioAction(ActionEvent event) {
+    void inativarUsuarioAction(ActionEvent event) throws SQLException {
+        //verifica qual foi o sócio selecionado
+        Usuario usuarioSelecionado = tabelaUsuarios.getSelectionModel().getSelectedItem();
 
+        //verifica se um sócio foi selecionado
+        if (usuarioSelecionado != null) {
+            //verifica se o sócio já está ativo
+            if(!usuarioSelecionado.isAtivoUsuario()) {
+                emitirAlerta("Este usuário já está ativo!", AlertType.ERROR);
+                return;
+            }
+
+            //faz a confirmação com o usuário
+            boolean confirmaAtivacao = emitirAlertaConfirmacao("Deseja prosseguir com a inativação?", AlertType.CONFIRMATION);
+            if(confirmaAtivacao) {
+                //pega o id so usuario selecionado
+                int idUsuarioSelecionado = usuarioSelecionado.getIdUsuario();
+
+                //ativa o socio
+                usuarioDAO.desativarUsuario(idUsuarioSelecionado);
+
+                //cadastra um log de auditoria
+                String descricao = "Usuario " + usuarioSelecionado.getNomeUsuario() + " inativado";
+                usuarioDAO.cadastrarLogUsuario(descricao, App.usuarioLogado);
+                
+                //atualiza a tabela depois da alteração
+                carregarDadosSegundoPlano();
+            }
+        } else {
+            emitirAlerta("Selecione um usuário!", AlertType.ERROR);
+            return;
+        }
     }
 
     @FXML
-    void inicioAction(ActionEvent event) {
-
+    void inicioAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaInDiretor");
     }
 
     @FXML
-    void lembretesAction(ActionEvent event) {
-
+    void lembretesAction(ActionEvent event) throws IOException {
+        App.trocarTela("TelaLembretesDiretor");
     }
 
     @FXML
-    void sairAction(ActionEvent event) {
+    void sairAction(ActionEvent event) throws IOException {
+        boolean confirmaSaida = emitirAlerta("Deseja realmente sair?", AlertType.CONFIRMATION);
 
+        if (confirmaSaida) {
+            App.trocarTela("TelaLogin");
+        } else {
+            System.out.println("Ação cancelada pelo usuário.");
+        }
     }
 
     @FXML
-    void verDadosAction(ActionEvent event) {
+    void verDadosAction(ActionEvent event) throws IOException {
+        //verifica qual foi o usuario selecionado
+        Usuario usuarioSelecionado = tabelaUsuarios.getSelectionModel().getSelectedItem();
 
+        //verifica se um usuario foi selecionado
+        if (usuarioSelecionado != null) {
+            //pega o id so usuario selecionado
+            int idUsuarioSelecionado = usuarioSelecionado.getIdUsuario();
+
+            //abre a tela de exibição dos dados do usuario
+            //carregamento do fxml
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaDetalheUsuario.fxml"));
+            Parent root = fxmlLoader.load();
+
+            //obtem o controller da tela de alteração
+            DetalheUsuarioController controller = fxmlLoader.getController();
+            controller.carregarDadosEmSegundoPlano(idUsuarioSelecionado);
+
+            //cria e exibe a tela de alteração
+            Stage telaExibicao = new Stage();
+            telaExibicao.setTitle("Dados do Usuário");
+            telaExibicao.setScene(new Scene(root));
+
+            //proibe que o usuario possa alterar o tamanho da tela
+            telaExibicao.setResizable(false);
+
+            //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+            telaExibicao.initModality(Modality.WINDOW_MODAL);
+            telaExibicao.initOwner(tabelaUsuarios.getScene().getWindow());
+
+            //abre a tela e aguarda o usuário fechar
+            telaExibicao.showAndWait();
+
+            //atualiza a tabela depois da alteração
+            carregarDadosSegundoPlano();
+        } else {
+            emitirAlerta("Selecione um usuario!", AlertType.ERROR);
+            return;
+        }
     }
 
     //MÉTODOS

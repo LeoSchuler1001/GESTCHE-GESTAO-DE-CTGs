@@ -31,19 +31,26 @@ public class UsuarioDAO {
     //MÉTODOS
     //autentica um usuario 
     public Usuario autenticarUsuario(String cpf, String senhaDigitada) throws SQLException {
-        //comando sql para buscar o usuário pelo cpf
+        // comando sql para buscar o usuário pelo cpf
         String sql = "SELECT * FROM usuario WHERE cpfUsuario = ?";
 
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
-            //preenche o comando sql sem espaços no cpf
+            // preenche o comando sql sem espaços no cpf
             stmt.setString(1, cpf.replaceAll("[^0-9]", "").trim());
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
+                    //verifica se o usuario está ativo
+                    boolean ativo = rs.getBoolean("ativoUsuario");
+                    if (!ativo) {
+                        System.err.println("Tentativa de login de usuário inativo: " + cpf);
+                        return null;
+                    }
+
                     String hashBanco = rs.getString("senhaHash");
 
                     if (hashBanco != null) {
-                        //remove os espaçoes em branco
+                        // remove os espaços em branco
                         hashBanco = hashBanco.trim();
 
                         try {
@@ -59,7 +66,7 @@ public class UsuarioDAO {
             }
         }
 
-        // Se o CPF não existir ou a senha estiver incorreta
+        //se o CPF não existir, a senha estiver incorreta ou o usuário estiver inativo
         return null;
     }
 
@@ -217,6 +224,16 @@ public class UsuarioDAO {
     //desativa um usuario
     public void desativarUsuario(int id) throws SQLException {
         String sql = "UPDATE usuario SET ativoUsuario = FALSE WHERE pk_idUsuario = ?";
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        }
+    }
+
+    //ativa um usuario
+    public void ativarUsuario(int id) throws SQLException {
+        String sql = "UPDATE usuario SET ativoUsuario = TRUE WHERE pk_idUsuario = ?";
 
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
             stmt.setInt(1, id);
