@@ -211,12 +211,6 @@ public class GerarPdfMovimentacoes {
         content.endText();
     }
 
-    private static void adicionarTextoCentralizado(PDPageContentStream content, String texto, PDType1Font fonte, float tamanho, float y) throws IOException {
-        float larguraTexto = fonte.getStringWidth(texto) / 1000 * tamanho;
-        float x = (larguraPagina - larguraTexto) / 2;
-        adicionarTexto(content, texto, x, y, fonte, tamanho);
-    }
-
     private static void adicionarLinha(PDPageContentStream content, float y) throws IOException {
         content.setStrokingColor(200 / 255f, 200 / 255f, 200 / 255f);
         content.setLineWidth(1);
