@@ -186,6 +186,11 @@
                   <Insets top="20.0" />
                </VBox.margin>
             </TableView>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="botaoGerarPdf" mnemonicParsing="false" onAction="#gerarPdfAction" styleClass="botoes" text="GERAR PDF" />
+               </children>
+            </HBox>
          </children>
       </VBox>
    </center>

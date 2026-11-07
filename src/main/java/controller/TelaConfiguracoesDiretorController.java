@@ -1,7 +1,10 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +21,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ProgressIndicator;
@@ -25,11 +29,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import model.Lembrete;
 import model.LogAuditoria;
+import util.GerarPdfAuditoria;
+import util.RelatorioAuditoriaProvider;
 
-public class TelaConfiguracoesDiretorController {
+public class TelaConfiguracoesDiretorController implements RelatorioAuditoriaProvider {
     //ATRIBUTOS
     //cria a conexão com o banco de dados
     ConexaoBanco conexao = new ConexaoBanco();
@@ -51,6 +58,9 @@ public class TelaConfiguracoesDiretorController {
 
     @FXML
     private Hyperlink linkInicio;
+        
+    @FXML
+    private Button botaoGerarPdf;
 
     @FXML
     private Hyperlink linkGestaoAcesso;
@@ -71,6 +81,31 @@ public class TelaConfiguracoesDiretorController {
     private TableColumn<LogAuditoria, String> usuarioLog;
 
     //BOTÕES
+    @FXML
+    void gerarPdfAction(ActionEvent event) {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Salvar Relatório de Auditoria");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Arquivo PDF (*.pdf)", "*.pdf"));
+            
+            String dataHoje = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            fileChooser.setInitialFileName("Relatorio_Auditoria_" + dataHoje + ".pdf");
+            
+            File arquivoDestino = fileChooser.showSaveDialog(tabelaLogsAuditoria.getScene().getWindow());
+            
+            if (arquivoDestino != null) {
+                GerarPdfAuditoria.gerar(this, arquivoDestino);
+                emitirAlerta("Relatório de auditoria gerado com sucesso!", AlertType.INFORMATION);
+            }
+        } catch (java.io.FileNotFoundException e) {
+            emitirAlerta("O arquivo PDF está aberto em outro programa. Feche-o e tente novamente.", AlertType.ERROR);
+        } catch (Exception e) {
+            e.printStackTrace();
+            emitirAlerta("Erro ao gerar o PDF de auditoria: " + e.getMessage(), AlertType.ERROR);
+        }
+    }
+
+
     @FXML
     void lembretesAction(ActionEvent event) throws IOException {
         App.trocarTela("TelaLembretesDiretor");
@@ -157,6 +192,8 @@ public class TelaConfiguracoesDiretorController {
         tabelaLembretes.setPlaceholder(criarIndicator());
         tabelaLogsAuditoria.setPlaceholder(criarIndicator());
 
+        botaoGerarPdf.setDisable(true);
+
         //cria uma tarefa que irá carregar os dados em segundo plano
         Task<Void> task = new Task<>() {
             @Override
@@ -170,6 +207,8 @@ public class TelaConfiguracoesDiretorController {
                     tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretes));
 
                     tabelaLogsAuditoria.setItems(FXCollections.observableArrayList(listaLogs));
+                    
+                    botaoGerarPdf.setDisable(false);
 
                     if (listaLembretes.isEmpty()) {
                         tabelaLembretes.setPlaceholder(new javafx.scene.control.Label("Sem lembretes."));
@@ -213,5 +252,22 @@ public class TelaConfiguracoesDiretorController {
 
         // Verifica se o usuário clicou no botão OK
         return resultado.isPresent() && resultado.get() == ButtonType.OK;
+    }
+
+    //implementação da interface de gerar pdf
+    @Override
+    public List<LogAuditoria> getListaLogs() {
+        // Retorna os itens atualmente carregados na tabela de logs
+        return tabelaLogsAuditoria.getItems();
+    }
+
+    @Override
+    public String getTituloRelatorio() {
+        return "Registro Geral de Atividades do Sistema";
+    }
+
+    @Override
+    public LocalDate getDataEmissao() {
+        return LocalDate.now();
     }
 }
