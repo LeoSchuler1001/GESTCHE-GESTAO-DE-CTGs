@@ -51,7 +51,7 @@ public class RecebimentoDebitoController {
     DebitoDAO debitoDAO = new DebitoDAO(conexaoBanco);
     Debito debitoSelecionado;
     Socio sociioSelecionado;
-    RecebimentoPendenteDTO recebimentoPendenteDTO;
+    RecebimentoPendenteDTO recebimentoPendenteDTO = new RecebimentoPendenteDTO();
 
     @FXML
     private Button botaoFechar;
@@ -137,9 +137,7 @@ public class RecebimentoDebitoController {
             //cadastra a movimentação
             movimentacaoDAO.cadastrarMovimentacao(movimentacao);
 
-            //atribui a movimentação criada ao objeto recebimento selecionado
-            recebimentoPendenteDTO.setIdMovimentacao(movimentacao.getIdMovimentacao());
-
+            
             //atualiza o debito para ser registrado como pago
             debitoDAO.atualizarDebito(debitoSelecionado);
 

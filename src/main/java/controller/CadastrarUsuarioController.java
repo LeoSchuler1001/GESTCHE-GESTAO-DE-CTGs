@@ -16,6 +16,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -67,10 +68,16 @@ public class CadastrarUsuarioController {
     private TextField campoTelefoneUsuario;
 
     @FXML
-    private TextField campoSenha;
+    private PasswordField campoRepetirRespostaSeguranca;
 
     @FXML
-    private TextField campoRespostaSeguranca;
+    private PasswordField campoRepetirSenha;
+
+    @FXML
+    private PasswordField campoRespostaSeguranca;
+
+    @FXML
+    private PasswordField campoSenha;
 
     @FXML
     private VBox painelFundo;
@@ -199,6 +206,8 @@ public class CadastrarUsuarioController {
             emitirAlerta("O número do endereço deve conter apenas dígitos!", AlertType.ERROR);
             return false;
         }
+
+        //verifica se os campos senha coincidem
         
         return true;
     }
