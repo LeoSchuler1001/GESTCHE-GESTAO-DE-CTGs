@@ -94,6 +94,9 @@ public class VerDadosSocioController implements RelatorioFichaSocioProvider {
     private TextField campoEmailSocio;
 
     @FXML
+    private Button botaoHistPagamentos;
+
+    @FXML
     private TextField campoEstadoSocio;
 
     @FXML
@@ -130,6 +133,33 @@ public class VerDadosSocioController implements RelatorioFichaSocioProvider {
     private VBox painelFundo;
 
     //BOTÕES
+    @FXML
+    void histPagamentosAction(ActionEvent event) throws IOException {
+        //abre a tela de exibição dos dados do debito
+        //carregamento do fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaHistPagamentos.fxml"));
+        Parent root = fxmlLoader.load();
+
+        //obtem o controller da tela de alteração
+        HistPagamentosController controller = fxmlLoader.getController();
+        controller.carregarDadosEmSegundoPlano(socioSelecionado);
+            
+        //cria e exibe a tela de alteração
+        Stage telaExibicao = new Stage();
+        telaExibicao.setTitle("Histórico de pagamentos");
+        telaExibicao.setScene(new Scene(root));
+
+        //proibe que o usuario possa alterar o tamanho da tela
+        telaExibicao.setResizable(false);
+
+        //bloqueia interações com a tela principal enquanto a outra tela estiver aberta
+        telaExibicao.initModality(Modality.WINDOW_MODAL);
+        telaExibicao.initOwner(campoNomeSocio.getScene().getWindow());
+
+        //abre a tela e aguarda o usuário fechar
+        telaExibicao.showAndWait();
+    }
+
     @FXML 
     void gerarPdfAction(ActionEvent event) {
         try {
@@ -342,6 +372,7 @@ public class VerDadosSocioController implements RelatorioFichaSocioProvider {
         campoDepartamentosSocio.setPlaceholder(criarIndicator());
 
         botaoGerarPdf.setDisable(true);
+        botaoHistPagamentos.setDisable(true);
         
         Task<Void> task = new Task<>() {
             @Override
@@ -356,6 +387,7 @@ public class VerDadosSocioController implements RelatorioFichaSocioProvider {
             atualizarComponentesTela();
 
             botaoGerarPdf.setDisable(false);
+            botaoHistPagamentos.setDisable(false);
         });
 
         //mostra um aviso caso os dados não possam ser carregados

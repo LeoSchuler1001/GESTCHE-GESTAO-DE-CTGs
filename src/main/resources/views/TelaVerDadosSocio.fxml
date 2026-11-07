@@ -144,6 +144,11 @@
                               <Insets left="20.0" />
                            </HBox.margin>
                         </Button>
+                        <Button fx:id="botaoHistPagamentos" mnemonicParsing="false" onAction="#histPagamentosAction" styleClass="botoes" text="HISTÓRICO DE PAGAMENTOS">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                        </Button>
                      </children>
                   </HBox>
                </children>

@@ -1,6 +1,7 @@
 package model;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 public class Debito {
     //ATRIBUTOS
@@ -79,5 +80,21 @@ public class Debito {
 
     public void setSocio(Socio socio) {
         this.socio = socio;
+    }
+
+    public String getVencimentoDebitoFormatado() {
+        if (this.vencimentoDebito != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            return sdf.format(this.vencimentoDebito);
+        }
+        return "";
+    }
+
+    public String getDtPgmtDebitoFormatada() {
+        if (this.dtPgmtDebito != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            return sdf.format(this.dtPgmtDebito);
+        }
+        return "";
     }
 }

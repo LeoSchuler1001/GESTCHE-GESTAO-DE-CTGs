@@ -168,4 +168,27 @@ public class DebitoDAO {
         //retorna o usuario
         return debito;
     }
+
+    //lista os débitos pagos de um sócio
+    public List<Debito> listarDebitosPagos(int idSocio) throws SQLException {
+        String sql = "SELECT * FROM debito WHERE fk_idSocio = ? AND dtPgmtDebito IS NOT NULL ORDER BY vencimentoDebito DESC";
+        List<Debito> lista = new ArrayList<>();
+
+        try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, idSocio);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Debito debito = new Debito();
+                    debito.setIdDebito(rs.getInt("pk_idDebito"));
+                    debito.setTipoDebito(rs.getString("tipoDebito"));
+                    debito.setValorDebito(rs.getDouble("valorDebito"));
+                    debito.setVencimentoDebito(rs.getDate("vencimentoDebito"));
+                    debito.setDtPgmtDebito(rs.getDate("dtPgmtDebito"));
+                    
+                    lista.add(debito);
+                }
+            }
+        }
+        return lista;
+    }
 }
