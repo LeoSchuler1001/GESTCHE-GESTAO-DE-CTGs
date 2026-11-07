@@ -225,10 +225,11 @@ public class DetalheDebitoController {
             return;
         }
         
-        if(App.usuarioLogado.getCargoUsuario().equals("Tesoureiro")) {
+        //verifica qual o cargo do usuário que está tentando registrar o débito
+        if(App.usuarioLogado.getCargoUsuario().equals("Tesoureiro") || App.usuarioLogado.getCargoUsuario().equals("Diretor")) {
             //verifica se um debito foi selecionado
             if (debitoSelecionado != null) {
-                //abre a tela de exibição dos dados do debito
+                //abre a tela de recebimento do débito que cadastra movimentação
                 //carregamento do fxml
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/TelaRecebimentoDebito.fxml"));
                 Parent root = fxmlLoader.load();
@@ -252,8 +253,6 @@ public class DetalheDebitoController {
                 //abre a tela e aguarda o usuário fechar
                 telaExibicao.showAndWait();
 
-                emitirAlerta("Pagamento registrado.", AlertType.INFORMATION);
-
                 Stage stage = (Stage) painelFundo.getScene().getWindow();
                 stage.close();
             }
@@ -261,6 +260,7 @@ public class DetalheDebitoController {
             if(recebimento_pendenteDAO.registrarPagamentoPendente(debitoSelecionado.getIdDebito(), App.usuarioLogado.getIdUsuario())) {
                 emitirAlerta("Pagamento aguardando confirmação da tesouraria!", AlertType.INFORMATION);
 
+                //atualiza o nome do débito para ter a mensagem ao lado, dizendo que está aguardando confirmação
                 debitoSelecionado.setTipoDebito(debitoSelecionado.getTipoDebito() + " (Aguardando confirmação)");
                 debitoDAO.atualizarDebito(debitoSelecionado);
 

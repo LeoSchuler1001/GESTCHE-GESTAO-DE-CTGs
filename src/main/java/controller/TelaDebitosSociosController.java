@@ -171,9 +171,9 @@ public class TelaDebitosSociosController {
             //abre a tela e aguarda o usuário fechar
             telaExibicao.showAndWait();
 
-            recebimento_pendenteDAO.atualizarStatusRecebimento(idRecebimento, StatusRecebimentos.CONFIRMADO.name(), App.usuarioLogado.getIdUsuario(), recebimentoSelecionado.getIdMovimentacao());
-
-            emitirAlerta("Pagamento registrado.", AlertType.INFORMATION);          
+            if(recebimentoSelecionado.getIdMovimentacao() > 0) {
+                recebimento_pendenteDAO.atualizarStatusRecebimento(idRecebimento, StatusRecebimentos.CONFIRMADO.name(), App.usuarioLogado.getIdUsuario(), recebimentoSelecionado.getIdMovimentacao());     
+            }
 
             carregarDadosSegundoPlano();
         } else {
