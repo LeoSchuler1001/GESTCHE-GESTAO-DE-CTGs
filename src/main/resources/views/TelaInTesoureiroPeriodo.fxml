@@ -344,7 +344,7 @@
                   </HBox>
                   <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="980.0">
                      <children>
-                        <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="465.0">
+                        <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="375.0">
                            <children>
                               <Button fx:id="botaoAdicionarReceita" mnemonicParsing="false" onAction="#adicionarReceitaAction" styleClass="botoes" text="ADICIONAR" />
                               <Button fx:id="botaoDetalharReceita" mnemonicParsing="false" onAction="#detalharReceitaAction" styleClass="botoes" text="DETALHAR">
@@ -353,7 +353,12 @@
                                  </HBox.margin>
                               </Button>
                            </children></HBox>
-                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="465.0">
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="150.0">
+                           <children>
+                              <Button fx:id="botaoGerarPdf" mnemonicParsing="false" onAction="#gerarPdfAction" styleClass="botoes" text="GERAR PDF" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="375.0">
                            <children>
                               <Button fx:id="botaoAdicionarDespesa" mnemonicParsing="false" onAction="#adicionarDespesaAction" styleClass="botoes" text="ADICIONAR" />
                               <Button fx:id="botaoDetalharDespesa" mnemonicParsing="false" onAction="#detalharDespesaAction" styleClass="botoes" text="DETALHAR">

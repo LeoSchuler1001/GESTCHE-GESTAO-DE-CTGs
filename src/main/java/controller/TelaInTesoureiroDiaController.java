@@ -29,6 +29,8 @@ import javafx.util.StringConverter;
 import model.Conta;
 import model.Lembrete;
 import model.Movimentacao;
+import util.GerarPdfMovimentacoes;
+import util.RelatorioFinanceiroProvider;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -40,7 +42,7 @@ import dao.ContaDAO;
 import dao.LembreteDAO;
 import dao.MovimentacaoDAO;
 
-public class TelaInTesoureiroDiaController {
+public class TelaInTesoureiroDiaController implements RelatorioFinanceiroProvider {
     //FERRAMENTAS
     DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -65,6 +67,9 @@ public class TelaInTesoureiroDiaController {
 
     @FXML
     private Button botaoOutrasContas;
+
+    @FXML
+    private Button botaoGerarPdf;
 
     @FXML
     private ComboBox<LocalDate> diaSelecionado;
@@ -166,6 +171,29 @@ public class TelaInTesoureiroDiaController {
     private TableColumn<Lembrete, String> valorLembrete;
 
     //BOTÕES
+    @FXML
+    void gerarPfdfAction(ActionEvent event) {
+        try {
+            //escolhe o arquivo de destino
+            javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+            fileChooser.setTitle("Relatório de movimentações");
+            fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("Arquivo PDF (*.pdf)", "*.pdf"));
+            
+            // Define um nome padrão
+            fileChooser.setInitialFileName("Relatorio_Movimentações_" + diaSelecionado.getValue() + ".pdf");
+            
+            java.io.File arquivoDestino = fileChooser.showSaveDialog(tabelaDespesas.getScene().getWindow());
+            
+            if (arquivoDestino != null) {
+                GerarPdfMovimentacoes.gerar(this, arquivoDestino);
+                emitirAlerta("Relatório gerado com sucesso!", AlertType.INFORMATION);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            emitirAlerta("Erro ao gerar o PDF: " + e.getMessage(), AlertType.ERROR);
+        }
+    }
+
     @FXML
     void acessarDiretoriaAction(ActionEvent event) throws IOException {
         App.trocarTela("TelaInDiretor");
@@ -507,6 +535,8 @@ public class TelaInTesoureiroDiaController {
         tabelaReceitas.setPlaceholder(criarIndicator());
         tabelaDespesas.setPlaceholder(criarIndicator());
         tabelaLembretes.setPlaceholder(criarIndicator());
+        
+        botaoGerarPdf.setDisable(true);
 
         //cria uma tarefa que irá carregar os dados em segundo plano
         Task<Void> task = new Task<>() {
@@ -541,6 +571,8 @@ public class TelaInTesoureiroDiaController {
                     tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretes));
 
                     campoSaldoTotal.setText("R$" + saldoTotal);
+
+                    botaoGerarPdf.setDisable(false);
 
                     if(listaContas.size() >= 1) {
                         nomeConta1.setText(listaContas.get(0).getNomeConta());
@@ -602,6 +634,8 @@ public class TelaInTesoureiroDiaController {
         tabelaReceitas.setPlaceholder(criarIndicator());
         tabelaDespesas.setPlaceholder(criarIndicator());
 
+        botaoGerarPdf.setDisable(true);
+
         //cria uma tarefa que irá carregar os dados em segundo plano
         Task<Void> task = new Task<>() {
             @Override
@@ -630,6 +664,8 @@ public class TelaInTesoureiroDiaController {
                     tabelaDespesas.setItems(FXCollections.observableArrayList(listaDespesas));
 
                     campoSaldoTotal.setText("R$" + saldoTotal);
+
+                    botaoGerarPdf.setDisable(false);
 
                     if(listaContas.size() >= 1) {
                         nomeConta1.setText(listaContas.get(0).getNomeConta());
@@ -683,5 +719,42 @@ public class TelaInTesoureiroDiaController {
 
         // Verifica se o usuário clicou no botão OK
         return resultado.isPresent() && resultado.get() == ButtonType.OK;
+    }
+
+    //implementação da interface para gerar relatórios em pdf
+    @Override
+    public String getTituloPeriodo() {
+        LocalDate data = diaSelecionado.getValue();
+        return "Dia " + (data != null ? data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "");
+    }
+
+    @Override
+    public LocalDate getDataInicio() {
+        return diaSelecionado.getValue();
+    }
+
+    @Override
+    public LocalDate getDataFim() {
+        return diaSelecionado.getValue();
+    }
+
+    @Override
+    public List<Movimentacao> getListaReceitas() {
+        return tabelaReceitas.getItems();
+    }
+
+    @Override
+    public List<Movimentacao> getListaDespesas() {
+        return tabelaDespesas.getItems();
+    }
+
+    @Override
+    public List<Conta> getListaContas() {
+        return listaContas != null ? listaContas : java.util.Collections.emptyList();
+    }
+
+    @Override
+    public double getSaldoTotal() {
+        return saldoTotal != null ? saldoTotal : 0.0;
     }
 }

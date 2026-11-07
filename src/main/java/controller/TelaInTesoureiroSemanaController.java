@@ -28,6 +28,9 @@ import javafx.util.Callback;
 import model.Conta;
 import model.Lembrete;
 import model.Movimentacao;
+import util.GerarPdfMovimentacoes;
+import util.RelatorioFinanceiroProvider;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -40,7 +43,7 @@ import dao.ContaDAO;
 import dao.LembreteDAO;
 import dao.MovimentacaoDAO;
 
-public class TelaInTesoureiroSemanaController {
+public class TelaInTesoureiroSemanaController implements RelatorioFinanceiroProvider {
     //FERRAMENTAS
     DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.of("pt", "BR"));
 
@@ -56,6 +59,9 @@ public class TelaInTesoureiroSemanaController {
 
     @FXML
     private Button botaoAdicionarReceita;
+    
+    @FXML
+    private Button botaoGerarPdf;
 
     @FXML
     private Button botaoDetalharDespesa;
@@ -166,6 +172,31 @@ public class TelaInTesoureiroSemanaController {
     private TableColumn<Lembrete, String> valorLembrete;
 
     //BOTÕES
+    @FXML
+    void gerarPdfAction(ActionEvent event) {
+        try {
+            //escolhe o arquivo de destino
+            javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+            fileChooser.setTitle("Relatório de movimentações");
+            fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("Arquivo PDF (*.pdf)", "*.pdf"));
+            
+            String periodoTexto = semanaSelecionada.getValue();
+            String periodoFormatado = periodoTexto.replace("/", "-").replace(" ", "_").replace("até", "a");
+            String nomeSugerido = "Relatorio_Movimentacoes_" + periodoFormatado + ".pdf";
+            fileChooser.setInitialFileName(nomeSugerido);
+
+            java.io.File arquivoDestino = fileChooser.showSaveDialog(tabelaDespesas.getScene().getWindow());
+            
+            if (arquivoDestino != null) {
+                GerarPdfMovimentacoes.gerar(this, arquivoDestino);
+                emitirAlerta("Relatório gerado com sucesso!", AlertType.INFORMATION);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            emitirAlerta("Erro ao gerar o PDF: " + e.getMessage(), AlertType.ERROR);
+        }
+    }
+
     @FXML
     void acessarDiretoriaAction(ActionEvent event) throws IOException {
         App.trocarTela("TelaInDiretor");
@@ -492,6 +523,8 @@ public class TelaInTesoureiroSemanaController {
         tabelaDespesas.setPlaceholder(criarIndicator());
         tabelaLembretes.setPlaceholder(criarIndicator());
 
+        botaoGerarPdf.setDisable(true);
+
         //cria uma tarefa que irá carregar os dados em segundo plano
         Task<Void> task = new Task<>() {
             @Override
@@ -531,6 +564,8 @@ public class TelaInTesoureiroSemanaController {
                     tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretes));
 
                     campoSaldoTotal.setText("R$" + saldoTotal);
+
+                    botaoGerarPdf.setDisable(false);
 
                     if(listaContas.size() >= 1) {
                         nomeConta1.setText(listaContas.get(0).getNomeConta());
@@ -592,6 +627,8 @@ public class TelaInTesoureiroSemanaController {
         tabelaReceitas.setPlaceholder(criarIndicator());
         tabelaDespesas.setPlaceholder(criarIndicator());
 
+        botaoGerarPdf.setDisable(true);
+
         //cria uma tarefa que irá carregar os dados em segundo plano
         Task<Void> task = new Task<>() {
             @Override
@@ -621,6 +658,8 @@ public class TelaInTesoureiroSemanaController {
                     tabelaDespesas.setItems(FXCollections.observableArrayList(listaDespesas));
 
                     campoSaldoTotal.setText("R$" + saldoTotal);
+
+                    botaoGerarPdf.setDisable(false);
 
                     if(listaContas.size() >= 1) {
                         nomeConta1.setText(listaContas.get(0).getNomeConta());
@@ -674,5 +713,60 @@ public class TelaInTesoureiroSemanaController {
 
         // Verifica se o usuário clicou no botão OK
         return resultado.isPresent() && resultado.get() == ButtonType.OK;
+    }
+
+    //implementação da interface para gerar relatórios em pdf
+    @Override
+    public String getTituloPeriodo() {
+        String texto = semanaSelecionada.getValue();
+        return "Período: " + (texto != null ? texto : "");
+    }
+
+    @Override
+    public LocalDate getDataInicio() {
+        try {
+            String texto = semanaSelecionada.getValue();
+            if (texto != null && texto.contains("até")) {
+                String dataInicioStr = texto.split("até")[0].trim();
+                return LocalDate.parse(dataInicioStr, formatoData);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return LocalDate.now(); // Fallback de segurança
+    }
+
+    @Override
+    public LocalDate getDataFim() {
+        try {
+            String texto = semanaSelecionada.getValue();
+            if (texto != null && texto.contains("até")) {
+                String dataFimStr = texto.split("até")[1].trim();
+                return LocalDate.parse(dataFimStr, formatoData);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return LocalDate.now(); // Fallback de segurança
+    }
+
+    @Override
+    public List<Movimentacao> getListaReceitas() {
+        return tabelaReceitas.getItems();
+    }
+
+    @Override
+    public List<Movimentacao> getListaDespesas() {
+        return tabelaDespesas.getItems();
+    }
+
+    @Override
+    public List<Conta> getListaContas() {
+        return listaContas != null ? listaContas : java.util.Collections.emptyList();
+    }
+
+    @Override
+    public double getSaldoTotal() {
+        return saldoTotal != null ? saldoTotal : 0.0;
     }
 }

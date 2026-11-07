@@ -28,6 +28,8 @@ import javafx.util.Callback;
 import model.Conta;
 import model.Lembrete;
 import model.Movimentacao;
+import util.GerarPdfMovimentacoes;
+import util.RelatorioFinanceiroProvider;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -38,7 +40,7 @@ import dao.ContaDAO;
 import dao.LembreteDAO;
 import dao.MovimentacaoDAO;
 
-public class TelaInTesoureiroAnoController {
+public class TelaInTesoureiroAnoController implements RelatorioFinanceiroProvider {
     //ATRIBUTOS
     Double saldoTotal = 0.0;
     List<Conta> listaContas;
@@ -63,6 +65,9 @@ public class TelaInTesoureiroAnoController {
 
     @FXML
     private Button botaoOutrasContas;
+
+    @FXML
+    private Button botaoGerarPdf;
 
     @FXML
     private Label campoSaldoTotal;
@@ -161,6 +166,29 @@ public class TelaInTesoureiroAnoController {
     private TableColumn<Lembrete, String> valorLembrete;
 
     //BOTÕES
+    @FXML
+    void gerarPdfAction(ActionEvent event) {
+        try {
+            //escolhe o arquivo de destino
+            javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+            fileChooser.setTitle("Relatório de movimentações");
+            fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("Arquivo PDF (*.pdf)", "*.pdf"));
+            
+            // Define um nome padrão
+            fileChooser.setInitialFileName("Relatorio_Movimentações_" + anoSelecionado.getValue() + ".pdf");
+            
+            java.io.File arquivoDestino = fileChooser.showSaveDialog(tabelaDespesas.getScene().getWindow());
+            
+            if (arquivoDestino != null) {
+                GerarPdfMovimentacoes.gerar(this, arquivoDestino);
+                emitirAlerta("Relatório gerado com sucesso!", AlertType.INFORMATION);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            emitirAlerta("Erro ao gerar o PDF: " + e.getMessage(), AlertType.ERROR);
+        }
+    }
+
     @FXML
     void acessarDiretoriaAction(ActionEvent event) throws IOException {
         App.trocarTela("TelaInDiretor");
@@ -484,6 +512,8 @@ public class TelaInTesoureiroAnoController {
         tabelaDespesas.setPlaceholder(criarIndicator());
         tabelaLembretes.setPlaceholder(criarIndicator());
 
+        botaoGerarPdf.setDisable(true);
+
         //cria uma tarefa que irá carregar os dados em segundo plano
         Task<Void> task = new Task<>() {
             @Override
@@ -518,6 +548,8 @@ public class TelaInTesoureiroAnoController {
                     tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretes));
 
                     campoSaldoTotal.setText("R$" + saldoTotal);
+
+                    botaoGerarPdf.setDisable(false);
                     
                     if(listaContas.size() >= 1) {
                         nomeConta1.setText(listaContas.get(0).getNomeConta());
@@ -579,6 +611,8 @@ public class TelaInTesoureiroAnoController {
         tabelaReceitas.setPlaceholder(criarIndicator());
         tabelaDespesas.setPlaceholder(criarIndicator());
 
+        botaoGerarPdf.setDisable(true);
+
         //cria uma tarefa que irá carregar os dados em segundo plano
         Task<Void> task = new Task<>() {
             @Override
@@ -607,6 +641,8 @@ public class TelaInTesoureiroAnoController {
                     tabelaDespesas.setItems(FXCollections.observableArrayList(listaDespesas));
 
                     campoSaldoTotal.setText("R$" + saldoTotal);
+
+                    botaoGerarPdf.setDisable(false);
 
                     if(listaContas.size() >= 1) {
                         nomeConta1.setText(listaContas.get(0).getNomeConta());
@@ -660,5 +696,44 @@ public class TelaInTesoureiroAnoController {
 
         // Verifica se o usuário clicou no botão OK
         return resultado.isPresent() && resultado.get() == ButtonType.OK;
+    }
+
+    //implementação da interface para gerar relatórios em pdf
+    @Override
+    public String getTituloPeriodo() {
+        Integer ano = anoSelecionado.getValue();
+        return "Ano de " + (ano != null ? ano : LocalDate.now().getYear());
+    }
+
+    @Override
+    public LocalDate getDataInicio() {
+        int ano = anoSelecionado.getValue() != null ? anoSelecionado.getValue() : LocalDate.now().getYear();
+        return LocalDate.of(ano, 1, 1);
+    }
+
+    @Override
+    public LocalDate getDataFim() {
+        int ano = anoSelecionado.getValue() != null ? anoSelecionado.getValue() : LocalDate.now().getYear();
+        return LocalDate.of(ano, 12, 31);
+    }
+
+    @Override
+    public List<Movimentacao> getListaReceitas() {
+        return tabelaReceitas.getItems();
+    }
+
+    @Override
+    public List<Movimentacao> getListaDespesas() {
+        return tabelaDespesas.getItems();
+    }
+
+    @Override
+    public List<Conta> getListaContas() {
+        return listaContas != null ? listaContas : java.util.Collections.emptyList();
+    }
+
+    @Override
+    public double getSaldoTotal() {
+        return saldoTotal != null ? saldoTotal : 0.0;
     }
 }
