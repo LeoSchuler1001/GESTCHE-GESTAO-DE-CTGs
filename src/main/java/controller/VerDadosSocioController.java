@@ -1,8 +1,11 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,8 +41,9 @@ import model.Departamento;
 import model.Dependente;
 import model.Endereco;
 import model.Socio;
+import util.RelatorioFichaSocioProvider;
 
-public class VerDadosSocioController {
+public class VerDadosSocioController implements RelatorioFichaSocioProvider {
     //ATRIBUTOS
     List<String> listaDepartamentosSocio;
     List<String> listaDependentesSocio;
@@ -76,6 +80,9 @@ public class VerDadosSocioController {
 
     @FXML
     private ListView<String> campoDebitosSocio;
+
+    @FXML
+    private Button botaoGerarPdf;
 
     @FXML
     private ListView<String> campoDepartamentosSocio;
@@ -123,6 +130,37 @@ public class VerDadosSocioController {
     private VBox painelFundo;
 
     //BOTÕES
+    @FXML 
+    void gerarPdfAction(ActionEvent event) {
+        try {
+            if (socioSelecionado == null) {
+                emitirAlerta("Nenhum sócio carregado para gerar a ficha.", AlertType.ERROR);
+                return;
+            }
+
+            javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+            fileChooser.setTitle("Salvar Ficha Cadastral do Sócio");
+            fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("Arquivo PDF (*.pdf)", "*.pdf"));
+            
+            String nomeSocioArquivo = socioSelecionado.getNomeSocio().replaceAll("[^a-zA-Z0-9_-]", "_");
+            String dataHoje = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            
+            fileChooser.setInitialFileName("Ficha_Socio_" + nomeSocioArquivo + "_" + dataHoje + ".pdf");
+            
+            File arquivoDestino = fileChooser.showSaveDialog(campoNomeSocio.getScene().getWindow());
+            
+            if (arquivoDestino != null) {
+                util.GerarPdfFichaSocio.gerar(this, arquivoDestino);
+                emitirAlerta("Ficha cadastral gerada com sucesso!", AlertType.INFORMATION);
+            }
+        } catch (java.io.FileNotFoundException e) {
+            emitirAlerta("O arquivo PDF está aberto em outro programa. Feche-o e tente novamente.", AlertType.ERROR);
+        } catch (Exception e) {
+            e.printStackTrace();
+            emitirAlerta("Erro ao gerar a ficha em PDF: " + e.getMessage(), AlertType.ERROR);
+        }
+    }
+
     @FXML
     void detalharDebitoAction(ActionEvent event) throws SQLException, IOException {
         debitoSelecionado = debitoDAO.buscarPorTipo(campoDebitosSocio.getSelectionModel().getSelectedItem());
@@ -302,6 +340,8 @@ public class VerDadosSocioController {
         campoDebitosSocio.setPlaceholder(criarIndicator());
         campoDependentesSocio.setPlaceholder(criarIndicator());
         campoDepartamentosSocio.setPlaceholder(criarIndicator());
+
+        botaoGerarPdf.setDisable(true);
         
         Task<Void> task = new Task<>() {
             @Override
@@ -314,6 +354,8 @@ public class VerDadosSocioController {
         //atualiza os dados caso a busca tenha ocorrido bem
         task.setOnSucceeded(e -> {
             atualizarComponentesTela();
+
+            botaoGerarPdf.setDisable(false);
         });
 
         //mostra um aviso caso os dados não possam ser carregados
@@ -407,5 +449,36 @@ public class VerDadosSocioController {
         ProgressIndicator indicador = new ProgressIndicator();
         indicador.setMaxSize(40, 40);
         return indicador;
+    }
+
+    //implementação da interface de gerar relatorios em pdf
+    @Override
+    public Socio getSocio() {
+        return socioSelecionado;
+    }
+
+    @Override
+    public Endereco getEndereco() {
+        return enderecoSocioSelecionado;
+    }
+
+    @Override
+    public List<String> getListaDepartamentos() {
+        return listaDepartamentosSocio;
+    }
+
+    @Override
+    public List<String> getListaDependentes() {
+        return listaDependentesSocio;
+    }
+
+    @Override
+    public List<Debito> getListaDebitos() {
+        return listaDebitosSocio;
+    }
+
+    @Override
+    public LocalDate getDataEmissao() {
+        return LocalDate.now();
     }
 }
