@@ -236,6 +236,11 @@
                         <Insets left="20.0" />
                      </HBox.margin>
                   </Button>
+                  <Button fx:id="botaoGerarPdf" mnemonicParsing="false" onAction="#gerarPdfAction" styleClass="botoes" text="GERAR PDF">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Button>
                </children>
             </HBox>
          </children></VBox>

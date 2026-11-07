@@ -1,7 +1,10 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +39,7 @@ import javafx.util.Callback;
 import model.Conta;
 import model.Lembrete;
 
-public class TelaContasController {
+public class TelaContasController implements util.RelatorioContasProvider {
     //ATRIBUTOS
     List<Conta> listaContas = new ArrayList<>();
     Double saldoTotal = 0.0;
@@ -60,6 +63,9 @@ public class TelaContasController {
 
     @FXML
     private TextField campoSaldoTotal;
+
+    @FXML
+    private Button botaoGerarPdf;
 
     @FXML
     private TableColumn<Conta, String> colunaNomeConta;
@@ -102,6 +108,30 @@ public class TelaContasController {
     private TableColumn<Lembrete, String> valorLembrete;
 
     //BOTÕES
+    @FXML
+    void gerarPdfAction(ActionEvent event) {
+        try {
+            javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+            fileChooser.setTitle("Salvar Relatório de Contas");
+            fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("Arquivo PDF (*.pdf)", "*.pdf"));
+            
+            String dataHoje = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            fileChooser.setInitialFileName("Relatorio_Contas_" + dataHoje + ".pdf");
+            
+            File arquivoDestino = fileChooser.showSaveDialog(tabelaContas.getScene().getWindow());
+            
+            if (arquivoDestino != null) {
+                util.GerarPdfContas.gerar(this, arquivoDestino);
+                emitirAlerta("Relatório de contas gerado com sucesso!", AlertType.INFORMATION);
+            }
+        } catch (java.io.FileNotFoundException e) {
+            emitirAlerta("O arquivo PDF está aberto em outro programa. Feche-o e tente novamente.", AlertType.ERROR);
+        } catch (Exception e) {
+            e.printStackTrace();
+            emitirAlerta("Erro ao gerar o PDF de contas: " + e.getMessage(), AlertType.ERROR);
+        }
+    }
+
     @FXML
     void acessarDiretoriaAction(ActionEvent event) throws IOException {
         App.trocarTela("TelaInDiretor");
@@ -368,5 +398,26 @@ public class TelaContasController {
 
         // Verifica se o usuário clicou no botão OK
         return resultado.isPresent() && resultado.get() == ButtonType.OK;
+    }
+
+    //implementação da interface para gerar pdf
+    @Override
+    public List<Conta> getListaContas() {
+        return listaContas;
+    }
+
+    @Override
+    public Double getSaldoTotal() {
+        return saldoTotal;
+    }
+
+    @Override
+    public String getTituloRelatorio() {
+        return "Demonstrativo de Saldos e Contas do Tesouro";
+    }
+
+    @Override
+    public LocalDate getDataEmissao() {
+        return LocalDate.now();
     }
 }
