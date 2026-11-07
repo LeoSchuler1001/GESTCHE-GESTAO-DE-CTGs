@@ -185,27 +185,27 @@
                <children>
                   <Button fx:id="botaoVerDados" mnemonicParsing="false" onAction="#verDadosAction" styleClass="botoes" text="VER DADOS">
                      <HBox.margin>
-                        <Insets right="20.0" />
+                        <Insets right="15.0" />
                      </HBox.margin>
                   </Button>
                   <Button fx:id="botaoAlterarDados" mnemonicParsing="false" onAction="#alterarDadosAction" styleClass="botoes" text="ALTERAR DADOS">
                      <HBox.margin>
-                        <Insets right="20.0" />
+                        <Insets right="15.0" />
                      </HBox.margin>
                   </Button>
                   <Button fx:id="botaoCadastrarDebito" mnemonicParsing="false" onAction="#cadastrarDebitoAction" styleClass="botoes" text="CADASTRAR DÉBITO">
                      <HBox.margin>
-                        <Insets right="20.0" />
+                        <Insets right="15.0" />
                      </HBox.margin>
                   </Button>
                   <Button fx:id="botaoCadastrarSocio" mnemonicParsing="false" onAction="#cadastrarSocioAction" styleClass="botoes" text="CADASTRAR SÓCIO">
                      <HBox.margin>
-                        <Insets right="20.0" />
+                        <Insets right="15.0" />
                      </HBox.margin>
                   </Button>
                   <Button fx:id="botaoCadastrarDependente" mnemonicParsing="false" onAction="#cadastrarDependenteSocio" styleClass="botoes" text="CADASTRAR DEPENDENTE">
                      <HBox.margin>
-                        <Insets right="20.0" />
+                        <Insets right="15.0" />
                      </HBox.margin>
                   </Button>
                   <Button fx:id="botaoInativarSocio" mnemonicParsing="false" onAction="#inativarSocioAction" styleClass="botoes" text="INATIVAR SÓCIO">
@@ -215,7 +215,12 @@
                   </Button>
                   <Button fx:id="botaoAtivarSocio" mnemonicParsing="false" onAction="#ativarSocioAction" styleClass="botoes" text="ATIVAR SÓCIO">
                      <HBox.margin>
-                        <Insets left="20.0" />
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="botaoGerarPdf" mnemonicParsing="false" onAction="#gerarPdfAction" styleClass="botoes" text="GERAR PDF">
+                     <HBox.margin>
+                        <Insets left="15.0" />
                      </HBox.margin>
                   </Button>
                </children>

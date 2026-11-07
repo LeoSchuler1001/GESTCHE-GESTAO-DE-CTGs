@@ -5,8 +5,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import app.App;
@@ -27,6 +30,8 @@ import model.Lembrete;
 import model.Socio;
 import model.dto.RecebimentoPendenteDTO;
 import model.dto.SocioResumoDTO;
+import util.GerarPdfResumoSocios;
+import util.RelatorioSociosResumoProvider;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
@@ -39,7 +44,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-public class TelaDebitosSociosController {
+public class TelaDebitosSociosController implements RelatorioSociosResumoProvider {
     //ATRIBUTOS
     //cria a conexão com o banco de dados
     ConexaoBanco conexao = new ConexaoBanco();
@@ -77,6 +82,9 @@ public class TelaDebitosSociosController {
 
     @FXML
     private TableColumn<RecebimentoPendenteDTO, String> colunaDescricao;
+
+    @FXML
+    private Button botaoGerarPdf;
 
     @FXML
     private TableColumn<SocioResumoDTO, String> colunaNomeSocio;
@@ -128,6 +136,30 @@ public class TelaDebitosSociosController {
     private TableColumn<Lembrete, String> valorLembrete;
 
     //BOTÕES
+    @FXML
+    void gerarPdfAction(ActionEvent event) {
+        try {
+            javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+            fileChooser.setTitle("Salvar Relatório de Sócios");
+            fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("Arquivo PDF (*.pdf)", "*.pdf"));
+            
+            String dataHoje = LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            fileChooser.setInitialFileName("Relatorio_Socios_" + dataHoje + ".pdf");
+            
+            File arquivoDestino = fileChooser.showSaveDialog(tabelaResumoSocios.getScene().getWindow());
+            
+            if (arquivoDestino != null) {
+                GerarPdfResumoSocios.gerar(this, arquivoDestino);
+                emitirAlerta("Relatório de sócios gerado com sucesso!", AlertType.INFORMATION);
+            }
+        } catch (java.io.FileNotFoundException e) {
+            emitirAlerta("O arquivo PDF está aberto em outro programa. Feche-o e tente novamente.", AlertType.ERROR);
+        } catch (Exception e) {
+            e.printStackTrace();
+            emitirAlerta("Erro ao gerar o PDF de sócios: " + e.getMessage(), AlertType.ERROR);
+        }
+    }
+
     @FXML
     void acessarDiretoriaAction(ActionEvent event) throws IOException {
         App.trocarTela("TelaInDiretor");
@@ -435,6 +467,8 @@ public class TelaDebitosSociosController {
         tabelaResumoSocios.setPlaceholder(criarIndicator());
         tabelaAguardandoAprovacao.setPlaceholder(criarIndicator());
 
+        botaoGerarPdf.setDisable(true);
+
         //cria uma tarefa que irá carregar os dados em segundo plano
         Task<Void> task = new Task<>() {
             @Override
@@ -449,6 +483,9 @@ public class TelaDebitosSociosController {
                     tabelaResumoSocios.setItems(FXCollections.observableArrayList(listalistaResumoSocios));
                     tabelaLembretes.setItems(FXCollections.observableArrayList(listaLembretesHoje));
                     tabelaAguardandoAprovacao.setItems(FXCollections.observableArrayList(listaPendenteAprovacao));
+
+                    botaoGerarPdf.setDisable(false);
+
 
                     if (listaLembretesHoje.isEmpty()) {
                         tabelaLembretes.setPlaceholder(new javafx.scene.control.Label("Sem lembretes."));
@@ -508,5 +545,21 @@ public class TelaDebitosSociosController {
 
         // Verifica se o usuário clicou no botão OK
         return resultado.isPresent() && resultado.get() == ButtonType.OK;
+    }
+
+    //implementação da interface de gerar pdf 
+    @Override
+    public List<SocioResumoDTO> getListaSociosResumo() {
+        return tabelaResumoSocios.getItems();
+    }
+
+    @Override
+    public String getTituloRelatorio() {
+        return "Relatório Geral de Sócios e Situação Cadastral";
+    }
+
+    @Override
+    public LocalDate getDataEmissao() {
+        return LocalDate.now();
     }
 }
