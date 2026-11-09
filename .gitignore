@@ -12,4 +12,4 @@ Thumbs.db
 
 *.log
 
-src/main/java/dao/CredenciaisBancoDados.java
+src/main/resources/database.properties
