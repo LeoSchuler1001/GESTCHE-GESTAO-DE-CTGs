@@ -180,13 +180,43 @@ public class CadastrarMovimentacaoController {
         campoContaMovimentacao.getItems().setAll(nomeContas);
 
         //preenche o combobox das categorias cadastradas
-        List<Categoria> listaCategorias = categoriaDAO.listarCategoriasReceita();
-        listaCategorias.addAll(categoriaDAO.listarCategoriasDespesa());
-        List<String> nomeCategorias = new ArrayList<>();
-        for (Categoria categoria : listaCategorias) {
-            nomeCategorias.add(categoria.getNomeCategoria());
+        campoCategoriaMovimentacao.setDisable(true);
+
+        //monitora a seleção do tipo de movimentação pelo usuário
+        campoTipoMovimentacao.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                atualizarCategoriasPorTipo(newValue);
+            } else {
+                campoCategoriaMovimentacao.getItems().clear();
+                campoCategoriaMovimentacao.setDisable(true);
+            }
+        });
+    }
+
+    //método auxiliar para buscar as categorias de acordo com a seleção do tipo de movimentação
+    private void atualizarCategoriasPorTipo(TiposMovimentacoes tipoSelecionado) {
+        try {
+            List<Categoria> listaCategorias = new ArrayList<>();
+            
+            if (tipoSelecionado.name().contains("Receita")) {
+                listaCategorias = categoriaDAO.listarCategoriasReceita();
+            } else if (tipoSelecionado.name().contains("Despesa")) {
+                listaCategorias = categoriaDAO.listarCategoriasDespesa();
+            }
+
+            List<String> nomeCategorias = new ArrayList<>();
+            for (Categoria categoria : listaCategorias) {
+                nomeCategorias.add(categoria.getNomeCategoria());
+            }
+
+            //atualiza os itens conforma a seleção do tipo de movimentação
+            campoCategoriaMovimentacao.getItems().setAll(nomeCategorias);
+            campoCategoriaMovimentacao.getSelectionModel().clearSelection();
+            campoCategoriaMovimentacao.setDisable(false);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        campoCategoriaMovimentacao.getItems().setAll(nomeCategorias);
     }
 
     public boolean verificaFormulario() {
