@@ -42,6 +42,7 @@ public class CadastrarCategoriaController {
     @FXML
     private ComboBox<TiposMovimentacoes> campoTipoCategoria;
 
+    //BOTÕES
     @FXML
     void fecharAction(ActionEvent event) {
         Stage stage = (Stage) painelFundo.getScene().getWindow();

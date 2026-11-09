@@ -92,6 +92,7 @@ public class TelaGestaoAcessoController {
     @FXML
     private TableView<Usuario> tabelaUsuarios;
 
+    //BOTÕES
     @FXML
     void alterarDadosAction(ActionEvent event) throws IOException, SQLException{
         //verifica qual foi o usuario selecionado

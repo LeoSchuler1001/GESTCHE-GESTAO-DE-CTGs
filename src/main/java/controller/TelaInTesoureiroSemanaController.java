@@ -30,7 +30,6 @@ import model.Lembrete;
 import model.Movimentacao;
 import util.GerarPdfMovimentacoes;
 import util.RelatorioFinanceiroProvider;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

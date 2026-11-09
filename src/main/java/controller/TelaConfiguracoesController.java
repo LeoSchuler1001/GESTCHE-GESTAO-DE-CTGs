@@ -5,10 +5,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
-
 import java.util.List;
 import java.util.Optional;
 import app.App;

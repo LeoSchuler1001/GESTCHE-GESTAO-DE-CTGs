@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-
 import app.App;
 import dao.CategoriaDAO;
 import dao.ConexaoBanco;

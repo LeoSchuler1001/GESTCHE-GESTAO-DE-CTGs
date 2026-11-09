@@ -183,7 +183,6 @@ public class TelaLembretesController {
         }
     }
 
-    
     @FXML
     void desativarAction(ActionEvent event) throws SQLException {
         //verifica qual foi o lembrete selecionado
@@ -215,7 +214,6 @@ public class TelaLembretesController {
         }
     }
 
-    
     @FXML
     void ativarAction(ActionEvent event) throws SQLException {
         //verifica qual foi o lembrete selecionado

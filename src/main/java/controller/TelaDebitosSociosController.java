@@ -5,7 +5,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;

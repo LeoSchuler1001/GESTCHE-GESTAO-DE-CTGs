@@ -65,6 +65,7 @@ public class AlterarLembreteTesoureiroController {
     @FXML
     private VBox painelFundo;
 
+    //BOTÕES
     @FXML
     void fecharAction(ActionEvent event) {
         Stage stage = (Stage) painelFundo.getScene().getWindow();

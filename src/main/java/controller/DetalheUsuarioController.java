@@ -23,11 +23,11 @@ public class DetalheUsuarioController {
     Usuario usuarioSelecionado;
     int idUsuarioSelecionado;
 
+    //conexão com o banco de dados
     ConexaoBanco conexaoBanco = new ConexaoBanco();
     UsuarioDAO usuarioDAO = new UsuarioDAO(conexaoBanco);
     EnderecoDAO enderecoDAO = new EnderecoDAO(conexaoBanco);
 
-    
     @FXML
     private Button botaoFechar;
 
@@ -64,6 +64,7 @@ public class DetalheUsuarioController {
     @FXML
     private VBox painelFundo;
 
+    //BOTÕES
     @FXML
     void fecharAction(ActionEvent event) {
         Stage stage = (Stage) painelFundo.getScene().getWindow();

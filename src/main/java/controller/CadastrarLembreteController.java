@@ -58,6 +58,7 @@ public class CadastrarLembreteController {
     @FXML
     private VBox painelFundo;
 
+    //BOTÕES
     @FXML
     void fecharAction(ActionEvent event) {
         Stage stage = (Stage) painelFundo.getScene().getWindow();

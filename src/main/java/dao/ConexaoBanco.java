@@ -6,7 +6,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConexaoBanco {
-
     //cria uma conexão única para utilização
     private static Connection conexaoUnica;
 

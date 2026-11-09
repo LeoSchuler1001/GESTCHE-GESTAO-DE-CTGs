@@ -181,7 +181,6 @@ public class TelaLembretesTesoureiroController {
         }
     }
 
-    
     @FXML
     void desativarAction(ActionEvent event) throws SQLException {
         //verifica qual foi o lembrete selecionado

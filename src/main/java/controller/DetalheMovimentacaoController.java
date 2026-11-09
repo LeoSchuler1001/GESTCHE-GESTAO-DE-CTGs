@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Optional;
-
 import app.App;
 import dao.ConexaoBanco;
 import dao.ContaDAO;
@@ -34,6 +33,8 @@ public class DetalheMovimentacaoController {
     private final DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     Locale localBrasil = Locale.of("pt", "BR");
     NumberFormat formatoMoeda = NumberFormat.getCurrencyInstance(localBrasil);
+
+    //conexão com o banco de dados
     ConexaoBanco conexaoBanco = new ConexaoBanco();
     MovimentacaoDAO movimentacaoDAO = new MovimentacaoDAO(conexaoBanco);
     LogAuditoriaDAO logAuditoriaDAO = new LogAuditoriaDAO(conexaoBanco);

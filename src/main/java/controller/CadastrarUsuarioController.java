@@ -25,6 +25,7 @@ import model.Usuario;
 import util.Criptografia;
 
 public class CadastrarUsuarioController {
+    //ATRIBUTOS
     //conexões com o banco de dados
     ConexaoBanco conexaoBanco = new ConexaoBanco();
     UsuarioDAO usuarioDAO = new UsuarioDAO(conexaoBanco);
@@ -82,6 +83,7 @@ public class CadastrarUsuarioController {
     @FXML
     private VBox painelFundo;
 
+    //BOTÕES
     @FXML
     void fecharAction(ActionEvent event) {
         Stage stage = (Stage) painelFundo.getScene().getWindow();

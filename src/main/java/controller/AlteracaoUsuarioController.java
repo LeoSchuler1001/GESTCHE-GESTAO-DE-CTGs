@@ -1,7 +1,6 @@
 package controller;
 
 import java.sql.SQLException;
-
 import app.App;
 import dao.ConexaoBanco;
 import dao.EnderecoDAO;
@@ -72,6 +71,7 @@ public class AlteracaoUsuarioController {
     @FXML
     private VBox painelFundo;
 
+    //BOTÕES
     @FXML
     void fecharAction(ActionEvent event) {
         Stage stage = (Stage) painelFundo.getScene().getWindow();
