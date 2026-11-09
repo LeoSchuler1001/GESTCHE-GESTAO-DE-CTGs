@@ -188,6 +188,16 @@ public class CadastrarUsuarioController {
             }
         }
 
+        if(!campoSenha.getText().equals(campoRepetirSenha.getText())) {
+            emitirAlerta("As senhas não coincidem.", AlertType.ERROR);
+            return false;
+        }
+
+        if(!campoRespostaSeguranca.getText().equals(campoRepetirRespostaSeguranca.getText())) {
+            emitirAlerta("As respostas de segurança não coincidem.", AlertType.ERROR);
+            return false;
+        }
+
         //verifica o estado
         if (campoEstadoUsuario.getValue() == null) {
             emitirAlerta("Selecione o estado!", AlertType.ERROR);
