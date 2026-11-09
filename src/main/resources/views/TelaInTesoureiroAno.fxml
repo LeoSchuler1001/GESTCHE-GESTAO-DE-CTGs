@@ -302,12 +302,12 @@
                         </VBox>
                         <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="54.0" prefWidth="350.0">
                            <children>
-                              <ComboBox fx:id="anoSelecionado" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="114.0" style="-fx-alignment: center;" styleClass="campoPreenchimento" />
+                              <ComboBox fx:id="anoSelecionado" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="114.0" style="-fx-alignment: center;" styleClass="campoPreenchimento" />
                            </children>
                         </VBox>
                         <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="465.0">
                            <children>
-                              <Label prefHeight="27.0" prefWidth="81.0" styleClass="linkMenuLateral" text="DESPESAS">
+                              <Label prefHeight="27.0" prefWidth="83.0" styleClass="linkMenuLateral" text="DESPESAS">
                                  <font>
                                     <Font size="18.0" />
                                  </font>

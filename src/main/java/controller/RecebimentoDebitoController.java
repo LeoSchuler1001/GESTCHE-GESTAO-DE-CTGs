@@ -273,7 +273,7 @@ public class RecebimentoDebitoController {
         // Verifica o campo de vencimento
         LocalDate vencimento = campoDataMovimentacao.getValue();
         if (vencimento == null) {
-            emitirAlertaSimples("Selecione a data de vencimento!");
+            emitirAlertaSimples("Selecione a data de recebimento!");
             return false;
         }
 
