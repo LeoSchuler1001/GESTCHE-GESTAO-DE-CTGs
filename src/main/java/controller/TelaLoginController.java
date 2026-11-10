@@ -28,41 +28,74 @@ public class TelaLoginController {
     private Button botaoRecupararSenha;
 
     //BOTÕES
+    
     @FXML
-    void fazerLoginAction(ActionEvent event) throws SQLException, IOException {
-        //verifica se os campos foram preenchidos
-        if(validaFormulario() == false) {
+    void fazerLoginAction(ActionEvent event) {
+        System.out.println("TESTE: ENTROU NO METODO FAZER LOGIN");
+
+        if (!validaFormulario()) {
             return;
         }
 
-        //pega a senha e login que o usuario digitou
+        if (!validaFormulario()) {
+            return;
+        }
+
         String cpfDigitado = cpfUsuarioLogin.getText();
         String senhaDigitada = senhaUsuarioLogin.getText();
 
-        //autentica o usuario
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
-        Usuario usuarioLogin = usuarioDAO.autenticarUsuario(cpfDigitado, senhaDigitada);
+        try {
+            System.out.println("1 - Iniciando autenticação...");
 
-        //verifica se ele achou algum usuario
-        if(usuarioLogin != null) {
-            //atribui o usuario ao atributo estatico usuario logado
-            App.usuarioLogado = usuarioLogin;
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            Usuario usuarioLogin = usuarioDAO.autenticarUsuario(cpfDigitado, senhaDigitada);
 
-            System.out.println("usuario logado: " + App.usuarioLogado.getIdUsuario());
+            System.out.println("2 - Retorno da autenticação: "
+                    + (usuarioLogin == null ? "NENHUM USUÁRIO" : "USUÁRIO ENCONTRADO"));
 
-            //verifica o cargo do usuário
-            if(App.usuarioLogado.getCargoUsuario().equals("Secretário")) {
-                App.trocarTela("TelaInicialSecretario");
-            } else if(App.usuarioLogado.getCargoUsuario().equals("Tesoureiro")) {
-                App.trocarTela("TelaInTesoureiroMes");
-            } else if(App.usuarioLogado.getCargoUsuario().equals("Diretor")) {
-                App.trocarTela("TelaInDiretor");
+            if (usuarioLogin != null) {
+
+                App.usuarioLogado = usuarioLogin;
+
+                String cargo = App.usuarioLogado.getCargoUsuario();
+
+                System.out.println("3 - Usuário logado: " + App.usuarioLogado.getIdUsuario());
+                System.out.println("4 - Cargo encontrado: [" + cargo + "]");
+
+                if ("Secretário".equals(cargo)) {
+                    System.out.println("5 - Abrindo tela do secretário...");
+                    App.trocarTela("TelaInicialSecretario");
+
+                } else if ("Tesoureiro".equals(cargo)) {
+                    System.out.println("5 - Abrindo tela do tesoureiro...");
+                    App.trocarTela("TelaInTesoureiroMes");
+
+                } else if ("Diretor".equals(cargo)) {
+                    System.out.println("5 - Abrindo tela do diretor...");
+                    App.trocarTela("TelaInDiretor");
+
+                } else {
+                    System.err.println("Cargo não reconhecido: [" + cargo + "]");
+                    emitirAlerta("Cargo de usuário não reconhecido: " + cargo, AlertType.ERROR);
+                }
+
+            } else {
+                System.out.println("3 - Usuário não encontrado ou senha inválida.");
+                emitirAlerta("Usuário e/ou senha inválidos!", AlertType.ERROR);
             }
-        } else {
-            //emite alerta de senha ou login errados
-            emitirAlerta("Usuário e/ou senha inválidos!", AlertType.ERROR);
+
+        } catch (SQLException e) {
+            System.err.println("ERRO NA CONEXÃO OU CONSULTA AO BANCO:");
+            e.printStackTrace();
+            emitirAlerta("Não foi possível consultar o banco de dados. Verifique a conexão.", AlertType.ERROR);
+
+        } catch (IOException e) {
+            System.err.println("ERRO AO ABRIR A PRÓXIMA TELA:");
+            e.printStackTrace();
+            emitirAlerta("Ocorreu um erro ao abrir a próxima tela.", AlertType.ERROR);
         }
     }
+
 
     @FXML
     void recuperarSenhaAction(ActionEvent event) throws IOException {

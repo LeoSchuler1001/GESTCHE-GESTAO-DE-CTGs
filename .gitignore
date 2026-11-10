@@ -1,15 +1,50 @@
+# GesTchê - Java / Maven
+
+# Maven
 /target/
+
+# Arquivos compilados e pacotes gerados
 *.class
 *.jar
 *.war
 
-.vscode/
+# Distribuições geradas pelo jlink / jpackage
+/distribuicao/
+/runtime/
+/runtime-completo/
+/saida/
+/debug/
+
+# Visual Studio Code
+.vscode/*
 !.vscode/settings.json
 *.code-workspace
 
+# Segredos e configurações locais do banco de dados
+src/main/resources/database.properties
+.env
+.env.*
+!.env.example
+
+# Logs e arquivos temporários
+*.log
+*.tmp
+*.temp
+*.bak
+*~
+
+# Sistema operacional
 .DS_Store
 Thumbs.db
+Desktop.ini
 
-*.log
+# Outras IDEs
+.idea/
+*.iml
+.project
+.classpath
+.settings/
 
-src/main/resources/database.properties
+# Executável e runtime gerados pelo jpackage
+/Gestchê/
+/Gestche/

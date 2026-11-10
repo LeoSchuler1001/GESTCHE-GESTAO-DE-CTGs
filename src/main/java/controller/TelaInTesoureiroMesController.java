@@ -465,6 +465,10 @@ public class TelaInTesoureiroMesController implements RelatorioFinanceiroProvide
 
         //seleciona o mês/ano atual
         String mesAnoAtual = LocalDate.now().format(formatoData);
+
+        mesAnoAtual = mesAnoAtual.substring(0, 1).toUpperCase(Locale.of("pt", "BR"))
+                + mesAnoAtual.substring(1);
+
         mesSelecionado.setValue(mesAnoAtual);
         
         //configura as colunas das tabelas
@@ -720,22 +724,36 @@ public class TelaInTesoureiroMesController implements RelatorioFinanceiroProvide
     @Override
     public LocalDate getDataInicio() {
         String valorSelecionado = mesSelecionado.getValue();
-        if (valorSelecionado == null) return LocalDate.now().withDayOfMonth(1);
+        if (valorSelecionado == null) {
+            return LocalDate.now().withDayOfMonth(1);
+        }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM/yyyy", Locale.of("pt", "BR"));
-        YearMonth yearMonth = YearMonth.parse(valorSelecionado, formatter);
-        
+        DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("MMMM/yyyy", Locale.of("pt", "BR"));
+
+        YearMonth yearMonth = YearMonth.parse(
+            valorSelecionado.toLowerCase(Locale.of("pt", "BR")),
+            formatter
+        );
+
         return yearMonth.atDay(1);
     }
 
     @Override
     public LocalDate getDataFim() {
         String valorSelecionado = mesSelecionado.getValue();
-        if (valorSelecionado == null) return LocalDate.now();
+        if (valorSelecionado == null) {
+            return LocalDate.now();
+        }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM/yyyy", Locale.of("pt", "BR"));
-        YearMonth yearMonth = YearMonth.parse(valorSelecionado, formatter);
-        
+        DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("MMMM/yyyy", Locale.of("pt", "BR"));
+
+        YearMonth yearMonth = YearMonth.parse(
+            valorSelecionado.toLowerCase(Locale.of("pt", "BR")),
+            formatter
+        );
+
         return yearMonth.atEndOfMonth();
     }
 

@@ -269,7 +269,10 @@ public class MovimentacaoDAO {
         try {
             //converte a string para data
             DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("MMMM/yyyy", Locale.of("pt", "BR"));
-            YearMonth anoMes = YearMonth.parse(mesAnoStr.toLowerCase(), formatoData);
+            YearMonth anoMes = YearMonth.parse(
+                mesAnoStr.toLowerCase(Locale.of("pt", "BR")),
+                formatoData
+            );
 
             //define o primeiro e último dia do mês
             LocalDate inicioMes = anoMes.atDay(1);
@@ -603,20 +606,19 @@ public class MovimentacaoDAO {
         return anos;
     }
 
-    //retorna uma lista com os meses que possuem movimentação
+    
     public List<String> buscarMesesComMovimentacao() {
         List<String> meses = new ArrayList<>();
-        
-        // Agrupa de forma segura pelo ano e mês da data, filtrando apenas o usuário ID 20 (se aplicável)
-        // Se quiser para todos os usuários, remova o "AND fk_idusuario = 20"
-        String sql = "SELECT DISTINCT EXTRACT(YEAR FROM datamovimentacao) AS ano, " +
-                    "                EXTRACT(MONTH FROM datamovimentacao) AS mes " +
+
+        String sql = "SELECT DISTINCT " +
+                    "EXTRACT(YEAR FROM datamovimentacao) AS ano, " +
+                    "EXTRACT(MONTH FROM datamovimentacao) AS mes " +
                     "FROM movimentacao " +
                     "WHERE datamovimentacao IS NOT NULL " +
-                    "AND fk_idusuario = 20 " + 
                     "ORDER BY ano DESC, mes DESC";
 
-        DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("MMMM/yyyy", Locale.of("pt", "BR"));
+        DateTimeFormatter formatoData =
+                DateTimeFormatter.ofPattern("MMMM/yyyy", Locale.of("pt", "BR"));
 
         try (Connection conn = conexao.getConexao();
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -625,19 +627,25 @@ public class MovimentacaoDAO {
             while (rs.next()) {
                 int ano = rs.getInt("ano");
                 int mes = rs.getInt("mes");
-                
-                // Cria um LocalDate usando o dia 1 do ano e mês exatos retornados pelo banco
+
                 LocalDate data = LocalDate.of(ano, mes, 1);
-                
+
                 String mesFormatado = data.format(formatoData);
+
+                // Coloca a primeira letra do mês em maiúsculo
+                mesFormatado = mesFormatado.substring(0, 1).toUpperCase(Locale.of("pt", "BR"))
+                        + mesFormatado.substring(1);
+
                 meses.add(mesFormatado);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return meses;
     }
+
 
     //retorna uma lista com as semanas que possuem movimentações
     public List<String> buscarSemanasComMovimentacao() {

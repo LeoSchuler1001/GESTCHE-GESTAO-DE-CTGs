@@ -32,9 +32,4 @@ public class App extends Application {
     public static void trocarTela(String FXML) throws IOException {
         telaAtual.setRoot(carregarFXML(FXML));
     }
-
-    //ponto de partida do Java
-    public static void main(String[] args) {
-        launch(); //roda o método start, que vai iniciar o JavaFx
-    }
 }
