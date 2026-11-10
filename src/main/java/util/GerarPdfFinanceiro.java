@@ -21,7 +21,6 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 public class GerarPdfFinanceiro {
     // ATRIBUTOS
     //imagem da logo do sistema
-    private final File arquivoLogo = new File("src/main/resources/img/LOGO DO PROJETO.png");
 
     //fontes para o relatório
     private final PDType1Font fonteNormal = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
@@ -232,20 +231,15 @@ public class GerarPdfFinanceiro {
         PDPageContentStream content,
         float eixoY
     ) throws IOException {
-        if (arquivoLogo.exists()) {
-            PDImageXObject logo = PDImageXObject.createFromFile(
-                arquivoLogo.getAbsolutePath(),
-                documento
-            );
+        PDImageXObject logo = LogoPdf.carregar(documento);
 
-            content.drawImage(
-                logo,
-                margem,
-                eixoY - 80,
-                110,
-                80
-            );
-        }
+        content.drawImage(
+            logo,
+            margem,
+            eixoY - 80,
+            110,
+            80
+        );
     }
 
     private void adicionarTexto(

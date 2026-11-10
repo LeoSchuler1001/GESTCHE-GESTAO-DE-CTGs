@@ -15,7 +15,6 @@ import java.util.List;
 
 public class GerarPdf {
     // ATRIBUTOS
-    private File arquivoLogo = new File("src/main/resources/img/LOGO DO PROJETO.png");
 
     //armazena os títulos dos gréficos
     private final String[] titulosGraficos = {
@@ -73,10 +72,8 @@ public class GerarPdf {
             float alturaLogo = 80;
             float posicaoLogoY = eixoY - alturaLogo;
 
-            if (arquivoLogo != null && arquivoLogo.exists()) {
-                PDImageXObject imagemLogo = PDImageXObject.createFromFile(arquivoLogo.getAbsolutePath(), document);
-                contentStream.drawImage(imagemLogo, margemEsquerda, posicaoLogoY, larguraLogo, alturaLogo);
-            }
+            PDImageXObject imagemLogo = LogoPdf.carregar(document);
+            contentStream.drawImage(imagemLogo, margemEsquerda, posicaoLogoY, larguraLogo, alturaLogo);
 
             //adiciona o titulo principal
             contentStream.beginText();

@@ -16,7 +16,6 @@ import java.util.List;
 
 public class GerarPdfContas {
 
-    private static final File arquivoLogo = new File("src/main/resources/img/LOGO DO PROJETO.png");
     private static final PDType1Font fonteNormal = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
     private static final PDType1Font fonteNegrito = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
     
@@ -133,10 +132,8 @@ public class GerarPdfContas {
     }
 
     private static void adicionarLogo(PDDocument documento, PDPageContentStream content, float eixoY) throws IOException {
-        if (arquivoLogo.exists()) {
-            PDImageXObject logo = PDImageXObject.createFromFile(arquivoLogo.getAbsolutePath(), documento);
-            content.drawImage(logo, margem, eixoY - 80, 110, 80);
-        }
+        PDImageXObject logo = LogoPdf.carregar(documento);
+        content.drawImage(logo, margem, eixoY - 80, 110, 80);
     }
 
     private static void adicionarTexto(PDPageContentStream content, String texto, float x, float y, PDType1Font fonte, float tamanho) throws IOException {
