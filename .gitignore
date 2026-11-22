@@ -48,3 +48,24 @@ Desktop.ini
 # Executável e runtime gerados pelo jpackage
 /Gestchê/
 /Gestche/
+
+# Arquivos compilados do Maven
+target/
+
+# Distribuições e executáveis
+distribuicao/
+distribuicao_nova/
+
+# Arquivos de runtime Java
+runtime/
+
+# Arquivos temporários
+*.log
+*.tmp
+
+# Configurações locais da IDE
+.idea/
+.vscode/
+
+# Arquivos de conferência
+conferencia/
