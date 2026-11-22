@@ -131,6 +131,12 @@ public class VerDadosSocioController implements RelatorioFichaSocioProvider {
 
     @FXML
     private VBox painelFundo;
+    
+    @FXML
+    private TextField campoPagaMensalidade;
+
+    @FXML
+    private TextField campoValorMensalidade;
 
     //BOTÕES
     @FXML
@@ -355,6 +361,12 @@ public class VerDadosSocioController implements RelatorioFichaSocioProvider {
         campoCidadeSocio.setFocusTraversable(false);
         campoEstadoSocio.setMouseTransparent(true);
         campoEstadoSocio.setFocusTraversable(false);
+        campoPagaMensalidade.setEditable(false);
+        campoPagaMensalidade.setMouseTransparent(true);
+        campoPagaMensalidade.setFocusTraversable(false);
+        campoValorMensalidade.setEditable(false);
+        campoValorMensalidade.setMouseTransparent(true);
+        campoValorMensalidade.setFocusTraversable(false);
     }
     
     //define qual é o sócio que foi selecionado
@@ -427,6 +439,27 @@ public class VerDadosSocioController implements RelatorioFichaSocioProvider {
         campoCorSocio.setText(socioSelecionado.getCorSocio());
         campoEmailSocio.setText(socioSelecionado.getEmailSocio());
         campoTelefoneSocio.setText(socioSelecionado.getTelefoneSocio());
+
+        //preenche os dados da mensalidade
+        campoPagaMensalidade.setText(
+            socioSelecionado.isPagaMensalidade() ? "SIM" : "NÃO"
+        );
+
+        if (socioSelecionado.isPagaMensalidade()
+                && socioSelecionado.getValorMensalidade() != null) {
+
+            java.text.NumberFormat formatoMoeda =
+                java.text.NumberFormat.getCurrencyInstance(
+                    java.util.Locale.of("pt", "BR")
+                );
+
+            campoValorMensalidade.setText(
+                formatoMoeda.format(socioSelecionado.getValorMensalidade())
+            );
+
+        } else {
+            campoValorMensalidade.setText("—");
+        }
 
         //preenche o campo da data de nascimento do socio
         SimpleDateFormat formatoData = new SimpleDateFormat("dd/MM/yyyy");

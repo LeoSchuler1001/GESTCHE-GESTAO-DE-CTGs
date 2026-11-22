@@ -35,6 +35,7 @@ import javafx.util.StringConverter;
 import model.Departamento;
 import model.Endereco;
 import model.Socio;
+import java.math.BigDecimal;
 
 public class CadastrarSocioController {
     //ATRIBUTOS
@@ -48,6 +49,12 @@ public class CadastrarSocioController {
     EnderecoDAO enderecoDAO = new EnderecoDAO(conexaoBanco);
     Socio_DepartamentoDAO socio_DepartamentoDAO = new Socio_DepartamentoDAO(conexaoBanco);
     DepartamentoDAO departamentoDAO = new DepartamentoDAO(conexaoBanco);
+
+    @FXML
+    private ComboBox<String> campoPagaMensalidade;
+
+    @FXML
+    private TextField campoValorMensalidade;
 
     @FXML
     private Button botaoAdicionarDepartamento;
@@ -152,6 +159,19 @@ public class CadastrarSocioController {
             socioCadastro.setTelefoneSocio("");
         }
 
+        //armazena as informações da mensalidade do sócio
+        boolean pagaMensalidade = "SIM".equals(campoPagaMensalidade.getValue());
+
+        socioCadastro.setPagaMensalidade(pagaMensalidade);
+
+        if (pagaMensalidade) {
+            String valor = campoValorMensalidade.getText().trim().replace(",", ".");
+            socioCadastro.setValorMensalidade(new BigDecimal(valor));
+            socioCadastro.setValorMensalidade(new BigDecimal(valor));
+        } else {
+            socioCadastro.setValorMensalidade(null);
+        }
+
         //cria um objeto endereço para armazenar o endereço do sócio
         Endereco endereco = new Endereco();
 
@@ -245,6 +265,28 @@ public class CadastrarSocioController {
 
         //impede do usuario digitar no campo da data
         campoNascimentoSocio.setEditable(false);
+
+        //preenche o combo box de pagamento de mensalidade
+        campoPagaMensalidade.getItems().addAll("SIM", "NÃO");
+
+        //define não como inicial
+        campoPagaMensalidade.setValue("NÃO");
+
+        //desabilita o campo de valor inicialmente
+        campoValorMensalidade.setDisable(true);
+
+        //habilita o campo de valor caso a opção seja sim 
+        campoPagaMensalidade.setOnAction(event -> {
+
+            boolean paga = "SIM".equals(campoPagaMensalidade.getValue());
+
+            campoValorMensalidade.setDisable(!paga);
+
+            if (!paga) {
+                campoValorMensalidade.clear();
+            }
+
+        });
     }
     
     public boolean verificaFormulario() {
@@ -327,6 +369,35 @@ public class CadastrarSocioController {
         if (numeroTexto != null && !numeroTexto.matches("\\d+")) {
             emitirAlerta("O número do endereço deve conter apenas dígitos!", AlertType.ERROR);
             return false;
+        }
+
+        //verifica se foi selecionado uma opção de mensalidade
+        if (campoPagaMensalidade.getValue() == null) {
+            emitirAlerta("Selecione se o sócio paga mensalidade!", AlertType.ERROR);
+            return false;
+        }
+
+        //se paga mensalidade verifica o valor selecionado
+        if ("SIM".equals(campoPagaMensalidade.getValue())) {
+
+            String valorTexto = campoValorMensalidade.getText();
+
+            if (valorTexto == null || valorTexto.trim().isEmpty()) {
+                emitirAlerta("Informe o valor da mensalidade!", AlertType.ERROR);
+                return false;
+            }
+
+            if (!valorTexto.trim().matches("\\d+(,\\d{1,2})?")) {
+                emitirAlerta("Informe um valor válido para a mensalidade! Utilize vírgula para os centavos.", AlertType.ERROR);
+                return false;
+            }
+
+            BigDecimal valor = new BigDecimal(valorTexto.trim().replace(",", "."));
+
+            if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+                emitirAlerta("O valor da mensalidade deve ser maior que zero!", AlertType.ERROR);
+                return false;
+            }
         }
         
         return true;

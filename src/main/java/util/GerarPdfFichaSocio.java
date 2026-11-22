@@ -16,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class GerarPdfFichaSocio {
 
@@ -82,10 +84,60 @@ public class GerarPdfFichaSocio {
             ctx.eixoY -= 15;
             adicionarTexto(ctx.content, "• Telefone: " + (socio.getTelefoneSocio() != null ? socio.getTelefoneSocio() : ""), margem + 10, ctx.eixoY, fonteNormal, 10);
 
-            // 2. Endereço
+            // 2. Mensalidade
+            ctx.eixoY -= 25;
+            ctx = verificarEQuebrar(ctx, 55);
+
+            adicionarTexto(ctx.content, "2. Mensalidade:", margem, ctx.eixoY, fonteNegrito, 11);
+            ctx.eixoY -= 18;
+
+            String pagaMensalidade = socio.isPagaMensalidade() ? "SIM" : "NÃO";
+
+            adicionarTexto(
+                ctx.content,
+                "• Paga mensalidade: " + pagaMensalidade,
+                margem + 10,
+                ctx.eixoY,
+                fonteNormal,
+                10
+            );
+
+            ctx.eixoY -= 15;
+
+            String valorMensalidade;
+
+            if (socio.isPagaMensalidade()
+                    && socio.getValorMensalidade() != null) {
+
+                NumberFormat formatoMoeda =
+                    NumberFormat.getCurrencyInstance(Locale.of("pt", "BR"));
+
+                valorMensalidade = formatoMoeda.format(
+                    socio.getValorMensalidade()
+                );
+
+            } else if (socio.isPagaMensalidade()) {
+
+                valorMensalidade = "Não informado";
+
+            } else {
+
+                valorMensalidade = "Não se aplica";
+            }
+
+            adicionarTexto(
+                ctx.content,
+                "• Valor da mensalidade: " + valorMensalidade,
+                margem + 10,
+                ctx.eixoY,
+                fonteNormal,
+                10
+            );
+
+            // 3. Endereço
             ctx.eixoY -= 25;
             ctx = verificarEQuebrar(ctx, 75);
-            adicionarTexto(ctx.content, "2. Endereço:", margem, ctx.eixoY, fonteNegrito, 11);
+            adicionarTexto(ctx.content, "3. Endereço:", margem, ctx.eixoY, fonteNegrito, 11);
             ctx.eixoY -= 18;
 
             if (end != null) {
@@ -96,10 +148,10 @@ public class GerarPdfFichaSocio {
                 adicionarTexto(ctx.content, "• Nenhum endereço cadastrado.", margem + 10, ctx.eixoY, fonteNormal, 10);
             }
 
-            // 3. Departamentos
+            // 4. Departamentos
             ctx.eixoY -= 25;
             ctx = verificarEQuebrar(ctx, 40);
-            adicionarTexto(ctx.content, "3. Departamentos Vinculados:", margem, ctx.eixoY, fonteNegrito, 11);
+            adicionarTexto(ctx.content, "4. Departamentos Vinculados:", margem, ctx.eixoY, fonteNegrito, 11);
             ctx.eixoY -= 18;
 
             List<String> deptos = provider.getListaDepartamentos();
@@ -114,10 +166,10 @@ public class GerarPdfFichaSocio {
                 }
             }
 
-            // 4. Dependentes
+            // 5. Dependentes
             ctx.eixoY -= 10;
             ctx = verificarEQuebrar(ctx, 40);
-            adicionarTexto(ctx.content, "4. Dependentes:", margem, ctx.eixoY, fonteNegrito, 11);
+            adicionarTexto(ctx.content, "5. Dependentes:", margem, ctx.eixoY, fonteNegrito, 11);
             ctx.eixoY -= 18;
 
             List<String> dependentes = provider.getListaDependentes();
@@ -132,10 +184,10 @@ public class GerarPdfFichaSocio {
                 }
             }
 
-            // 5. Débitos em Aberto
+            // 6. Débitos em Aberto
             ctx.eixoY -= 10;
             ctx = verificarEQuebrar(ctx, 40);
-            adicionarTexto(ctx.content, "5. Débitos em Aberto:", margem, ctx.eixoY, fonteNegrito, 11);
+            adicionarTexto(ctx.content, "6. Débitos em Aberto:", margem, ctx.eixoY, fonteNegrito, 11);
             ctx.eixoY -= 18;
 
             List<Debito> debitos = provider.getListaDebitos();

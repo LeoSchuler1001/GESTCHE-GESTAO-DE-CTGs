@@ -3,6 +3,7 @@ package model;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.math.BigDecimal;
 
 public class Socio {
     //ATRIBUTOS
@@ -20,6 +21,8 @@ public class Socio {
     private List <Departamento> listaDepartamentos = new ArrayList<>();
     private List <Dependente> listaDependentes = new ArrayList<>();
     private List <Debito> listaDebitos = new ArrayList<>();
+    private boolean pagaMensalidade;
+    private BigDecimal valorMensalidade;
     
     //CONSTRUTORES
     public Socio(int idSocio, String cpfSocio, String nomeSocio, String telefoneSocio, Date dataNascSocio, String emailSocio, boolean ativoSocio, Endereco endereco, Usuario usuario, List<Departamento> listaDepartamentos, List<Dependente> listaDependentes) {
@@ -167,5 +170,21 @@ public class Socio {
 
     public void setListaDebitos(List<Debito> listaDebitos) {
         this.listaDebitos = listaDebitos;
+    }
+
+    public boolean isPagaMensalidade() {
+        return pagaMensalidade;
+    }
+
+    public void setPagaMensalidade(boolean pagaMensalidade) {
+        this.pagaMensalidade = pagaMensalidade;
+    }
+
+    public BigDecimal getValorMensalidade() {
+        return valorMensalidade;
+    }
+
+    public void setValorMensalidade(BigDecimal valorMensalidade) {
+        this.valorMensalidade = valorMensalidade;
     }
 }

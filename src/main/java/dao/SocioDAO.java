@@ -121,27 +121,35 @@ public class SocioDAO {
 
     //cadastra um novo sócio no banco de dados
     public void cadastrarSocio(Socio socio) throws SQLException {
-        String sql = "INSERT INTO socio (cpfSocio, nomeSocio, sexoSocio, corSocio, telefoneSocio, dataNascSocio, emailSocio, ativoSocio, fk_idEndereco, fk_idUsuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = """
+            INSERT INTO socio (
+                cpfSocio, nomeSocio, sexoSocio, corSocio,
+                telefoneSocio, dataNascSocio, emailSocio,
+                ativoSocio, fk_idEndereco, fk_idUsuario,
+                pagaMensalidade, valorMensalidade
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
 
-        try(PreparedStatement stmt = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = conexao.getConexao()
+                .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             stmt.setString(1, socio.getCpfSocio());
             stmt.setString(2, socio.getNomeSocio());
-
             stmt.setString(3, socio.getSexoSocio());
             stmt.setString(4, socio.getCorSocio());
 
-            //atribui o telefone se estiver preenchido
-            if(socio.getTelefoneSocio() != null && !socio.getTelefoneSocio().isBlank()) {
+            if (socio.getTelefoneSocio() != null &&
+                !socio.getTelefoneSocio().isBlank()) {
                 stmt.setString(5, socio.getTelefoneSocio());
             } else {
                 stmt.setNull(5, Types.VARCHAR);
             }
 
-            stmt.setDate(6, new java.sql.Date(socio.getDataNascSocio().getTime()));
+            stmt.setDate(6, socio.getDataNascSocio());
             stmt.setString(7, socio.getEmailSocio());
             stmt.setBoolean(8, true);
-            
-            //atribui o endereço se estiver preenchido
+
             if (socio.getEndereco() != null) {
                 stmt.setInt(9, socio.getEndereco().getIdEndereco());
             } else {
@@ -150,16 +158,23 @@ public class SocioDAO {
 
             stmt.setInt(10, socio.getUsuario().getIdUsuario());
 
-            //executa o comando sql no banco de dados
+            //dados da mensalidade
+            stmt.setBoolean(11, socio.isPagaMensalidade());
+
+            if (socio.getValorMensalidade() != null) {
+                stmt.setBigDecimal(12, socio.getValorMensalidade());
+            } else {
+                stmt.setNull(12, Types.NUMERIC);
+            }
+
             stmt.executeUpdate();
 
-            // Atribui o ID gerado pelo SERIAL de volta ao objeto Usuario
+            //recupera o id gerado
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
                     socio.setIdSocio(rs.getInt(1));
                 }
             }
-
         }
     }
 
@@ -302,40 +317,61 @@ public class SocioDAO {
 
     //atualiza um sócio
     public void atualizarSocio(Socio socio) throws SQLException {
-        String sql = "UPDATE socio SET cpfSocio = ?, nomeSocio = ?, sexoSocio = ?, corSocio = ?, telefoneSocio = ?, dataNascSocio = ?, emailSocio = ?, ativoSocio = ?, fk_idEndereco = ?, fk_idUsuario = ? WHERE pk_idSocio = ?";
-        
+        String sql = """
+            UPDATE socio SET
+                cpfSocio = ?,
+                nomeSocio = ?,
+                sexoSocio = ?,
+                corSocio = ?,
+                telefoneSocio = ?,
+                dataNascSocio = ?,
+                emailSocio = ?,
+                ativoSocio = ?,
+                fk_idEndereco = ?,
+                fk_idUsuario = ?,
+                pagaMensalidade = ?,
+                valorMensalidade = ?
+            WHERE pk_idSocio = ?
+        """;
+
         try (PreparedStatement stmt = conexao.getConexao().prepareStatement(sql)) {
+
             stmt.setString(1, socio.getCpfSocio());
             stmt.setString(2, socio.getNomeSocio());
-
             stmt.setString(3, socio.getSexoSocio());
             stmt.setString(4, socio.getCorSocio());
 
-            //verifica se o socio tem telefone cadastrado
-            if (socio.getTelefoneSocio() != null && !socio.getTelefoneSocio().isBlank()) {
+            if (socio.getTelefoneSocio() != null &&
+                !socio.getTelefoneSocio().isBlank()) {
                 stmt.setString(5, socio.getTelefoneSocio());
             } else {
                 stmt.setNull(5, Types.VARCHAR);
             }
 
-            stmt.setDate(6, new java.sql.Date(socio.getDataNascSocio().getTime()));
+            stmt.setDate(6, socio.getDataNascSocio());
             stmt.setString(7, socio.getEmailSocio());
             stmt.setBoolean(8, socio.isAtivoSocio());
 
-            // verifica se o socio tem endereço cadastrado
             if (socio.getEndereco() != null) {
                 stmt.setInt(9, socio.getEndereco().getIdEndereco());
             } else {
                 stmt.setNull(9, Types.INTEGER);
             }
 
-            //verifica qual é a chave estrangeira do usuario que cadastrou
             int idUsuario = socio.getUsuario().getIdUsuario();
             stmt.setInt(10, idUsuario);
 
-            stmt.setInt(11, socio.getIdSocio());
+            //dados da mensalidade
+            stmt.setBoolean(11, socio.isPagaMensalidade());
 
-            //executa o comando sql
+            if (socio.getValorMensalidade() != null) {
+                stmt.setBigDecimal(12, socio.getValorMensalidade());
+            } else {
+                stmt.setNull(12, Types.NUMERIC);
+            }
+
+            stmt.setInt(13, socio.getIdSocio());
+
             stmt.executeUpdate();
         }
     }
@@ -630,6 +666,8 @@ public class SocioDAO {
         socio.setDataNascSocio(rs.getDate("dataNascSocio"));
         socio.setEmailSocio(rs.getString("emailSocio"));
         socio.setAtivoSocio(rs.getBoolean("ativoSocio"));
+        socio.setPagaMensalidade(rs.getBoolean("pagaMensalidade"));
+        socio.setValorMensalidade(rs.getBigDecimal("valorMensalidade"));
 
 
         // verifica qual é a chave estrangeira do endereço

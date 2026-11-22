@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="painelFundo" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="600.0" style="-fx-background-color: #D9D9D9;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AlterarSocioController">
+<VBox fx:id="painelFundo" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="600.0" style="-fx-background-color: #D9D9D9;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AlterarSocioController">
    <children>
       <Label text="ALTERAR SÓCIO" textFill="#3c4641">
          <font>
@@ -102,6 +102,32 @@
          <VBox.margin>
             <Insets top="20.0" />
          </VBox.margin>
+      </GridPane>
+      <GridPane>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" prefWidth="142.0" />
+            <ColumnConstraints hgrow="SOMETIMES" prefWidth="150.0" />
+            <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" prefWidth="150.0" />
+         </columnConstraints>
+
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="35.0" />
+         </rowConstraints>
+
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" top="15.0" />
+         </VBox.margin>
+
+         <children>
+            <Label styleClass="textos" text="Paga mensalidade:" />
+
+            <ComboBox fx:id="campoPagaMensalidade" prefWidth="130.0" promptText="Selecione" styleClass="campoPreenchimento" GridPane.columnIndex="1" />
+
+            <Label styleClass="textos" text="Valor (R$):" GridPane.columnIndex="2" />
+
+            <TextField fx:id="campoValorMensalidade" promptText="0,00" styleClass="campoPreenchimento" GridPane.columnIndex="3" />
+         </children>
       </GridPane>
       <GridPane>
         <columnConstraints>

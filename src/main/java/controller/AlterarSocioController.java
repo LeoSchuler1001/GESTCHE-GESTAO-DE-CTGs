@@ -36,6 +36,7 @@ import javafx.stage.Stage;
 import model.Departamento;
 import model.Endereco;
 import model.Socio;
+import java.math.BigDecimal;
 
 public class AlterarSocioController {
     //ATRIBUTOS
@@ -52,6 +53,12 @@ public class AlterarSocioController {
     EnderecoDAO enderecoDAO = new EnderecoDAO(conexaoBanco);
     Socio_DepartamentoDAO socio_DepartamentoDAO = new Socio_DepartamentoDAO(conexaoBanco);
     DepartamentoDAO departamentoDAO = new DepartamentoDAO(conexaoBanco);
+
+    @FXML
+    private ComboBox<String> campoPagaMensalidade;
+
+    @FXML
+    private TextField campoValorMensalidade;
 
     @FXML
     private Button botaoAdicionarDepartamento;
@@ -187,6 +194,17 @@ public class AlterarSocioController {
         socioSelecionado.setEmailSocio(campoEmailSocio.getText());
         socioSelecionado.setDataNascSocio(Date.valueOf(campoNascimentoSocio.getValue()));
 
+        //atualiza as informações da mensalidade
+        boolean pagaMensalidade = "SIM".equals(campoPagaMensalidade.getValue());
+        socioSelecionado.setPagaMensalidade(pagaMensalidade);
+
+        if (pagaMensalidade) {
+            String valor = campoValorMensalidade.getText().trim().replace(",", ".");
+            socioSelecionado.setValorMensalidade(new BigDecimal(valor));
+        } else {
+            socioSelecionado.setValorMensalidade(null);
+        }
+
         //verifica se o telefone esta preenchido
         if(!campoTelefoneSocio.getText().isEmpty()) {  
             socioSelecionado.setTelefoneSocio(campoTelefoneSocio.getText());
@@ -203,11 +221,10 @@ public class AlterarSocioController {
         String cepLimpo = campoCepSocio.getText().replaceAll("[^0-9]", "");
         enderecoSocioSelecionado.setCep(cepLimpo);
 
-        emitirAlerta("Sócio alterado com sucesso", AlertType.INFORMATION);
-
         socioDAO.atualizarSocio(socioSelecionado);
         enderecoDAO.alterarEndereco(enderecoSocioSelecionado);
-
+        
+        emitirAlerta("Sócio alterado com sucesso", AlertType.INFORMATION);
         Stage stage = (Stage) painelFundo.getScene().getWindow();
         stage.close();
     }
@@ -270,6 +287,22 @@ public class AlterarSocioController {
         //preenche a lista de cores
         campoCorSocio.getItems().setAll(CorSociosDependentes.values());
 
+        //preenche as opções de pagamento de mensalidades
+        campoPagaMensalidade.getItems().addAll("SIM", "NÃO");
+
+        //se pagar mensalidade, habilita o campo de valor
+        campoPagaMensalidade.setOnAction(event -> {
+
+            boolean paga = "SIM".equals(campoPagaMensalidade.getValue());
+
+            campoValorMensalidade.setDisable(!paga);
+
+            if (!paga) {
+                campoValorMensalidade.clear();
+            }
+
+        });
+
         //impede do usuario digitar no campo da data
         campoNascimentoSocio.setEditable(false);
     }
@@ -296,6 +329,22 @@ public class AlterarSocioController {
         campoCorSocio.setValue(CorSociosDependentes.valueOf(socioSelecionado.getCorSocio()));
         campoEmailSocio.setText(socioSelecionado.getEmailSocio());
         campoTelefoneSocio.setText(socioSelecionado.getTelefoneSocio());
+
+        //busca as informações da mensalidade do sócio
+        if (socioSelecionado.isPagaMensalidade()) {
+            campoPagaMensalidade.setValue("SIM");
+            campoValorMensalidade.setDisable(false);
+
+            if (socioSelecionado.getValorMensalidade() != null) {
+                campoValorMensalidade.setText(socioSelecionado.getValorMensalidade().toString().replace(".", ","));
+            } else {
+                campoValorMensalidade.clear();
+            }
+        } else {
+            campoPagaMensalidade.setValue("NÃO");
+            campoValorMensalidade.clear();
+            campoValorMensalidade.setDisable(true);
+        }
 
         //preenche o campo da data de nascimento do socio
         LocalDate localDate = ((java.sql.Date) socioSelecionado.getDataNascSocio()).toLocalDate();        
@@ -414,6 +463,36 @@ public class AlterarSocioController {
         if (numeroTexto != null && !numeroTexto.matches("\\d+")) {
             emitirAlerta("O número do endereço deve conter apenas dígitos!", AlertType.ERROR);
             return false;
+        }
+
+        //verifica se foi selecionada uma opção de mensalidade
+        if (campoPagaMensalidade.getValue() == null) {
+            emitirAlerta("Selecione se o sócio paga mensalidade!", AlertType.ERROR
+            );
+            return false;
+        }
+
+        //se pagar mensalidade, verifica o valor
+        if ("SIM".equals(campoPagaMensalidade.getValue())) {
+            String valorTexto = campoValorMensalidade.getText();
+            if (valorTexto == null || valorTexto.trim().isEmpty()) {
+                emitirAlerta("Informe o valor da mensalidade!", AlertType.ERROR);
+                return false;
+            }
+
+            // Verifica o formato do valor
+            if (!valorTexto.trim().matches("\\d+(,\\d{1,2})?")) {
+                emitirAlerta("Informe um valor válido para a mensalidade! Utilize vírgula para os centavos.", AlertType.ERROR
+                );
+                return false;
+            }
+
+            BigDecimal valor = new BigDecimal(valorTexto.trim().replace(",", "."));
+
+            if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+                emitirAlerta( "O valor da mensalidade deve ser maior que zero!", AlertType.ERROR);
+                return false;
+            }
         }
         
         return true;
