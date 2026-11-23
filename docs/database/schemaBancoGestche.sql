@@ -57,7 +57,7 @@ CREATE TABLE socio(
     fk_idEndereco INT,
     fk_idUsuario INT,
     pagaMensalidade BOOLEAN NOT NULL DEFAULT FALSE,
-    valorMensalidade NUMERIC(10,2);
+    valorMensalidade NUMERIC(10,2),
 
     CONSTRAINT fk_socio_endereco FOREIGN KEY(fk_idEndereco) REFERENCES endereco(pk_idEndereco) ON DELETE SET NULL,
     CONSTRAINT fk_socio_usuario FOREIGN KEY(fk_idUsuario) REFERENCES usuario(pk_idUsuario) ON DELETE SET NULL
