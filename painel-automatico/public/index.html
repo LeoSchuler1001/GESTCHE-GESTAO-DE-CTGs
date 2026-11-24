@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GesTchê | Monitoramento</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header class="topo">
+        <div>
+            <h1>GesTchê</h1>
+            <p>Monitoramento de automações</p>
+        </div>
+
+        <div class="conexao">
+            <span id="indicadorConexao" class="bolinha"></span>
+            <span id="textoConexao">Verificando conexão...</span>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="titulo-secao">
+            <div>
+                <h2>Painel de controle</h2>
+                <p>Acompanhamento da geração automática de mensalidades.</p>
+            </div>
+
+            <button id="atualizar" onclick="carregarPainel()">
+                Atualizar dados
+            </button>
+        </section>
+
+        <section class="indicadores">
+
+            <article class="card">
+                <span>Status da automação</span>
+                <strong id="statusCron">--</strong>
+                <small>Agendamento do Supabase</small>
+            </article>
+
+            <article class="card">
+                <span>Total de mensalidades</span>
+                <strong id="totalMensalidades">0</strong>
+                <small>Registros gerados</small>
+            </article>
+
+            <article class="card">
+                <span>Valor total</span>
+                <strong id="valorTotal">R$ 0,00</strong>
+                <small>Valor das mensalidades</small>
+            </article>
+
+            <article class="card">
+                <span>Mensalidades pendentes</span>
+                <strong id="pendentes">0</strong>
+                <small>Aguardando pagamento</small>
+            </article>
+
+        </section>
+
+        <section class="painel">
+            <h3>Agendamento automático</h3>
+
+            <div class="detalhes">
+                <div>
+                    <span>Nome do agendamento</span>
+                    <strong id="nomeCron">--</strong>
+                </div>
+
+                <div>
+                    <span>Programação</span>
+                    <strong id="programacao">--</strong>
+                </div>
+
+                <div>
+                    <span>Última execução</span>
+                    <strong id="ultimaExecucao">Nenhuma</strong>
+                </div>
+
+                <div>
+                    <span>Resultado da última execução</span>
+                    <strong id="resultadoCron">Aguardando</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="painel">
+            <h3>Histórico de automações</h3>
+
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Execução</th>
+                            <th>Competência</th>
+                            <th>Tipo</th>
+                            <th>Geradas</th>
+                            <th>Já existentes</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tabelaHistorico">
+                        <tr>
+                            <td colspan="6">Carregando histórico...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="painel">
+            <h3>Mensalidades geradas</h3>
+
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sócio</th>
+                            <th>Descrição</th>
+                            <th>Competência</th>
+                            <th>Vencimento</th>
+                            <th>Valor</th>
+                            <th>Pagamento</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tabelaMensalidades">
+                        <tr>
+                            <td colspan="6">Carregando mensalidades...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer>
+            GesTchê — Painel de monitoramento
+            <span id="ultimaAtualizacao"></span>
+        </footer>
+
+    </main>
+
+    <script src="js/script.js"></script>
+
+</body>
+</html>
