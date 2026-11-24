@@ -45,6 +45,7 @@
 .env
 .env.*
 !.env.example
+usuariosTeste.txt
 
 # Configuração local do banco Java
 src/main/resources/database.properties
